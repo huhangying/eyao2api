@@ -8,7 +8,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: '新华e药项目 API Server' });
+  res.render('index', { title: '新华e药2.0 API 服务器' });
 });
 
 
@@ -74,7 +74,7 @@ router.route('/doctor/passwd/:did')
 router.route('/doctor/shortcuts/:did')
     .get(Doctor.GetShortcuts)
     .patch(urlencodedParser, Doctor.UpdateShortcuts);
-// 药师的基本信息: 
+// 药师的基本信息:
 router.route('/doctor/brief/:did')
     .get(Doctor.GetBriefInfo);//
 

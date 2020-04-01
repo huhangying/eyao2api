@@ -1,15 +1,15 @@
 /**
  * Created by harry on 16/12/2.
  */
-var formidable = require('formidable'),
-    util = require('util'),
-    fs = require('fs');
+const formidable = require('formidable');
+const util = require('util');
+const fs = require('fs');
 
 module.exports = {
 
     receiveFile: function(req, res){
         // parse a file upload
-        var form = new formidable.IncomingForm();
+        var form = new formidable({ multiples: true });
         form.encoding = 'utf-8';
         //form.keepExtensions = true;
         //form.uploadDir = "/home/wwwroot/product.geiliyou.com/ciwen/upload";

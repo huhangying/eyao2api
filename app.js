@@ -1,6 +1,5 @@
-var express = require('express');
+const express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -12,7 +11,7 @@ global.Status = require('./util/status.js');
 global.mongoose = require('mongoose');
 global.mongoose.Promise = require('bluebird');
 global.moment = require('moment');
-global.mongoose.connect('mongodb://127.0.0.1:27017/eyao');
+global.mongoose.connect('mongodb://192.168.87.250/eyao', { useMongoClient: true });
 
 var routes = require('./routes/index');
 
@@ -28,7 +27,7 @@ var app = express();
    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS,PATCH");
    res.header("X-Powered-By",' hwem')
    res.header("Content-Type", "application/json;charset=utf-8");
-   // res.header("Content-Type", "text/html;charset=utf-8");
+  //  res.header("Content-Type", "text/html;charset=utf-8");
    next();
  });
 
@@ -40,8 +39,6 @@ app.set('view options', {
 });
 app.disable('etag'); //avoid 304 error
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

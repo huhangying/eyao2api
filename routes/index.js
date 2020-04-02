@@ -11,7 +11,6 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: '新华e药2.0 API 服务器' });
 });
 
-
 //---------------- 用户注册
 var User = require('../db/controller/user');
 

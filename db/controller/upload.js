@@ -28,7 +28,9 @@ module.exports = {
             }
             fs.copyFile(files.file.path, 'public/upload/' + relativeDir + files.file.name,
                 (err) => {
-                    if (err) throw err;
+                    if (err) {
+                        throw err;
+                    }
                 });
         });
         return;

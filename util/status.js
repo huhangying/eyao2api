@@ -35,7 +35,7 @@ module.exports =  {
 
 
     returnStatus: function(res, status, err){
-        var ret  = _.extend({return: status}, err);
+        let ret  = _.extend({return: status}, err);
         res.send(ret);
     },
 

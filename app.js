@@ -1,19 +1,20 @@
 const express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const path = require('path');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 // 公用库
-global._ = require('lodash');
+global._ = require('lodash'); //todo: remove/replace
 global.Util = require('./util/util.js');
 global.Status = require('./util/status.js');
 global.mongoose = require('mongoose');
-global.mongoose.Promise = require('bluebird');
+// global.mongoose.Promise = require('bluebird');
+global.mongoose.Promise = global.Promise;
 global.moment = require('moment');
 global.mongoose.connect('mongodb://192.168.87.250/eyao', { useMongoClient: true });
 
-var routes = require('./routes/index');
+const routes = require('./routes/index');
 
 global.Consts = require('./util/consts.js');
 
@@ -51,7 +52,7 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

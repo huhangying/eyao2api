@@ -7,53 +7,54 @@ const fs = require('fs');
 
 module.exports = {
 
-    receiveFile: function(req, res){
+    receiveFile: function (req, res) {
         // parse a file upload
-        var form = new formidable({ multiples: true });
-        form.encoding = 'utf-8';
-        //form.keepExtensions = true;
-        //form.uploadDir = "/home/wwwroot/product.geiliyou.com/ciwen/upload";
+        const form = new formidable({ multiples: true, encoding: 'utf-8', keepExtensions: true });
 
-        form.parse(req, function (err, fields, files) {
-
-            res.writeHead(200, {'content-type': files.file.type});
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                next(err);
+                return;
+            }
+            res.writeHead(200, { 'content-type': files.file.type });
             // res.writeHead(200, {'content-type': 'multipart/form-data'});
             //res.write('received upload:\n\n');
-            res.end(util.inspect({fields: fields, files: files}));
+            res.end(util.inspect({ fields: fields, files: files }));
 
             //fs.rename 类似于 move
             var relativeDir = '';
             if (req.params && req.params.dir) {
                 relativeDir = req.params.dir + '/';
             }
-            fs.rename(files.file.path, 'public/upload/' + relativeDir + files.file.name, function (err) {
-                if (err) throw err;
-            });
+            fs.copyFile(files.file.path, 'public/upload/' + relativeDir + files.file.name,
+                (err) => {
+                    if (err) throw err;
+                });
         });
         return;
     },
 
-    getFolderImageList: function(req, res){
+    getFolderImageList: function (req, res) {
         var baseImageServer = 'http://139.224.68.92:81/';
 
         if (req.params && req.params.dir) { // params.id is WeChat ID
             var dir = 'public/upload/' + req.params.dir;
-            fs.realpath(dir, function(err, path) {
+            fs.realpath(dir, function (err, path) {
                 if (err) {
-                    res.json({return: "没有该目录"});
+                    res.json({ return: "没有该目录" });
                 }
 
-                if (!fs.existsSync(dir)){
+                if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                 }
 
                 // console.log('Path is : ' + dir);
             });
-            fs.readdir(dir, function(err, files) {
+            fs.readdir(dir, function (err, files) {
                 if (err) return;
                 var fileNameList = [], i, ext;
                 var path = baseImageServer + req.params.dir + '/';
-                files.forEach(function(filename) {
+                files.forEach(function (filename) {
                     i = filename.lastIndexOf('.');
                     if (i > 0) {
                         ext = filename.substr(i).toLowerCase();

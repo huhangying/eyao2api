@@ -83,7 +83,7 @@ module.exports = {
           desc: department.desc,
           order: department.order,
           assetFolder: department.assetFolder,
-          apply: department.apply || true
+          apply: department.apply
         }, function (err, raw) {
           if (err) {
             return Status.returnStatus(res, Status.ERROR, err);

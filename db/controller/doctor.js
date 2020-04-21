@@ -9,47 +9,19 @@ module.exports = {
 
 
     GetAllDoctors: function (req, res) {
-      var number = 999; // set max return numbers
+        var number = 999; // set max return numbers
 
-      var query = {role: { $lt: 2 }, apply: true};
-      if (req.query.hid) {
-        query.hid = req.query.hid;
-      }
-      if (req.params && req.params.number) {
-        number = _.parseInt(req.params.number);
-        //console.log(number);
-      }
-
-      Doctor.find(query)
-        .sort({order: 1, updated: -1})
-        .limit(number)
-        .exec(function (err, items) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-
-          if (!items || items.length < 1) {
-            return Status.returnStatus(res, Status.NULL);
-          }
-
-          res.json(items);
-        });
-    },
-
-    // for CMS
-    GetAll: function (req, res) {
-      var number = 999; // set max return numbers
-      var query = {};
-      if (req.query.hid) {
-        query.hid = req.query.hid;
-      }
+        var query = { role: { $lt: 2 }, apply: true };
+        if (req.query.hid) {
+            query.hid = req.query.hid;
+        }
         if (req.params && req.params.number) {
             number = _.parseInt(req.params.number);
             //console.log(number);
         }
 
         Doctor.find(query)
-            .sort({order: 1, updated: -1})
+            .sort({ order: 1, updated: -1 })
             .limit(number)
             .exec(function (err, items) {
                 if (err) {
@@ -64,11 +36,39 @@ module.exports = {
             });
     },
 
-    getFocusDoctors: function(userId) {
+    // for CMS
+    GetAll: function (req, res) {
+        var number = 999; // set max return numbers
+        var query = {};
+        if (req.query.hid) {
+            query.hid = req.query.hid;
+        }
+        if (req.params && req.params.number) {
+            number = _.parseInt(req.params.number);
+            //console.log(number);
+        }
+
+        Doctor.find(query)
+            .sort({ order: 1, updated: -1 })
+            .limit(number)
+            .exec(function (err, items) {
+                if (err) {
+                    return Status.returnStatus(res, Status.ERROR, err);
+                }
+
+                if (!items || items.length < 1) {
+                    return Status.returnStatus(res, Status.NULL);
+                }
+
+                res.json(items);
+            });
+    },
+
+    getFocusDoctors: function (userId) {
         var deferred = Q.defer();
 
-        Relationship.find({user: userId, role: { $lt: 2 }, apply: true})
-            .sort({order: 1, updated: -1})
+        Relationship.find({ user: userId, role: { $lt: 2 }, apply: true })
+            .sort({ order: 1, updated: -1 })
             .exec(function (err, items) {
                 if (err) {
                     deferred.resolve([]);
@@ -79,38 +79,38 @@ module.exports = {
 
                 }
 
-                var doctors = items.map(function(a) {return a.doctor;});
+                var doctors = items.map(function (a) { return a.doctor; });
                 deferred.resolve(doctors);
             });
 
         return deferred.promise;
     },
-    
-  // 查找未关注药师
-  GetAllNotFocus: function (req, res) {
 
-    if (req.params && req.params.user) {
-      Relationship.getFocusDoctors(req.params.user).then(function(doctors) {
-        var query = { _id: { "$nin": doctors }, role: { $lt: 2 }, apply: true };
-        if (req.query.hid) {
-          query.hid = req.query.hid;
+    // 查找未关注药师
+    GetAllNotFocus: function (req, res) {
+
+        if (req.params && req.params.user) {
+            Relationship.getFocusDoctors(req.params.user).then(function (doctors) {
+                var query = { _id: { "$nin": doctors }, role: { $lt: 2 }, apply: true };
+                if (req.query.hid) {
+                    query.hid = req.query.hid;
+                }
+                Doctor.find(query)
+                    .sort({ order: 1, updated: -1 })
+                    //.limit(number)
+                    .exec(function (err, items) {
+                        if (err) {
+                            return Status.returnStatus(res, Status.ERROR, err);
+                        }
+                        if (!items || items.length < 1) {
+                            return Status.returnStatus(res, Status.NULL);
+                        }
+
+                        res.json(items);
+                    });
+            });
         }
-        Doctor.find(query)
-          .sort({order: 1, updated: -1})
-          //.limit(number)
-          .exec(function (err, items) {
-            if (err) {
-              return Status.returnStatus(res, Status.ERROR, err);
-            }
-            if (!items || items.length < 1) {
-              return Status.returnStatus(res, Status.NULL);
-            }
-
-            res.json(items);
-          });
-      });
-    }
-  },
+    },
 
     //
     GetAndSkip: function (req, res) {
@@ -121,18 +121,18 @@ module.exports = {
         }
 
         var number = _.parseInt(req.params.number);
-        if (number == 0){
+        if (number == 0) {
             return Status.returnStatus(res, Status.INVALID_PARAM);
         }
         var skip = _.parseInt(req.params.skip);
         //console.log('number: ' + number + ', skip: ' + skip);
 
-      var query = {role: { $lt: 2 }, apply: true};
-      if (req.query.hid) {
-        query.hid = req.query.hid;
-      }
+        var query = { role: { $lt: 2 }, apply: true };
+        if (req.query.hid) {
+            query.hid = req.query.hid;
+        }
         Doctor.find(query)
-            .sort({order: 1, updated: -1})
+            .sort({ order: 1, updated: -1 })
             .skip(skip)
             .limit(number)
             .exec(function (err, items) {
@@ -153,7 +153,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = Doctor.findOne({_id: req.params.id, apply: true})
+            var result = Doctor.findOne({ _id: req.params.id, apply: true })
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -172,10 +172,10 @@ module.exports = {
     GetByCell: function (req, res) {
 
         if (req.params && req.params.cell) {
-          var query = {cell: req.params.cell, apply: true};
-          if (req.query.hid) {
-            query.hid = req.query.hid;
-          }
+            var query = { cell: req.params.cell, apply: true };
+            if (req.query.hid) {
+                query.hid = req.query.hid;
+            }
             Doctor.findOne(query)
                 .exec(function (err, item) {
                     if (err) {
@@ -196,7 +196,7 @@ module.exports = {
     GetByUserId: function (req, res) {
 
         if (req.params && req.params.userid) {
-            Doctor.findOne({user_id: req.params.userid, apply: true})
+            Doctor.findOne({ user_id: req.params.userid, apply: true })
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -216,8 +216,8 @@ module.exports = {
 
         if (req.params && req.params.departmentid) {
 
-            var result = Doctor.find({department: req.params.departmentid, role: { $lt: 2 }, apply: true})
-                .sort({order: 1, updated: -1})
+            var result = Doctor.find({ department: req.params.departmentid, role: { $lt: 2 }, apply: true })
+                .sort({ order: 1, updated: -1 })
                 .exec(function (err, items) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -235,7 +235,7 @@ module.exports = {
     GetShortcuts: function (req, res) {
         if (req.params && req.params.did) {
 
-            Doctor.findOne({user_id: req.params.did, apply: true}, 'shortcuts -_id')
+            Doctor.findOne({ user_id: req.params.did, apply: true }, 'shortcuts -_id')
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -256,7 +256,7 @@ module.exports = {
             var doctor = req.body;
             if (!doctor) return res.sendStatus(400);
 
-            Doctor.findOne({user_id: req.params.did, apply: true}, function (err, item) {
+            Doctor.findOne({ user_id: req.params.did, apply: true }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
@@ -329,7 +329,7 @@ module.exports = {
 
             // icon
 
-            Doctor.find({user_id: uid}) // check if registered
+            Doctor.find({ user_id: uid }) // check if registered
                 .exec(function (err, items) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -341,8 +341,8 @@ module.exports = {
 
                     Doctor.create({
                         user_id: uid,
-                      hid: doctor.hid,
-                      password: Util.encrypt(doctor.password),
+                        hid: doctor.hid,
+                        password: Util.encrypt(doctor.password),
                         role: doctor.role,
                         name: doctor.name,
                         department: doctor.department,
@@ -388,16 +388,16 @@ module.exports = {
             var doctor = req.body;
             if (!doctor) return res.sendStatus(400);
 
-            Doctor.findOne({user_id: uid}, function (err, item) {
+            Doctor.findOne({ user_id: uid }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
 
-                if (!item){
+                if (!item) {
                     return Status.returnStatus(res, Status.NULL);
                 }
-              if (doctor.hid)
-                item.hid = doctor.hid;
+                if (doctor.hid)
+                    item.hid = doctor.hid;
 
                 if (doctor.password)
                     item.password = Util.encrypt(doctor.password);
@@ -436,7 +436,7 @@ module.exports = {
                 //console.log(JSON.stringify(item));
 
                 //
-                item.save(function(err, raw){
+                item.save(function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
@@ -450,17 +450,17 @@ module.exports = {
     DeleteByUserId: function (req, res) {
         if (req.params && req.params.id) { // params.id is doctor's user ID
 
-            Doctor.findOne({user_id: req.params.id}, function (err, item) {
+            Doctor.findOne({ user_id: req.params.id }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
 
-                if (!item){
+                if (!item) {
                     return Status.returnStatus(res, Status.NULL);
                 }
 
                 //
-                item.remove(function(err, raw){
+                item.remove(function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
@@ -473,9 +473,9 @@ module.exports = {
 
     UpdateIcon: function (req, res) {
         if (req.params && req.params.cell) {
-            var query = {cell: req.params.cell};
-            var update = {icon: 'http://101.200.81.99:808/server/icons/' + req.params.cell + '.jpg'};
-            var options = {new: false};
+            var query = { cell: req.params.cell };
+            var update = { icon: 'http://101.200.81.99:808/server/icons/' + req.params.cell + '.jpg' };
+            var options = { new: false };
 
             var result = Doctor.findOneAndUpdate(query, update, options,
                 function (err, usr) {
@@ -490,7 +490,7 @@ module.exports = {
 
     //================== login ===================
 
-    Login: function(req, res){
+    Login: function (req, res) {
         // 获取 login 数据（json）
         var login = req.body;
         if (!login) return res.sendStatus(400);
@@ -505,27 +505,26 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_PASSWORD);
         }
 
-      var query = {user_id: login.user_id, apply: true};
-      if (req.query.hid) {
-        query.hid = req.query.hid;
-      }
+        var query = { user_id: login.user_id, apply: true };
+        if (req.query.hid) {
+            query.hid = req.query.hid;
+        }
 
-        Doctor.find(query,
-            {_id: 1, user_id: 1, password: 1, name: 1, icon: 1, title: 1, department: 1, role: 1}, // select fields
-            function(err, items){
+        Doctor.findOne(query,
+            { _id: 1, user_id: 1, hid: 1, password: 1, name: 1, icon: 1, title: 1, department: 1, role: 1 }, // select fields
+            function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
 
-                if (!items || items.length < 1) {
+                if (!item) {
                     return Status.returnStatus(res, Status.NOT_REGISTERED);
                 }
-                var item = items[0];
 
                 //console.log(Util.decrypt(items[0].password));
                 //console.log(Util.encrypt(login.password) + ' : ' + items[0].password);
                 // check password
-                if (login.password != Util.decrypt(item.password)){
+                if (login.password != Util.decrypt(item.password)) {
                     return Status.returnStatus(res, Status.WRONG_PASSWORD);
                 }
 
@@ -538,7 +537,7 @@ module.exports = {
     GetPassword: function (req, res) {
 
         if (req.params && req.params.did) { //doctor user id
-            Doctor.findOne({user_id: req.params.did, apply: true})
+            Doctor.findOne({ user_id: req.params.did, apply: true })
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -560,7 +559,7 @@ module.exports = {
     GetBriefInfo: function (req, res) {
 
         if (req.params && req.params.did) { //doctor user id
-            Doctor.findOne({_id: req.params.did, apply: true})
+            Doctor.findOne({ _id: req.params.did, apply: true })
                 .populate({ path: 'department', select: 'name' })
                 .exec(function (err, item) {
                     if (err) {
@@ -576,12 +575,12 @@ module.exports = {
 
         }
     },
-    
+
     //====================================================== for service
 
-    GetNameById : function(id) {
+    GetNameById: function (id) {
 
-        Doctor.findOne({_id: id})
+        Doctor.findOne({ _id: id })
             .exec(function (err, item) {
                 if (err) {
                     return '';

@@ -17,8 +17,7 @@ module.exports = {
             query.hid = req.query.hid;
         }
         if (req.params && req.params.number) {
-            number = _.parseInt(req.params.number);
-            //console.log(number);
+            number = +req.params.number;
         }
 
         Doctor.find(query)
@@ -45,8 +44,7 @@ module.exports = {
             query.hid = req.query.hid;
         }
         if (req.params && req.params.number) {
-            number = _.parseInt(req.params.number);
-            //console.log(number);
+            number = +req.params.number;
         }
 
         Doctor.find(query)
@@ -121,11 +119,11 @@ module.exports = {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
 
-        var number = _.parseInt(req.params.number);
+        var number = +req.params.number;
         if (number == 0) {
             return Status.returnStatus(res, Status.INVALID_PARAM);
         }
-        var skip = _.parseInt(req.params.skip);
+        var skip = +req.params.skip;
         //console.log('number: ' + number + ', skip: ' + skip);
 
         var query = { role: { $lt: 2 }, apply: true };
@@ -343,7 +341,7 @@ module.exports = {
                     Doctor.create({
                         user_id: uid,
                         hid: doctor.hid,
-                        password: Util.encrypt(doctor.password),
+                        password: util.encrypt(doctor.password),
                         role: doctor.role,
                         name: doctor.name,
                         department: doctor.department,
@@ -401,7 +399,7 @@ module.exports = {
                     item.hid = doctor.hid;
 
                 if (doctor.password)
-                    item.password = Util.encrypt(doctor.password);
+                    item.password = util.encrypt(doctor.password);
                 if (doctor.name)
                     item.name = doctor.name;
                 if (doctor.department)
@@ -528,7 +526,7 @@ module.exports = {
                 }
 
                 // check password
-                if (login.password != Util.decrypt(item.password)) {
+                if (login.password != util.decrypt(item.password)) {
                     return Status.returnStatus(res, Status.WRONG_PASSWORD);
                 }
 
@@ -557,7 +555,7 @@ module.exports = {
                         return Status.returnStatus(res, Status.NULL);
                     }
 
-                    res.send(Util.decrypt(item.password));
+                    res.send(util.decrypt(item.password));
                 });
 
         }

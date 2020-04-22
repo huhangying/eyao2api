@@ -10,7 +10,7 @@ module.exports = {
         var number = 999; // set max return numbers
 
         if (req.params && req.params.number) {
-            number = _.parseInt(req.params.number);
+            number = +req.params.number;
             //console.log(number);
         }
 

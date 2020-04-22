@@ -2,7 +2,7 @@
  * Created by hhu on 2016/5/7.
  */
 
-module.exports =  {
+module.exports = {
     SUCCESS: "success",
     FAILED: "failed",
     ERROR: "error",
@@ -29,7 +29,7 @@ module.exports =  {
     INVALID_PARAM: 'invalid_param',
     NOT_REGISTERED: 'not_registered',
     WRONG_PASSWORD: 'WRONG_PASSWORD',
-    PASS:　'PASS',
+    PASS: 'PASS',
 
     CHATROOM_ERROR: 'CHATROOM_ERROR',
     NO_MESSAGE: 'NO_MESSAGE',
@@ -37,8 +37,9 @@ module.exports =  {
     TOKEN_INVALID: 'TOKEN_INVALID',
 
 
-    returnStatus: function(res, status, err){
-        let ret  = _.extend({return: status}, err);
+    returnStatus: function (res, status, err) {
+        // let ret = _.extend({ return: status }, err);
+        let ret = { ...err, return: status };
         res.send(ret);
     },
 

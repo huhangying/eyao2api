@@ -5,8 +5,6 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 
 // 公用库
-global._ = require('lodash'); //todo: remove/replace
-global.Util = require('./util/util.js');
 global.Status = require('./util/status.js');
 global.mongoose = require('mongoose');
 // global.mongoose.Promise = require('bluebird');
@@ -17,7 +15,6 @@ global.mongoose.connect('mongodb://192.168.87.250/eyao', { useMongoClient: true 
 const routes = require('./routes/index');
 
 global.Consts = require('./util/consts.js');
-
 const app = express();
 
 //设置跨域访问

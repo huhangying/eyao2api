@@ -171,7 +171,7 @@ module.exports = {
             //todo: should not count the peers.
             var limit = 20; // 20 is a default
             if (chat.limit){
-                var _limit = _.parseInt(chat.limit);
+                var _limit = +chat.limit;
                 if (_limit > limit) {
                     limit = _limit;
                 }

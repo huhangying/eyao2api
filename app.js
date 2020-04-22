@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const logger = require('morgan');
-// const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 // 公用库
@@ -26,7 +25,6 @@ app.use(cors());
 app.all('*', function (req, res, next) {
   res.header("X-Powered-By", 'hwem')
   res.header("Content-Type", "application/json;charset=utf-8");
-  //  res.header("Content-Type", "text/html;charset=utf-8");
   next();
 });
 
@@ -42,7 +40,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);

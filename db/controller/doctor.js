@@ -3,7 +3,6 @@
  */
 var Doctor = require('../model/doctor.js');
 var Relationship = require('../model/relationship.js');
-var request = require('request');
 const util = require('../../util/util');
 
 module.exports = {

@@ -4,6 +4,7 @@
 var Doctor = require('../model/doctor.js');
 var Relationship = require('../model/relationship.js');
 var request = require('request');
+const util = require('../../util/util');
 
 module.exports = {
 
@@ -489,7 +490,7 @@ module.exports = {
     },
 
     //================== login ===================
-
+    // 注：login API 是唯一需要在参数中加入hid，以及需要返回hid的
     Login: function (req, res) {
         // 获取 login 数据（json）
         var login = req.body;
@@ -500,18 +501,23 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_ID);
         }
 
+        // hid
+        // if (!login.hid) {
+        //     return Status.returnStatus(res, Status.NO_HID);
+        // }
+
         // password
         if (!login.password) {
             return Status.returnStatus(res, Status.NO_PASSWORD);
         }
 
-        var query = { user_id: login.user_id, apply: true };
-        if (req.query.hid) {
-            query.hid = req.query.hid;
-        }
+        var query = { user_id: login.user_id, hid: login.hid, apply: true };
+        // if (req.query.hid) {
+        //     query.hid = req.query.hid;
+        // }
 
         Doctor.findOne(query,
-            { _id: 1, user_id: 1, hid: 1, password: 1, name: 1, icon: 1, title: 1, department: 1, role: 1 }, // select fields
+            { _id: 1, user_id: 1, hid: 1, password: 1, name: 1, icon: 1, title: 1, department: 1, role: 1, token: 1 }, // select fields
             function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
@@ -521,15 +527,19 @@ module.exports = {
                     return Status.returnStatus(res, Status.NOT_REGISTERED);
                 }
 
-                //console.log(Util.decrypt(items[0].password));
-                //console.log(Util.encrypt(login.password) + ' : ' + items[0].password);
                 // check password
                 if (login.password != Util.decrypt(item.password)) {
                     return Status.returnStatus(res, Status.WRONG_PASSWORD);
                 }
 
-                item.password = undefined; // delete it!
+                item.password = undefined; // remove password!
+                item.token = util.signToken({
+                    hid: 1, // set hid=1 for test 
+                    id: item.id,
+                    user_id: item.user_id
+                }); 
                 return res.json(item);
+                //todo: remove returning _id later
             });
 
     },

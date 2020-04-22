@@ -1,14 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
+const util = require('../util/util');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 
-
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: '新华e药2.0 API 服务器' });
+router.get('/', function (req, res, next) {
+    res.render('index', { title: '新华e药2.0 API 服务器' });
 });
 
 //---------------- 用户注册
@@ -133,33 +133,33 @@ router.route('/relationships/doctor/:id/userdetails')  // 用于药师用户管�
 var Hospital = require('../db/controller/hospital');
 
 router.route('/hospitals')
-  .get(Hospital.GetAll);
+    .get(Hospital.GetAll);
 
 router.route('/hospital')
-  .post(urlencodedParser, Hospital.Add);
+    .post(urlencodedParser, Hospital.Add);
 
 router.route('/hospital/:id')
-  .get(Hospital.GetById)
-  .delete(Hospital.DeleteById)
-  .patch(urlencodedParser, Hospital.UpdateById);
+    .get(Hospital.GetById)
+    .delete(Hospital.DeleteById)
+    .patch(urlencodedParser, Hospital.UpdateById);
 
 router.route('/hospital/hid/:hid')
-  .get(Hospital.GetByHid)
+    .get(Hospital.GetByHid)
 
 
 //---------------- 医院科室
 var Department = require('../db/controller/department');
 
 router.route('/departments')
-  .get(Department.GetAll);
+    .get(util.verifyToken, Department.GetAll);
 
 router.route('/department')
-  .post(urlencodedParser, Department.Add);
+    .post(urlencodedParser, Department.Add);
 
 router.route('/department/:id')
-  .get(Department.GetById)
-  .delete(Department.DeleteById)
-  .patch(urlencodedParser, Department.UpdateById);
+    .get(Department.GetById)
+    .delete(Department.DeleteById)
+    .patch(urlencodedParser, Department.UpdateById);
 
 
 //---------------- 疾病类别

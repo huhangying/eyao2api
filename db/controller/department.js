@@ -9,8 +9,8 @@ module.exports = {
 
   GetAll: function (req, res) {
     var query = {};
-    if (req.query.hid) {
-      query.hid = req.query.hid;
+    if (req.hid) {
+      query.hid = req.hid;
     }
 
     Department.find(query)

@@ -2,6 +2,7 @@
  * Created by hhu on 2016/5/7.
  */
 var Doctor = require('../model/doctor.js');
+const Hospital = require('../model/hospital');
 var Relationship = require('../model/relationship.js');
 const util = require('../../util/util');
 
@@ -488,7 +489,7 @@ module.exports = {
 
     //================== login ===================
     // 注：login API 是唯一需要在参数中加入hid，以及需要返回hid的
-    Login: function (req, res) {
+    Login: async (req, res) => {
         // 获取 login 数据（json）
         var login = req.body;
         if (!login) return res.sendStatus(400);
@@ -498,17 +499,17 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_ID);
         }
 
-        // hid
-        // if (!login.hid) {
-        //     return Status.returnStatus(res, Status.NO_HID);
-        // }
+        const hosptial = await Hospital.findOne({ host: req.hostname, apply: true }, 'hid')
+        if (!hosptial) {
+            return Status.sendStatus(403);
+        }
 
         // password
         if (!login.password) {
             return Status.returnStatus(res, Status.NO_PASSWORD);
         }
 
-        var query = { user_id: login.user_id, hid: login.hid, apply: true };
+        var query = { user_id: login.user_id, hid: hosptial.hid, apply: true };
         // if (req.query.hid) {
         //     query.hid = req.query.hid;
         // }

@@ -5,10 +5,11 @@ const util = require('../util/util');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+router.use(util.verifyToken);
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    res.render('index', { title: '新华e药2.0 API 服务器' });
+router.route('/').get((req, res, next) => {
+    res.render('index', { hid: req.hid });
 });
 
 //---------------- 用户注册
@@ -151,7 +152,7 @@ router.route('/hospital/hid/:hid')
 var Department = require('../db/controller/department');
 
 router.route('/departments')
-    .get(util.verifyToken, Department.GetAll);
+    .get(Department.GetAll);
 
 router.route('/department')
     .post(urlencodedParser, Department.Add);

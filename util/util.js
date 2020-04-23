@@ -26,6 +26,10 @@ module.exports = {
 
     // middleware
     verifyToken: (req, res, next) => {
+        if (req.url.indexOf('login') > 0) {
+            return next(); // login is only exception
+        }
+
         const authHeader = req.headers ? req.headers.authorization : null;
         if (authHeader) {
             const token = authHeader.split(' ').pop();
@@ -33,6 +37,7 @@ module.exports = {
                 jwt.verify(token, SECRET_KEY, (err, data) => {
                     //todo: handle expired later
                     if (err) {
+                        // return res.status(403).json(err);
                         return res.sendStatus(403);
                     }
                     if (!data.hid) {

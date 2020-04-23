@@ -10,8 +10,8 @@ module.exports = {
   GetAll: function (req, res) {
 
     Hospital.find()
-      .sort({order: 1})
-      .exec( function (err, items) {
+      .sort({ order: 1 })
+      .exec(function (err, items) {
         if (err) {
           return Status.returnStatus(res, Status.ERROR, err);
         }
@@ -29,7 +29,7 @@ module.exports = {
 
     if (req.params && req.params.id) {
 
-      var result = Hospital.findOne({_id: req.params.id, apply: true})
+      var result = Hospital.findOne({ _id: req.params.id, apply: true })
         .exec(function (err, item) {
           if (err) {
             return Status.returnStatus(res, Status.ERROR, err);
@@ -49,7 +49,7 @@ module.exports = {
 
     if (req.params && req.params.hid) {
 
-      var result = Hospital.findOne({hid: req.params.hid})
+      var result = Hospital.findOne({ hid: req.params.hid })
         .exec(function (err, item) {
           if (err) {
             return Status.returnStatus(res, Status.ERROR, err);
@@ -64,7 +64,6 @@ module.exports = {
     }
   },
 
-
   // 创建医院
   Add: function (req, res) {
 
@@ -78,7 +77,7 @@ module.exports = {
     }
 
 
-    Hospital.find({hid: hospital.hid}) // check if existed
+    Hospital.find({ hid: hospital.hid }) // check if existed
       .exec(function (err, items) {
         if (err) {
           return Status.returnStatus(res, Status.ERROR, err);
@@ -93,6 +92,7 @@ module.exports = {
           hid: hospital.hid,
           name: hospital.name,
           desc: hospital.desc,
+          host: hospital.host,
           order: hospital.order,
           apply: hospital.apply || true
         }, function (err, raw) {
@@ -119,7 +119,7 @@ module.exports = {
           return Status.returnStatus(res, Status.ERROR, err);
         }
 
-        if (!item){
+        if (!item) {
           return Status.returnStatus(res, Status.NULL);
         }
 
@@ -145,7 +145,7 @@ module.exports = {
     }
   },
 
-  DeleteById: function(req, res){
+  DeleteById: function (req, res) {
     if (req.params && req.params.id) { // params.id is doctor's user ID
       var id = req.params.id;
 
@@ -154,7 +154,7 @@ module.exports = {
           return Status.returnStatus(res, Status.ERROR, err);
         }
 
-        if (!item){
+        if (!item) {
           return Status.returnStatus(res, Status.NULL);
         }
 

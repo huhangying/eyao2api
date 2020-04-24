@@ -29,7 +29,7 @@ module.exports = {
 
     if (req.params && req.params.id) {
 
-      var result = Hospital.findOne({ _id: req.params.id, apply: true })
+      Hospital.findOne({ _id: req.params.id, apply: true })
         .exec(function (err, item) {
           if (err) {
             return Status.returnStatus(res, Status.ERROR, err);
@@ -49,7 +49,7 @@ module.exports = {
 
     if (req.params && req.params.hid) {
 
-      var result = Hospital.findOne({ hid: req.params.hid })
+      Hospital.findOne({ hid: req.params.hid })
         .exec(function (err, item) {
           if (err) {
             return Status.returnStatus(res, Status.ERROR, err);

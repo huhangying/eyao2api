@@ -2,8 +2,6 @@
  * Created by hhu on 2016/5/15.
  */
 var Chatroom = require('../model/chatroom.js');
-var UserService = require('./user.js');
-var DoctorService = require('./doctor.js');
 var Q = require('q');
 
 module.exports = {
@@ -179,7 +177,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = Chatroom.findOne({_id: req.params.id})
+            Chatroom.findOne({_id: req.params.id})
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);

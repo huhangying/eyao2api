@@ -49,7 +49,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = Booking.findOne({_id: req.params.id})
+            Booking.findOne({_id: req.params.id})
                 .populate('schedule')
                 .exec(function (err, item) {
                     if (err) {

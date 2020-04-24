@@ -33,7 +33,7 @@ module.exports = {
 
     if (req.params && req.params.id) {
 
-      var result = Department.findOne({_id: req.params.id, apply: true})
+      Department.findOne({_id: req.params.id, apply: true})
         .exec(function (err, item) {
           if (err) {
             return Status.returnStatus(res, Status.ERROR, err);

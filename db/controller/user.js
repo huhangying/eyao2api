@@ -35,7 +35,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = User.findOne({_id: req.params.id})
+            User.findOne({_id: req.params.id})
                 .exec(function(err, user) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -55,7 +55,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = User.findOne({link_id: req.params.id, apply: true})
+            User.findOne({link_id: req.params.id, apply: true})
                 .exec(function(err, user) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -309,7 +309,7 @@ module.exports = {
             var update = {icon: 'http://101.200.81.99:808/server/icons/' + req.params.cell + '.jpg'};
             var options = {new: false};
 
-            var result = User.findOneAndUpdate(query, update, options,
+            User.findOneAndUpdate(query, update, options,
                 function(err, usr){
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);

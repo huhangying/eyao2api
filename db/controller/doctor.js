@@ -153,7 +153,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = Doctor.findOne({ _id: req.params.id, apply: true })
+            Doctor.findOne({ _id: req.params.id, apply: true })
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -216,7 +216,7 @@ module.exports = {
 
         if (req.params && req.params.departmentid) {
 
-            var result = Doctor.find({ department: req.params.departmentid, role: { $lt: 2 }, apply: true })
+            Doctor.find({ department: req.params.departmentid, role: { $lt: 2 }, apply: true })
                 .sort({ order: 1, updated: -1 })
                 .exec(function (err, items) {
                     if (err) {
@@ -477,7 +477,7 @@ module.exports = {
             var update = { icon: 'http://101.200.81.99:808/server/icons/' + req.params.cell + '.jpg' };
             var options = { new: false };
 
-            var result = Doctor.findOneAndUpdate(query, update, options,
+            Doctor.findOneAndUpdate(query, update, options,
                 function (err, usr) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);

@@ -53,7 +53,7 @@ var self = module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = Disease.findOne({_id: req.params.id})
+            Disease.findOne({_id: req.params.id})
                 .sort({order: 1})
                 .populate('department')
                 .populate('symptoms')

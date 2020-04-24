@@ -26,7 +26,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = Relationship.findOne({_id: req.params.id, apply: true})
+            Relationship.findOne({_id: req.params.id, apply: true})
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);

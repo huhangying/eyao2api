@@ -10,7 +10,7 @@ global.mongoose = require('mongoose');
 // global.mongoose.Promise = require('bluebird');
 global.mongoose.Promise = global.Promise;
 global.moment = require('moment');
-global.mongoose.connect('mongodb://192.168.87.250/eyao', { useMongoClient: true });
+global.mongoose.connect('mongodb://192.168.87.250/eyao', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const routes = require('./routes/index');
 

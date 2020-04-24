@@ -1,9 +1,6 @@
 /**
  * Created by hhu on 2016/5/7.
  */
-
-var Schema = global.mongoose.Schema;
-
 var _Doctor = new Schema({
   hid: { type: String },
   token: { type: String }, // token should not store into db

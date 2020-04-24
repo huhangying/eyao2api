@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/11/29.
  */
-var Schema = global.mongoose.Schema;
-
 var _AdverseReaction = new Schema({
     isCommon: { type: Boolean, default: false },
     department: { type: Schema.Types.ObjectId, ref: 'department' }, // department is required when isCommon is false

@@ -1,5 +1,3 @@
-var Schema = global.mongoose.Schema;
-
 var _SurveyStatusLog = new Schema({
         key: { type: String },
         // doctor: { type: Schema.Types.ObjectId, ref: 'doctor', required: true },

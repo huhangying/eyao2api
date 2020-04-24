@@ -1,8 +1,6 @@
 /**
  * Created by harry on 17/1/20.
  */
-var Schema = global.mongoose.Schema;
-
 var _labResult = new Schema({
 
         doctor: { type: Schema.Types.ObjectId, ref: 'doctor', required: true },

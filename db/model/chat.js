@@ -1,9 +1,6 @@
 /**
  * Created by hhu on 2016/5/14.
  */
-
-var Schema = global.mongoose.Schema;
-
 var _Chat = new Schema({
 
     chatroom: {type: Schema.Types.ObjectId, ref: 'chatroom', required: true }, // 聊天室

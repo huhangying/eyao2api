@@ -1,9 +1,6 @@
 /**
  * Created by hhu on 2016/5/9.
  */
-
-var Schema = global.mongoose.Schema;
-
 var _Disease = new Schema({
 
     department: {type: Schema.Types.ObjectId, ref: 'department' },

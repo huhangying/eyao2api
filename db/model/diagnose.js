@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/12/26.
  */
-var Schema = global.mongoose.Schema;
-
 var _Diagnose = new Schema({
     hid: { type: String },
         doctor: { type: Schema.Types.ObjectId, ref: 'doctor', required: true },

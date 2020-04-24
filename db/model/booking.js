@@ -1,9 +1,6 @@
 /**
  * Created by hhu on 2016/5/20.
  */
-
-var Schema = global.mongoose.Schema;
-
 var _Booking = new Schema({
 
     user: {type: Schema.Types.ObjectId, ref: 'user', required: true }, // 病患

@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/9/13.
  */
-var Schema = global.mongoose.Schema;
-
 var _SurveyTemplate = new Schema({
     hid: { type: String },
         name: { type: String, required: true, trim: true }, // Survey section name

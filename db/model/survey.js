@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/9/13.
  */
-var Schema = global.mongoose.Schema;
-
 var _Survey = new Schema({
         surveyTemplate: { type: Schema.Types.ObjectId, ref: 'survey_template' },
         doctor: { type: Schema.Types.ObjectId, ref: 'doctor', required: true },

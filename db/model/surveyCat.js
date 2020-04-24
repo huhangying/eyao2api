@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/9/13.
  */
-var Schema = global.mongoose.Schema;
-
 var _SurveyCat = new Schema({
     hid: { type: String },
         department: { type: Schema.Types.ObjectId, ref: 'department', required: true },

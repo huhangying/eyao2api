@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/10/2.
  */
-var Schema = global.mongoose.Schema;
-
 var _Prescription = new Schema({
 
         booking: {type: Schema.Types.ObjectId, ref: 'booking', required: true }, // not required for walk-in

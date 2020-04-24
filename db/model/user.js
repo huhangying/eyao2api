@@ -1,8 +1,6 @@
 /**
  * Created by hhu on 2016/4/27.
  */
-var Schema = global.mongoose.Schema;
-
 var _User = new Schema({
   link_id: String,
   cell: String,

@@ -1,8 +1,6 @@
 /**
  * Created by ehuhang on 12/2/2016.
  */
-var Schema = global.mongoose.Schema;
-
 var _UserFeedback = new Schema({
         user: {type: Schema.Types.ObjectId, ref: 'user', required: true },      // from
         doctor: {type: Schema.Types.ObjectId, ref: 'doctor', required: true },  // to

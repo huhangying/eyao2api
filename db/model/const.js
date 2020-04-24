@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/7/12.
  */
-var Schema = global.mongoose.Schema;
-
 var _Const = new Schema({
   hid: { type: String },
     name: {type: String, required: true},

@@ -1,8 +1,6 @@
 /**
  * Created by harry on 17/1/9.
  */
-var Schema = global.mongoose.Schema;
-
 var _Notices = new Schema({
         
         notices: [

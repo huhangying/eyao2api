@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/10/2.
  */
-var Schema = global.mongoose.Schema;
-
 var _Medicine = new Schema({
 
         name: { type: String, required: true, trim: true },

@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/11/29.
  */
-var Schema = global.mongoose.Schema;
-
 var _ArticleTemplate = new Schema({
 
         name: { type: String, required: true, trim: true }, // page section name

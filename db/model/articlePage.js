@@ -1,8 +1,6 @@
 /**
  * Created by harry on 16/11/29.
  */
-var Schema = global.mongoose.Schema;
-
 var _ArticlePage = new Schema({
 
         doctor: {type: Schema.Types.ObjectId, ref: 'doctor', required: true },  // from

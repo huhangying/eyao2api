@@ -1,8 +1,6 @@
 /**
  * Created by harry on 17/1/17.
  */
-var Schema = global.mongoose.Schema;
-
 var _ArticleSearch = new Schema({
 
     hid: { type: String },

@@ -1,9 +1,6 @@
 /**
  * Created by hhu on 2016/5/14.
  */
-
-var Schema = global.mongoose.Schema;
-
 var _ChatRoom = new Schema({
 
     name: String, // 聊天室名([user name]|[doctor name])

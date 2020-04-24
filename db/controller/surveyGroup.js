@@ -116,7 +116,7 @@ module.exports = {
                 if (surveyGroup.type)
                     item.type = surveyGroup.type;
                 if (surveyGroup.name)
-                    surveyGroup.name = surveyGroup.name;
+                    item.name = surveyGroup.name;
                 if (surveyGroup.desc)
                     item.desc = surveyGroup.desc;
                 if (surveyGroup.order || surveyGroup.order == 0)

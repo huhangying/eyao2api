@@ -4,6 +4,7 @@
 var Doctor = require('../model/doctor.js');
 const Hospital = require('../model/hospital');
 var Relationship = require('../model/relationship.js');
+var Q = require('q');
 const util = require('../../util/util');
 
 module.exports = {

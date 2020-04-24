@@ -8,7 +8,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 router.use(util.verifyToken);
 
 /* GET home page. */
-router.route('/').get((req, res, next) => {
+router.route('/').get((req, res) => {
     res.render('index', { hid: req.hid });
 });
 

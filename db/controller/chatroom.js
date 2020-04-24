@@ -343,7 +343,7 @@ module.exports = {
                         // 不存在，创建
 
                         // set chatroom name (format: user name | doctor name)
-                        var name = username + '|' + doctorname;
+                        var name = userid + '|' + doctorid;
                         var user_unread = direction == 0 ? 1 : 0;
                         var doctor_unread = direction == 1 ? 1 : 0;
 
@@ -394,7 +394,7 @@ module.exports = {
                         // 不存在，创建
 
                         // set chatroom name (format: user name | doctor name)
-                        var name = username + '|' + doctorname;
+                        var name = userid + '|' + doctorid;
                         var user_unread = direction == 0 ? 1 : 0;
                         var doctor_unread = direction == 1 ? 1 : 0;
 

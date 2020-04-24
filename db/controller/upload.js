@@ -13,8 +13,7 @@ module.exports = {
 
         form.parse(req, (err, fields, files) => {
             if (err) {
-                next(err);
-                return;
+                throw err;
             }
             res.writeHead(200, { 'content-type': files.file.type });
             // res.writeHead(200, {'content-type': 'multipart/form-data'});

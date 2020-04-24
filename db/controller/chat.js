@@ -244,13 +244,13 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = Chat.findOne({_id: req.params.id})
+            Chat.findOne({_id: req.params.id})
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
 
-                    if (!items) {
+                    if (!item) {
                         return Status.returnStatus(res, Status.NULL);
                     }
 

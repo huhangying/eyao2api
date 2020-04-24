@@ -7,8 +7,9 @@ const bodyParser = require('body-parser');
 // 公用库
 global.Status = require('./util/status.js');
 global.mongoose = require('mongoose');
-// global.mongoose.Promise = global.Promise;
+global.Schema = global.mongoose.Schema;
 global.moment = require('moment');
+global.Consts = require('./util/consts.js');
 global.mongoose.connect('mongodb://192.168.87.250/eyao', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -18,7 +19,6 @@ global.mongoose.connect('mongodb://192.168.87.250/eyao', {
 
 const routes = require('./routes/index');
 
-global.Consts = require('./util/consts.js');
 const app = express();
 
 //设置跨域访问
@@ -30,7 +30,7 @@ app.all('*', function (req, res, next) {
 });
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(path.resolve(), 'views'));
 app.set('view engine', 'ejs');
 app.set('view options', {
   layout: false
@@ -41,7 +41,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(path.resolve(), 'public')));
 
 app.use('/', routes);
 
@@ -57,7 +57,7 @@ app.use((req, res, next) => {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use((err, req, res, next) => {
+  app.use((err, req, res) => {
     res.status(err.status || 500)
       .render('error', {
         message: err.message,
@@ -68,7 +68,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   res.status(err.status || 500)
     .render('error', {
       message: err.message,

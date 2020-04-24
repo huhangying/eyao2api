@@ -55,7 +55,7 @@ module.exports = {
             // var lastDay = firstDay.add(1, 'months').subtract(1, 'minutes');
             var lastDay = firstDay.clone().endOf('month');
             //console.log(lastDay);
-            Diagnose.count({
+            Diagnose.countDocuments({
                 doctor: req.params.doctor,
                 updatedAt: {$gte: firstDay, $lt: lastDay},
                 status: 3

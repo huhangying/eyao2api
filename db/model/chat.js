@@ -14,6 +14,7 @@ var _Chat = new Schema({
     read: {type: Number, default: 0}
 });
 
+// this method no use?
 _Chat.statics.findAndModify = function (query, sort, doc, options, callback) {
     return this.collection.findAndModify(query, sort, doc, options, callback);
 };

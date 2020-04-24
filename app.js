@@ -7,8 +7,7 @@ const bodyParser = require('body-parser');
 // 公用库
 global.Status = require('./util/status.js');
 global.mongoose = require('mongoose');
-// global.mongoose.Promise = require('bluebird');
-global.mongoose.Promise = global.Promise;
+// global.mongoose.Promise = global.Promise;
 global.moment = require('moment');
 global.mongoose.connect('mongodb://192.168.87.250/eyao', {
   useNewUrlParser: true,

@@ -488,7 +488,7 @@ module.exports = {
     },
 
     //================== login ===================
-    // 注：login API 是唯一需要在参数中加入hid，以及需要返回hid的
+    // 注：login API 检测 hostname 得到hid，并需要返回token
     Login: async (req, res) => {
         // 获取 login 数据（json）
         var login = req.body;

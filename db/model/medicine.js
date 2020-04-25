@@ -1,7 +1,9 @@
-/**
- * Created by harry on 16/10/2.
- */
-var _Medicine = new Schema({
+
+const mongoose = require('mongoose');
+
+module.exports = mongoose.model(
+    'medicine',
+    mongoose.Schema({
 
         name: { type: String, required: true, trim: true },
         desc: { type: String, trim: true },
@@ -25,9 +27,7 @@ var _Medicine = new Schema({
             }
         ],
         apply: { type: Boolean, default: true }
-    },
-    {
+    }, {
         timestamps: true
-    });
-
-module.exports =  mongoose.model('medicine', _Medicine);
+    })
+);

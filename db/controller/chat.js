@@ -1,8 +1,6 @@
-/**
- * Created by hhu on 2016/5/14.
- */
 var Chat = require('../model/chat.js');
 var ChatroomService =  require('./chatroom.js');
+const Consts = require('../../util/consts.js');
 
 module.exports = {
 
@@ -48,7 +46,7 @@ module.exports = {
                             if (chat.direction == 0 && chatroom.doctor && chatroom.doctor.status && chatroom.doctor.status > 0) {
                                 // 自动回复消息
 
-                                global.Consts.get(global.Consts.AWAY_RESPONSE)
+                                Consts.get(Consts.AWAY_RESPONSE)
                                     .then(function(autoResponse) {
                                         if (!autoResponse || autoResponse == '') {
                                             return res.send(raw);

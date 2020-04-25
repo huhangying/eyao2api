@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var bodyParser = require('body-parser');
+// var bodyParser = require('body-parser');
 const util = require('../util/util');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+// var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 router.use(util.verifyToken);
 

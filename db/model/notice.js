@@ -1,8 +1,10 @@
-/**
- * Created by harry on 17/1/9.
- */
-var _Notices = new Schema({
-        
+
+const mongoose = require('mongoose');
+
+module.exports = mongoose.model(
+    'notices',
+    mongoose.Schema({
+
         notices: [
             {
                 notice: { type: String, required: true, trim: true },
@@ -13,9 +15,7 @@ var _Notices = new Schema({
             }
         ],
         apply: { type: Boolean, default: true }
-    },
-    {
+    }, {
         timestamps: true
-    });
-
-module.exports =  mongoose.model('notices', _Notices);
+    })
+);

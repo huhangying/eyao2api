@@ -1,16 +1,17 @@
-/**
- * Created by hhu on 2016/5/14.
- */
-var _ChatRoom = new Schema({
 
-    name: String, // 聊天室名([user name]|[doctor name])
-    user: {type: Schema.Types.ObjectId, ref: 'user', required: true },
-    doctor: {type: Schema.Types.ObjectId, ref: 'doctor', required: true },
-    doctor_unread: { type: Number, default: 0 },
-    user_unread: { type: Number, default: 0 },
-    created: {type : Date, default: Date.now },
-    updated: {type : Date, default: Date.now }
+const mongoose = require('mongoose');
 
-});
+module.exports = mongoose.model(
+    'chatroom',
+    mongoose.Schema({
 
-module.exports =  mongoose.model('chatroom', _ChatRoom);
+        name: String, // 聊天室名([user name]|[doctor name])
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+        doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
+        doctor_unread: { type: Number, default: 0 },
+        user_unread: { type: Number, default: 0 },
+        created: { type: Date, default: Date.now },
+        updated: { type: Date, default: Date.now }
+
+    })
+);

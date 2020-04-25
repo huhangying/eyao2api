@@ -1,20 +1,16 @@
-/**
- * Created by hhu on 2016/5/20.
- */
 
-var Q = require('q');
+const mongoose = require('mongoose');
+const Q = require('q');
 
-var _Relationship = new Schema({
-
-    group:  {type: Schema.Types.ObjectId, ref: 'group' },
-    doctor: {type: Schema.Types.ObjectId, ref: 'doctor' },
-    user: {type: Schema.Types.ObjectId, ref: 'user' },
-    apply: {type : Boolean, default: true}
-});
-
-
-
-var Relationship = mongoose.model('relationship', _Relationship);
+const Relationship = mongoose.model(
+    'relationship',
+    mongoose.Schema({
+        group: { type: mongoose.Schema.Types.ObjectId, ref: 'group' },
+        doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+        apply: { type: Boolean, default: true }
+    })
+);
 
 
 
@@ -46,7 +42,7 @@ function sortBy(key, reverse) {
      * @param  {*} b
      * @return {Number}
      */
-    return function(a, b) {
+    return function (a, b) {
         if (a[key] < b[key]) {
             return moveSmaller;
         }
@@ -58,10 +54,10 @@ function sortBy(key, reverse) {
 
 }
 
-Relationship.getFocusDoctors = function(userId) {
+Relationship.getFocusDoctors = function (userId) {
     var deferred = Q.defer();
 
-    Relationship.find({user: userId, apply: true})
+    Relationship.find({ user: userId, apply: true })
         .exec(function (err, items) {
             if (err) {
                 deferred.resolve([]);
@@ -72,11 +68,11 @@ Relationship.getFocusDoctors = function(userId) {
 
             }
 
-            var doctors = items.map(function(a) {return a.doctor;}).sort(sortBy('order'));
+            var doctors = items.map(function (a) { return a.doctor; }).sort(sortBy('order'));
             deferred.resolve(doctors);
         });
 
     return deferred.promise;
 };
 
-module.exports =  Relationship;
+module.exports = Relationship;

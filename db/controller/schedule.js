@@ -133,7 +133,7 @@ module.exports = {
 
         if (req.params && req.params.period && req.params.did && req.params.date) {
 
-            var result = Schedule.findOne({doctor: req.params.did, date: req.params.date, period: req.params.period})
+            Schedule.findOne({doctor: req.params.did, date: req.params.date, period: req.params.period})
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -153,7 +153,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            var result = Schedule.findOne({_id: req.params.id})
+            Schedule.findOne({_id: req.params.id})
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);

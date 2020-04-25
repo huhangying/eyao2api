@@ -7,10 +7,7 @@ globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
   Status: readonly
-  mongoose: readonly
-  Schema: readonly
-  moment: readonly
-  Consts: readonly
+  urlencodedParser: readonly
 parserOptions:
   ecmaVersion: 2018
 rules: {

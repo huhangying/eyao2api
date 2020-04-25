@@ -5,17 +5,15 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 
 // 公用库
-global.Status = require('./util/status.js');
-global.mongoose = require('mongoose');
-global.Schema = global.mongoose.Schema;
-global.moment = require('moment');
-global.Consts = require('./util/consts.js');
-global.mongoose.connect('mongodb://192.168.87.250/eyao', {
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://192.168.87.250/eyao', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
   useCreateIndex: true
- });
+});
+global.Status = require('./util/status.js');
+global.urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 const routes = require('./routes/index');
 
@@ -39,7 +37,7 @@ app.disable('etag'); //avoid 304 error
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(urlencodedParser);
 
 app.use(express.static(path.join(path.resolve(), 'public')));
 

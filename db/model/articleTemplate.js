@@ -1,19 +1,18 @@
-/**
- * Created by harry on 16/11/29.
- */
-var _ArticleTemplate = new Schema({
+const mongoose = require('mongoose');
+
+module.exports = mongoose.model(
+    'article_template',
+    mongoose.Schema({
 
         name: { type: String, required: true, trim: true }, // page section name
-        department: { type: Schema.Types.ObjectId, ref: 'department', required: true },
-        cat: { type: Schema.Types.ObjectId, ref: 'article_cat', required: true },
+        department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
+        cat: { type: mongoose.Schema.Types.ObjectId, ref: 'article_cat', required: true },
         title: { type: String },
         title_image: { type: String },
         content: { type: String },
         apply: { type: Boolean, default: true },
-        updatedBy: { type: Schema.Types.ObjectId, required: true }
-    },
-    {
+        updatedBy: { type: mongoose.Schema.Types.ObjectId, required: true }
+    }, {
         timestamps: true
-    });
-
-module.exports =  mongoose.model('article_template', _ArticleTemplate);
+    })
+);

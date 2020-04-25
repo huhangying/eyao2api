@@ -1,13 +1,14 @@
-/**
- * Created by harry on 16/9/13.
- */
-var _Survey = new Schema({
-        surveyTemplate: { type: Schema.Types.ObjectId, ref: 'survey_template' },
-        doctor: { type: Schema.Types.ObjectId, ref: 'doctor', required: true },
-        user: { type: Schema.Types.ObjectId, ref: 'user', required: true },
+const mongoose = require('mongoose');
+
+module.exports = mongoose.model(
+    'survey',
+    mongoose.Schema({
+        surveyTemplate: { type: mongoose.Schema.Types.ObjectId, ref: 'survey_template' },
+        doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
 
         name: { type: String, required: true, trim: true }, // Survey section name
-        department: { type: Schema.Types.ObjectId, ref: 'department', required: true },
+        department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
         type: { type: Number, required: true, min: 0, max: 6 },
         questions: [
             {
@@ -33,9 +34,7 @@ var _Survey = new Schema({
         order: { type: Number },
         availableBy: { type: Date }, // 有效期
         finished: { type: Boolean, default: false }
-    },
-    {
+    }, {
         timestamps: true
-    });
-
-module.exports =  mongoose.model('survey', _Survey);
+    })
+);

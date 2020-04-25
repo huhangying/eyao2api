@@ -1,10 +1,11 @@
-/**
- * Created by harry on 16/9/13.
- */
-var _SurveyTemplate = new Schema({
-    hid: { type: String },
+const mongoose = require('mongoose');
+
+module.exports = mongoose.model(
+    'survey_template',
+    mongoose.Schema({
+        hid: { type: String },
         name: { type: String, required: true, trim: true }, // Survey section name
-        department: { type: Schema.Types.ObjectId, ref: 'department', required: true },
+        department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
         type: { type: Number, required: true, min: 0, max: 6 },
         //group: { type: Schema.Types.ObjectId, ref: 'survey_group' },
         questions: [
@@ -17,7 +18,7 @@ var _SurveyTemplate = new Schema({
                 answer_type: { type: Number, required: true, min: 0, max: 3 }, // 0: boolean; 1: radio; 2: multiple; 3: text
                 options: [
                     {
-                        answer: { type: String},
+                        answer: { type: String },
                         input_required: { type: Boolean, default: false },
                         input: { type: String, trim: true },
                         hint: { type: String },
@@ -31,9 +32,7 @@ var _SurveyTemplate = new Schema({
         order: { type: Number },
         availableDays: { type: Number, default: 30 }, // 有效天数, 默认为30天
         apply: { type: Boolean, default: true }
-    },
-    {
+    }, {
         timestamps: true
-    });
-
-module.exports =  mongoose.model('survey_template', _SurveyTemplate);
+    })
+);

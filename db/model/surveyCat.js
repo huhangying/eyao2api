@@ -1,16 +1,15 @@
-/**
- * Created by harry on 16/9/13.
- */
-var _SurveyCat = new Schema({
-    hid: { type: String },
-        department: { type: Schema.Types.ObjectId, ref: 'department', required: true },
+const mongoose = require('mongoose');
+
+module.exports = mongoose.model(
+    'survey_cat',
+    mongoose.Schema({
+        hid: { type: String },
+        department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
         name: { type: String, required: true, trim: true }, // Survey Cat name
         desc: { type: String },
         fixed: { type: Boolean, default: false },
         apply: { type: Boolean, default: true }
-    },
-    {
+    }, {
         timestamps: true
-    });
-
-module.exports =  mongoose.model('survey_cat', _SurveyCat);
+    })
+);

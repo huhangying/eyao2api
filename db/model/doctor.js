@@ -1,16 +1,16 @@
-/**
- * Created by hhu on 2016/5/7.
- */
+
+const mongoose = require('mongoose');
+
 module.exports = mongoose.model(
   'doctor',
-  new Schema({
+  mongoose.Schema({
     hid: { type: String },
     token: { type: String }, // token should not store into db
     user_id: { type: String, required: true },
     password: { type: String, required: true },
     name: { type: String, required: true },
     role: { type: Number, required: true, default: 0 },
-    department: { type: Schema.Types.ObjectId, ref: 'department', required: true },
+    department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
     title: String,
     tel: String,
     cell: String,

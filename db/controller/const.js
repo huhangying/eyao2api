@@ -1,8 +1,5 @@
-/**
- * Created by harry on 16/7/12.
- */
-
 var Const = require('../model/const.js');
+const Consts = require('../../util/consts');
 
 module.exports = {
 
@@ -139,7 +136,8 @@ module.exports = {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
-                    Consts.clearCacheByName(_const.name); // clear cache
+                    // Consts.clearCacheByName(_const.name); // clear cache
+                    // todo:
                     res.json(raw);
                 });
 

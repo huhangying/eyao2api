@@ -1,14 +1,13 @@
-/**
- * Created by hhu on 2016/5/9.
- */
+const mongoose = require('mongoose');
 
-var _Symptom = new global.mongoose.Schema({
+module.exports = mongoose.model(
+    'symptom',
+    mongoose.Schema({
 
         name: String,
-        desc: {type : String, select: false},
+        desc: { type: String, select: false },
         //created: {type : Date, default: Date.now},
         //updated: {type : Date, default: Date.now},
-        apply: {type : Boolean, default: true, select: false}
-    });
-
-module.exports =  mongoose.model('symptom',_Symptom);
+        apply: { type: Boolean, default: true, select: false }
+    })
+);

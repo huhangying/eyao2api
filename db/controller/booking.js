@@ -1,9 +1,7 @@
-/**
- * Created by hhu on 2016/5/21.
- */
 
 var Booking = require('../model/booking.js');
 var Schedule = require('../model/schedule.js');
+const moment = require('moment');
 
 module.exports = {
 
@@ -114,8 +112,8 @@ module.exports = {
 
         if (req.params && req.params.did) {
 
-            // var today = global.moment().startOf('day').format();
-            // var tomorrow = global.moment(today).add(1, 'days').format();
+            // var today = moment().startOf('day').format();
+            // var tomorrow = moment(today).add(1, 'days').format();
             var today = moment().format('YYYY-MM-DD');
             // Booking.find({ doctor: req.params.did })
             Booking.find({doctor: req.params.did, status: 1 }) //, date: {$gte: today, $lt: tomorrow}

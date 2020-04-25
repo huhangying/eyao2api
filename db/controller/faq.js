@@ -1,6 +1,6 @@
 
 
-var Faq = require('../model/faq.js');
+const Faq = require('../model/faq.js');
 
 module.exports = {
 

@@ -3,8 +3,6 @@ const cors = require('cors');
 const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-
-// 公用库
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://192.168.87.250/eyao', {
   useNewUrlParser: true,
@@ -12,10 +10,9 @@ mongoose.connect('mongodb://192.168.87.250/eyao', {
   useFindAndModify: false,
   useCreateIndex: true
 });
+
 global.Status = require('./util/status.js');
 global.urlencodedParser = bodyParser.urlencoded({ extended: false })
-
-const routes = require('./routes/index');
 
 const app = express();
 
@@ -41,12 +38,13 @@ app.use(urlencodedParser);
 
 app.use(express.static(path.join(path.resolve(), 'public')));
 
+const routes = require('./routes/index');
 app.use('/', routes);
 
 // catch 404 and forward to error handler
-// app.use('*', (req, res) => {
-//   res.sendStatus(405);
-// });
+app.use('*', (req, res) => {
+  res.sendStatus(405);
+});
 
 app.listen(3000, () => {
   console.log('Server running at 3000 port.');

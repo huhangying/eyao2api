@@ -27,7 +27,7 @@ module.exports = {
     // middleware
     verifyToken: (req, res, next) => {
         if (req.url.indexOf('login') > 0) {
-            return next(); // login is only exception
+            return next(); // login is the only exception
         }
 
         const authHeader = req.headers ? req.headers.authorization : null;
@@ -40,10 +40,10 @@ module.exports = {
                         // return res.status(403).json(err);
                         return res.sendStatus(403);
                     }
-                    if (!data.hid) {
+                    if (!data.hid || !data.id) {
                         return res.sendStatus(401);
                     }
-                    req.hid = data.hid;
+                    req.token = data;
                     next();
                 });
             } else {

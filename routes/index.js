@@ -9,7 +9,7 @@ router.use(util.verifyToken);
 
 /* GET home page. */
 router.route('/').get((req, res) => {
-    res.render('index', { hid: req.hid });
+    res.render('index', { data: req.token });
 });
 
 //---------------- 用户注册

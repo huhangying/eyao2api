@@ -46,12 +46,10 @@ app.use(express.static(path.join(path.resolve(), 'public')));
 app.use('/', routes);
 
 // catch 404 and forward to error handler
-app.use((req, res) => {
-  res.sendStatus(404);
-});
+// app.use('*', (req, res) => {
+//   res.sendStatus(405);
+// });
 
 app.listen(3000, () => {
   console.log('Server running at 3000 port.');
 });
-
-module.exports = app;

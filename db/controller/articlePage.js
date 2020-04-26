@@ -1,3 +1,6 @@
+/**
+ * Created by harry on 16/11/20.
+ */
 
 var ArticlePage = require('../model/articlePage');
 const moment = require('moment');
@@ -106,7 +109,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var item = req.body;
-        if (!item) return res.sendStatus(400);
 
         // doctor
         if (!item.doctor) {
@@ -153,7 +155,6 @@ module.exports = {
 
             // 获取数据（json）
             var template = req.body;
-            if (!template) return res.sendStatus(400);
 
             ArticlePage.findById(id, function (err, item) {
                 if (err) {

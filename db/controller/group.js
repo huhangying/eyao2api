@@ -91,7 +91,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var group = req.body;
-        if (!group) return res.sendStatus(400);
 
         // name
         if (!group.name) {
@@ -137,7 +136,6 @@ module.exports = {
 
             // 获取数据（json）,只能更新关系组名
             var group = req.body;
-            if (!group) return res.sendStatus(400);
             var group_name;
 
             Group.findById(id, function (err, item) {

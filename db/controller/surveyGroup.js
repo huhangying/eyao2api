@@ -67,7 +67,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var surveyGroup = req.body;
-        if (!surveyGroup) return res.sendStatus(400);
 
         // name
         if (!surveyGroup.name) {
@@ -100,8 +99,6 @@ module.exports = {
 
             // 获取数据（json）
             var surveyGroup = req.body;
-            if (!surveyGroup) return res.sendStatus(400);
-
 
             SurveyGroup.findById(id, function (err, item) {
                 if (err) {

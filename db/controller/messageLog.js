@@ -86,7 +86,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var item = req.body;
-        if (!item) return res.sendStatus(400);
 
         // doctor
         if (!item.doctor) {
@@ -130,8 +129,6 @@ module.exports = {
 
             // 获取数据（json）
             var log = req.body;
-            if (!log) return res.sendStatus(400);
-
 
             MessageLog.findById(id, function (err, item) {
                 if (err) {

@@ -133,8 +133,6 @@ var self = module.exports = {
             var id = req.params.id;
             // 获取request数据（json）
             var disease = req.body;
-            if (!disease) return res.sendStatus(400);
-
 
             Disease.findById(id)
                 .populate('symptom')

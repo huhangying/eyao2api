@@ -107,7 +107,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var item = req.body;
-        if (!item) return res.sendStatus(400);
 
         // booking
         if (!item.booking) {
@@ -146,7 +145,6 @@ module.exports = {
 
             // 获取数据（json）
             var prescription = req.body;
-            if (!prescription) return res.sendStatus(400);
 
             Prescription.findById(id, function (err, item) {
                 if (err) {

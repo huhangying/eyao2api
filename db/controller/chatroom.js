@@ -198,7 +198,6 @@ module.exports = {
 
         // 获取chatroom请求数据（json）
         var chatroom = req.body;
-        if (!chatroom) return res.sendStatus(400);
 
         // name
         if (!chatroom.name) {
@@ -240,7 +239,6 @@ module.exports = {
 
             // 获取chatroom数据（json）,只能更新聊天室名
             var chatroom = req.body;
-            if (!chatroom) return res.sendStatus(400);
 
             Chatroom.findById(id, function (err, item) {
                 if (err) {

@@ -176,7 +176,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var booking = req.body;
-        if (!booking) return res.sendStatus(400);
 
         // doctor, user, schedule
         if (!booking.doctor) {
@@ -223,7 +222,6 @@ module.exports = {
 
             // 获取数据（json）,只能更新status and score
             var booking = req.body;
-            if (!booking) return res.sendStatus(400);
 
             Booking.findById(id)
                 .exec( function (err, item) {

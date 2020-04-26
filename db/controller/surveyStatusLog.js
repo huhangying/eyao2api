@@ -44,7 +44,6 @@ module.exports = {
     Add: function (req, res) {
 
         var item = req.body;
-        if (!item) return res.sendStatus(400);
 
         // key
         if (!item.key) {
@@ -75,8 +74,6 @@ module.exports = {
             var id = req.params.id;
             // 获取user数据（json）
             var _surveyStatusLog = req.body;
-            if (!_surveyStatusLog) return res.sendStatus(400);
-
 
             SurveyStatusLog.findById(id, function (err, item) {
                 if (err) {

@@ -8,8 +8,6 @@ module.exports = {
     SendMsg: function (req, res) {
 
         var chat = req.body;
-        if (!chat) return res.sendStatus(400);
-
 
         // check input(chatroom, direction, type, data)
         if ((!chat.user || !chat.doctor) && (!chat.chatroom) || !chat.data) {
@@ -150,7 +148,6 @@ module.exports = {
     ReceiveMsg: function (req, res) {
 
         var chat = req.body;
-        if (!chat) return res.sendStatus(400);
 
         // check input(chatroom, direction)
         if (!chat.chatroom) {
@@ -263,7 +260,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var chat = req.body;
-        if (!chat) return res.sendStatus(400);
 
         // check input(chatroom, direction, type, data)
         if (!chat.chatroom || !chat.data) {
@@ -291,7 +287,6 @@ module.exports = {
             var id = req.params.id;
 
             var chat = req.body;
-            if (!chat) return res.sendStatus(400);
 
             Chat.findById(id, function (err, item) {
                 if (err) {

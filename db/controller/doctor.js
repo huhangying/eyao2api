@@ -251,7 +251,6 @@ module.exports = {
         if (req.params && req.params.did) { // params.id is doctor's user ID
             // 获取user数据（json）
             var doctor = req.body;
-            if (!doctor) return res.sendStatus(400);
 
             Doctor.findOne({ user_id: req.params.did, apply: true }, function (err, item) {
                 if (err) {
@@ -288,7 +287,6 @@ module.exports = {
 
             // 获取doctor数据（json）
             var doctor = req.body;
-            if (!doctor) return res.sendStatus(400);
 
             // 用户参数验证
 
@@ -383,7 +381,6 @@ module.exports = {
             var uid = req.params.id;
             // 获取user数据（json）
             var doctor = req.body;
-            if (!doctor) return res.sendStatus(400);
 
             Doctor.findOne({ user_id: uid }, function (err, item) {
                 if (err) {

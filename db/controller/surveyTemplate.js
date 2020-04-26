@@ -119,7 +119,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var template = req.body;
-        if (!template) return res.sendStatus(400);
 
         // name
         if (!template.name) {
@@ -164,7 +163,6 @@ module.exports = {
 
             // 获取数据（json）
             var template = req.body;
-            if (!template) return res.sendStatus(400);
 
             SurveyTemplate.findById(id, function (err, item) {
                 if (err) {

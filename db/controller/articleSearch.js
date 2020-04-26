@@ -68,7 +68,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var item = req.body;
-        if (!item) return res.sendStatus(400);
 
         // name
         if (!item.name) {
@@ -110,7 +109,6 @@ module.exports = {
 
             // 获取数据（json）
             var search = req.body;
-            if (!search) return res.sendStatus(400);
 
             ArticleSearch.findById(id, function (err, item) {
                 if (err) {

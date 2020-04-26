@@ -69,7 +69,6 @@ module.exports = {
 
     // 获取hospital请求数据（json）
     var hospital = req.body;
-    if (!hospital) return res.sendStatus(400);
 
     // name
     if (!hospital.name) {
@@ -111,8 +110,6 @@ module.exports = {
       var id = req.params.id;
       // 获取hospital数据（json）
       var hospital = req.body;
-      if (!hospital) return res.sendStatus(400);
-
 
       Hospital.findById(id, function (err, item) {
         if (err) {

@@ -135,7 +135,6 @@ module.exports = {
 
             // 获取user数据（json）
             var user = req.body;
-            if (!user) return res.sendStatus(400);
 
             // 用户参数验证
 
@@ -230,7 +229,6 @@ module.exports = {
 
             // 获取user数据（json）
             var user = req.body;
-            if (!user) return res.sendStatus(400);
 
             User.findOne({link_id: linkId}, function (err, item) {
                 if (err) {

@@ -50,7 +50,6 @@ module.exports = {
 
     // 获取department请求数据（json）
     var department = req.body;
-    if (!department) return res.sendStatus(400);
 
     // name
     if (!department.name) {
@@ -96,8 +95,6 @@ module.exports = {
       var id = req.params.id;
       // 获取user数据（json）
       var department = req.body;
-      if (!department) return res.sendStatus(400);
-
 
       Department.findById(id, function (err, item) {
         if (err) {

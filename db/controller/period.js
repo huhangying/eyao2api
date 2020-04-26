@@ -47,7 +47,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var period = req.body;
-        if (!period) return res.sendStatus(400);
 
         // name
         if (!period.name) {
@@ -81,8 +80,6 @@ module.exports = {
 
             // 获取数据（json）,只能更新关系组名
             var period = req.body;
-            if (!period) return res.sendStatus(400);
-
 
             Period.findById(id, function (err, item) {
                 if (err) {

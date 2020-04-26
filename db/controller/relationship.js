@@ -184,7 +184,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var relationship = req.body;
-        if (!relationship) return res.sendStatus(400);
 
         // check doctor, user
         if (!relationship.doctor) {
@@ -242,7 +241,6 @@ module.exports = {
 
             // 获取数据（json）,只能更新关系组名
             var relationship = req.body;
-            if (!relationship) return res.sendStatus(400);
 
             Relationship.findById(id, function (err, item) {
                 if (err) {

@@ -63,7 +63,6 @@ module.exports = {
     Add: function (req, res) {
 
         var _const = req.body;
-        if (!_const) return res.sendStatus(400);
 
         // name
         if (!_const.name) {
@@ -110,8 +109,6 @@ module.exports = {
             var id = req.params.id;
             // 获取user数据（json）
             var _const = req.body;
-            if (!_const) return res.sendStatus(400);
-
 
             Const.findById(id, function (err, item) {
                 if (err) {

@@ -43,7 +43,6 @@ module.exports = {
     Add: function (req, res) {
 
         var _faq = req.body;
-        if (!_faq) return res.sendStatus(400);
 
         // question
         if (!_faq.question) {
@@ -74,8 +73,6 @@ module.exports = {
             var id = req.params.id;
             // 获取user数据（json）
             var _faq = req.body;
-            if (!_faq) return res.sendStatus(400);
-
 
             Faq.findById(id, function (err, item) {
                 if (err) {

@@ -107,7 +107,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var item = req.body;
-        if (!item) return res.sendStatus(400);
 
         // name
         if (!item.name) {
@@ -152,7 +151,6 @@ module.exports = {
 
             // 获取数据（json）
             var template = req.body;
-            if (!template) return res.sendStatus(400);
 
             ArticleTemplate.findById(id, function (err, item) {
                 if (err) {

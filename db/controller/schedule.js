@@ -174,7 +174,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var schedule = req.body;
-        if (!schedule) return res.sendStatus(400);
 
         // doctor, date, period
         if (!schedule.doctor) {
@@ -238,7 +237,6 @@ module.exports = {
 
             // 获取数据（json）
             var schedule = req.body;
-            if (!schedule) return res.sendStatus(400);
 
             Schedule.findById(id)
                 .exec( function (err, item) {

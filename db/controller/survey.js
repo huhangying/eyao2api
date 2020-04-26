@@ -199,7 +199,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var survey = req.body;
-        if (!survey) return res.sendStatus(400);
 
         // doctor
         if (!survey.doctor) {
@@ -262,7 +261,6 @@ module.exports = {
 
             // 获取数据（json）
             var survey = req.body;
-            if (!survey) return res.sendStatus(400);
 
             Survey.findById(id, function (err, item) {
                 if (err) {

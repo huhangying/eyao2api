@@ -126,7 +126,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var item = req.body;
-        if (!item) return res.sendStatus(400);
 
         // doctor
         if (!item.doctor) {
@@ -166,7 +165,6 @@ module.exports = {
 
             // 获取数据（json）
             var diagnose = req.body;
-            if (!diagnose) return res.sendStatus(400);
 
             Diagnose.findOne({_id: req.params.id}, function (err, item) {
                 if (err) {
@@ -265,7 +263,6 @@ module.exports = {
 
             // 获取数据（json）
             var diagnose = req.body;
-            if (!diagnose) return res.sendStatus(400);
 
             Diagnose.findOne({_id: req.params.id}, function (err, item) {
                 if (err) {

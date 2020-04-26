@@ -67,7 +67,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var cat = req.body;
-        if (!cat) return res.sendStatus(400);
 
         // department
         if (!cat.department) {
@@ -103,8 +102,6 @@ module.exports = {
 
             // 获取数据（json）
             var cat = req.body;
-            if (!cat) return res.sendStatus(400);
-
 
             SurveyCat.findById(id, function (err, item) {
                 if (err) {

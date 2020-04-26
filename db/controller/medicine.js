@@ -65,7 +65,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var medicine = req.body;
-        if (!medicine) return res.sendStatus(400);
 
         // name
         if (!medicine.name) {
@@ -113,7 +112,6 @@ module.exports = {
 
             // 获取数据（json）
             var medicine = req.body;
-            if (!medicine) return res.sendStatus(400);
 
             Medicine.findById(id, function (err, item) {
                 if (err) {

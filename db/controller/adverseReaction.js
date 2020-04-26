@@ -69,8 +69,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var ar = req.body;
-        if (!ar) return res.sendStatus(400);
-
         ar.isCommon = ar.isCommon || false;
 
         // department
@@ -105,8 +103,6 @@ module.exports = {
 
             // 获取数据（json）
             var ar = req.body;
-            if (!ar) return res.sendStatus(400);
-
 
             AdverseReaction.findById(id, function (err, item) {
                 if (err) {

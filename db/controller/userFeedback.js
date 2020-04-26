@@ -182,7 +182,6 @@ module.exports = {
 
         // 获取请求数据（json）
         var feedback = req.body;
-        if (!feedback) return res.sendStatus(400);
 
         // doctor, user, schedule
         if (!feedback.doctor) {
@@ -227,7 +226,6 @@ module.exports = {
 
             // 获取数据（json）,只能更新status and score
             var feedback = req.body;
-            if (!feedback) return res.sendStatus(400);
 
             UserFeedback.findById(id)
                 .exec( function (err, item) {

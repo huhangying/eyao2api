@@ -72,7 +72,7 @@ module.exports = {
         if (!cat.department) {
             return Status.returnStatus(res, Status.NO_DEPARTMENT);
         }
-        
+
         // name
         if (!cat.name) {
             return Status.returnStatus(res, Status.NO_NAME);
@@ -81,7 +81,7 @@ module.exports = {
 
         // 不存在，创建
         SurveyCat.create({
-
+            hid: cat.hid,
             department: cat.department,
             name: cat.name,
             desc: cat.desc,

@@ -220,7 +220,7 @@ module.exports = {
 
                 // 不存在，创建
                 Relationship.create({
-
+                    hid: relationship.hid,
                     user: relationship.user,
                     doctor: relationship.doctor,
                     group: relationship.group

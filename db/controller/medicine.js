@@ -88,7 +88,7 @@ module.exports = {
 
         // 不存在，创建
         Medicine.create({
-
+            hid: medicine.hid,
             name: medicine.name,
             desc: medicine.desc,
             unit: medicine.unit,

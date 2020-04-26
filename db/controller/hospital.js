@@ -87,7 +87,6 @@ module.exports = {
         }
 
         Hospital.create({
-
           hid: hospital.hid,
           name: hospital.name,
           desc: hospital.desc,

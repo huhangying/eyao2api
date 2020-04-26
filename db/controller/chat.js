@@ -29,6 +29,7 @@ module.exports = {
                     //console.log(JSON.stringify(chatroom));
 
                     Chat.create({
+                        hid: chat.hid,
                             chatroom: chatroom._id,
                             direction: chat.direction,
                             type: chat.type,
@@ -50,6 +51,7 @@ module.exports = {
                                             return res.send(raw);
                                         }
                                         Chat.create({
+                                            hid: chat.hid,
                                                 chatroom: raw.chatroom,
                                                 direction: 1,
                                                 type: raw.type,
@@ -267,7 +269,7 @@ module.exports = {
         }
 
         Chat.create({
-
+            hid: chat.hid,
             chatroom: chat.chatroom,
             direction: chat.direction,
             type: chat.type,

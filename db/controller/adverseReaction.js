@@ -81,9 +81,9 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_NAME);
         }
 
-
         // 不存在，创建
         AdverseReaction.create({
+            hid: ar.hid,
             isCommon: ar.isCommon,
             department: ar.department,
             name: ar.name
@@ -91,7 +91,6 @@ module.exports = {
             if (err) {
                 return Status.returnStatus(res, Status.ERROR, err);
             }
-
             return res.send(raw);
         });
 

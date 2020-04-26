@@ -14,73 +14,74 @@ module.exports = {
         if (req.params && req.params.id) { // params.id is page ID
             var promises = [];
 
-            User.findOne({_id: req.params.id}, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-                var log = [];
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-                log.push('User ' + item.name + ' removed.');
-                //
-                item.remove(function(err, raw){
+            User.findOne({ _id: req.params.id },
+                function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
+                    var log = [];
 
-                    // Delete related data
-                    promises.push(UserFeedback.remove({user: req.params.id}, function (err) {
-                        if (err) return console.error(err);
-                        // removed!
-                        log.push('UserFeedback removed.');
-                    }));
-                    promises.push(Relationship.remove({user: req.params.id}, function (err) {
-                        if (err) return console.error(err);
-                        // removed!
-                        log.push('Relationship removed.');
+                    if (!item) {
+                        return Status.returnStatus(res, Status.NULL);
+                    }
+                    log.push('User ' + item.name + ' removed.');
+                    //
+                    item.remove(function (err, raw) {
+                        if (err) {
+                            return Status.returnStatus(res, Status.ERROR, err);
+                        }
 
-                    }));
-                    promises.push(Diagnose.remove({user: req.params.id}, function (err) {
-                        if (err) return console.error(err);
-                        // removed!
-                        log.push('Diagnose removed.');
-                    }));
-                    promises.push(Booking.remove({user: req.params.id}, function (err) {
-                        if (err) return console.error(err);
-                        // removed!
-                        log.push('Booking removed.');
-                    }));
+                        // Delete related data
+                        promises.push(UserFeedback.remove({ user: req.params.id }, function (err) {
+                            if (err) return console.error(err);
+                            // removed!
+                            log.push('UserFeedback removed.');
+                        }));
+                        promises.push(Relationship.remove({ user: req.params.id }, function (err) {
+                            if (err) return console.error(err);
+                            // removed!
+                            log.push('Relationship removed.');
 
-                    //delete chatroom and related chats
-                    promises.push(Chatroom.find({user: req.params.id}).exec(function (err, items) {
-                        if (items && items.length > 0){
-                            for (var i=0; i<items.length; i++) {
-                                var _chatroom = items[i]._id || '';
+                        }));
+                        promises.push(Diagnose.remove({ user: req.params.id }, function (err) {
+                            if (err) return console.error(err);
+                            // removed!
+                            log.push('Diagnose removed.');
+                        }));
+                        promises.push(Booking.remove({ user: req.params.id }, function (err) {
+                            if (err) return console.error(err);
+                            // removed!
+                            log.push('Booking removed.');
+                        }));
 
-                                Chat.remove({chatroom: items[i]._id}, function (err) {
-                                    if (err) return console.error(err);
-                                    // removed!
-                                    log.push('Chat ' + _chatroom + ' removed.');
-                                });
-                                items[i].remove();
-                                log.push('Chatroom ' + _chatroom + ' removed.');
+                        //delete chatroom and related chats
+                        promises.push(Chatroom.find({ user: req.params.id }).exec(function (err, items) {
+                            if (items && items.length > 0) {
+                                for (var i = 0; i < items.length; i++) {
+                                    var _chatroom = items[i]._id || '';
+
+                                    Chat.remove({ chatroom: items[i]._id }, function (err) {
+                                        if (err) return console.error(err);
+                                        // removed!
+                                        log.push('Chat ' + _chatroom + ' removed.');
+                                    });
+                                    items[i].remove();
+                                    log.push('Chatroom ' + _chatroom + ' removed.');
+                                }
                             }
-                        }
-                    }));
+                        }));
 
-                    Q.all(promises).then(
-                        function(rsp) {
-                            res.json({log: log});
-                        },
-                        function(err) {
-                            res.json({error: true, log: log});
-                        }
-                    )
+                        Q.all(promises).then(
+                            function (rsp) {
+                                res.json({ log: log });
+                            },
+                            function (err) {
+                                res.json({ error: true, log: log });
+                            }
+                        )
+                    });
+
                 });
-
-            });
         }
     },
 

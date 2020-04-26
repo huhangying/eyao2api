@@ -199,7 +199,7 @@ module.exports = {
 
         // 不存在，创建
         UserFeedback.create({
-
+            hid: feedback.hid,
             doctor: feedback.doctor,
             user: feedback.user,
             type: feedback.type,

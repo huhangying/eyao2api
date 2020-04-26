@@ -226,14 +226,14 @@ module.exports = {
         // if (!survey.group) {
         //     return Status.returnStatus(res, Status.NO_GROUP);
         // }
-        
+
         // questions ? allow to create a survey without questions?
-        
+
 
 
         // 不存在，创建
         Survey.create({
-
+            hid: survey.hid,
             doctor: survey.doctor,
             user: survey.user,
             surveyTemplate: survey.surveyTemplate,
@@ -293,7 +293,7 @@ module.exports = {
                     item.availableBy = survey.availableBy;
                 if (survey.finished || survey.finished === false)
                     item.finished = survey.finished;
-                
+
                 //console.log(JSON.stringify(item));
 
                 //

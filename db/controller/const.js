@@ -83,7 +83,7 @@ module.exports = {
                 }
 
                 Const.create({
-
+                    hid: _const.hid,
                     name: _const.name,
                     desc: _const.desc,
                     type: _const.type,

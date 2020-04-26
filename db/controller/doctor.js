@@ -336,8 +336,8 @@ module.exports = {
                     }
 
                     Doctor.create({
-                        user_id: uid,
                         hid: doctor.hid,
+                        user_id: uid,
                         password: util.encrypt(doctor.password),
                         role: doctor.role,
                         name: doctor.name,

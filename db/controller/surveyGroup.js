@@ -66,10 +66,10 @@ module.exports = {
     Add: function (req, res) {
 
         // 获取请求数据（json）
-        var surveyGroup = req.body;
+        var item = req.body;
 
         // name
-        if (!surveyGroup.name) {
+        if (!item.name) {
             return Status.returnStatus(res, Status.NO_NAME);
         }
 
@@ -77,12 +77,12 @@ module.exports = {
 
         // 不存在，创建
         SurveyGroup.create({
-
-            department: surveyGroup.department,
-            type: surveyGroup.type,
-            name: surveyGroup.name,
-            desc: surveyGroup.desc,
-            order: surveyGroup.order
+            hid: item.hid,
+            department: item.department,
+            type: item.type,
+            name: item.name,
+            desc: item.desc,
+            order: item.order
         }, function (err, raw) {
             if (err) {
                 return Status.returnStatus(res, Status.ERROR, err);

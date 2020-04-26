@@ -42,21 +42,22 @@ module.exports = {
     // 创建
     Add: function (req, res) {
 
-        var _faq = req.body;
+        var item = req.body;
 
         // question
-        if (!_faq.question) {
+        if (!item.question) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
-        if (!_faq.answer) {
+        if (!item.answer) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
 
 
         Faq.create({
-            question: _faq.question,
-            answer: _faq.answer,
-            order: _faq.order
+            hid: item.hid,
+            question: item.question,
+            answer: item.answer,
+            order: item.order
         }, function (err, raw) {
             if (err) {
                 return Status.returnStatus(res, Status.ERROR, err);

@@ -104,7 +104,7 @@ module.exports = {
 
         // 不存在，创建
         MessageLog.create({
-
+            hid: item.hid,
             doctor: item.doctor,
             user: item.user,
             type: item.type,

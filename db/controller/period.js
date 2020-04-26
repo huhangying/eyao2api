@@ -60,7 +60,7 @@ module.exports = {
 
         // 不存在，创建
         Period.create({
-
+            hid: period.hid,
             name: period.name,
             from: period.from,
             to: period.to

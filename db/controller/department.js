@@ -67,7 +67,6 @@ module.exports = {
         }
 
         Department.create({
-
           hid: department.hid,
           name: department.name,
           desc: department.desc,

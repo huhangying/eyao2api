@@ -123,7 +123,7 @@ module.exports = {
 
         // 不存在，创建
         Prescription.create({
-
+            hid: item.hid,
             booking: item.booking,
             doctor: item.doctor,
             user: item.user,
@@ -182,7 +182,7 @@ module.exports = {
 
 
     DeleteById: function (req, res) {
-        if (req.params && req.params.id) { 
+        if (req.params && req.params.id) {
 
             Prescription.findOne({_id: req.params.id}, function (err, item) {
                 if (err) {

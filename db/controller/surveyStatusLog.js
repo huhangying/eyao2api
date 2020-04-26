@@ -55,6 +55,7 @@ module.exports = {
 
 
         SurveyStatusLog.create({
+            hid: item.hid,
             key: item.key,
             type: item.type,
             status: item.status || 0

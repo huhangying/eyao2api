@@ -86,7 +86,7 @@ module.exports = {
 
         // 不存在，创建
         ArticleSearch.create({
-
+            hid: item.hid,
             name: item.name,
             cat: item.cat,
             title: item.title,

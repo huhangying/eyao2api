@@ -113,40 +113,40 @@ module.exports = {
                 });
         }
     },
-    
+
     // 创建关系组
     Add: function (req, res) {
 
         // 获取请求数据（json）
-        var template = req.body;
+        var item = req.body;
 
         // name
-        if (!template.name) {
+        if (!item.name) {
             return Status.returnStatus(res, Status.NO_NAME);
         }
         // department
-        if (!template.department) {
+        if (!item.department) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
         // type
-        if (!template.type) {
+        if (!item.type) {
             return Status.returnStatus(res, Status.NO_TYPE);
         }
-        
+
         // questions ? allow to create a survey without questions?
-        
+
 
 
         // 不存在，创建
         SurveyTemplate.create({
-
-            name: template.name,
-            department: template.department,
-            type: template.type,
+            hid: item.hid,
+            name: item.name,
+            department: item.department,
+            type: item.type,
             //group: template.group,
-            questions: template.questions,
-            availableDays: template.availableDays,
-            order: template.order
+            questions: item.questions,
+            availableDays: item.availableDays,
+            order: item.order
         }, function (err, raw) {
             if (err) {
                 return Status.returnStatus(res, Status.ERROR, err);
@@ -189,7 +189,7 @@ module.exports = {
                     item.availableDays = template.availableDays;
                 if (template.apply || template.apply === false)
                     item.apply = template.apply;
-                
+
                 //console.log(JSON.stringify(item));
 
                 //

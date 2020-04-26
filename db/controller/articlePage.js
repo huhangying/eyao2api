@@ -132,7 +132,7 @@ module.exports = {
 
         // 不存在，创建
         ArticlePage.create({
-
+            hid: item.hid,
             doctor: item.doctor,
             name: item.name,
             cat: item.cat,

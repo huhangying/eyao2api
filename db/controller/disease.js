@@ -104,16 +104,22 @@ var self = module.exports = {
         item.symptoms = [];
         item.symptoms.length = 0;
 
-        console.log(JSON.stringify(item));
+        // console.log(JSON.stringify(item));
 
         self.CheckSymptomsForUpdate(item, disease.symptoms)
             .then(function (_item){
                 //console.log(JSON.stringify(_item));
 
                 //_item.save();
-                Disease.create(
-                    {symptoms: _item.symptoms, name: _item.name, desc: _item.desc, order: _item.order,
-                        department: _item.department, apply: _item.apply},
+                Disease.create({
+                    hid: _item.hid,
+                    symptoms: _item.symptoms,
+                    name: _item.name,
+                    desc: _item.desc,
+                    order: _item.order,
+                    department: _item.department,
+                    apply: _item.apply
+                },
                     function (err, raw) {
                         console.log(JSON.stringify(raw));
                         if (err) {
@@ -270,7 +276,7 @@ var self = module.exports = {
 
             // no record, create one
             if (!sym) {
-                sym = self.CreateSymptom(sym_name);
+                sym = self.CreateSymptom(sym_name, sym.hid);
                 //console.log('create: ' + JSON.stringify(sym));
             }
 
@@ -280,10 +286,13 @@ var self = module.exports = {
         return deferred.promise;
     },
 
-    CreateSymptom: function (symptom_name){
+    CreateSymptom: function (symptom_name, hid){
         var deferred = Q.defer();
 
-        Symptom.create({name: symptom_name}, function(err, symptom){
+        Symptom.create({
+            hid: hid,
+            name: symptom_name
+        }, function(err, symptom){
             if (err){
                 deferred.reject(err);
             }

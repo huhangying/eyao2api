@@ -78,10 +78,9 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_NAME);
         }
 
-
         // 不存在，创建
         ArticleCat.create({
-
+            hid: cat.hid,
             department: cat.department,
             name: cat.name,
             desc: cat.desc

@@ -87,7 +87,7 @@ module.exports = {
 
         // 不存在，创建
         LabResult.create({
-
+            hid: labResult.hid,
             doctor: labResult.doctor,
             user: labResult.user,
             name: labResult.name,

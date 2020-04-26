@@ -167,7 +167,9 @@ module.exports = {
                     }
 
                     if (!_user) {
-                        User.create({link_id: linkId,
+                        User.create({
+                            hid: user.hid,
+                            link_id: linkId,
                                 cell: user.cell,
                                 name: user.name,
                                 password: user.password,
@@ -192,12 +194,12 @@ module.exports = {
                         _user.icon = user.icon;
                         _user.birthdate = user.birthdate;
                         _user.apply = true;
-                        
+
                         _user.save();
 
                         return res.json(_user);
                     }
-                    
+
 
                 });
         }
@@ -210,7 +212,9 @@ module.exports = {
 
             if (!linkId) return Status.returnStatus(res, Status.NO_ID);
 
-            User.create({link_id: linkId,
+            User.create({
+                hid: linkId.hid,
+                link_id: linkId,
                     apply: false},
                 function (err, raw) {
                     if (err) {

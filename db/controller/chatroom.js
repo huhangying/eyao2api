@@ -218,7 +218,7 @@ module.exports = {
 
                 // 不存在，创建
                 Chatroom.create({
-
+                    hid: chatroom.hid,
                     name: chatroom.name,
                     doctor: chatroom.doctor,
                     user: chatroom.user
@@ -345,6 +345,7 @@ module.exports = {
 
                         // create
                         Chatroom.create({
+                            hid: chatroom.hid,
                                 name: name,
                                 doctor: doctorid,
                                 user: userid,
@@ -396,6 +397,7 @@ module.exports = {
 
                         // create
                         Chatroom.create({
+                            hid: chatroom.hid,
                                 name: name,
                                 doctor: doctorid,
                                 user: userid,

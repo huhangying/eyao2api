@@ -137,10 +137,9 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_USER);
         }
 
-
         // 不存在，创建
         Diagnose.create({
-
+            hid: item.hid,
             doctor: item.doctor,
             user: item.user,
             booking: item.booking,

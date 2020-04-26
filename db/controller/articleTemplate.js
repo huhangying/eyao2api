@@ -41,7 +41,7 @@ module.exports = {
                 });
         }
     },
-    
+
     //todo: move to articlePage
     RenderById: function(req, res) {
         if (req.params && req.params.id) {
@@ -55,7 +55,7 @@ module.exports = {
                     if (!item) {
                         return Status.returnStatus(res, Status.NULL);
                     }
-                    
+
                     res.set('Content-Type', 'text/html');
                     res.render('article', { content: item.content, name: item.name, title: item.title });
                 });
@@ -127,7 +127,7 @@ module.exports = {
 
         // 不存在，创建
         ArticleTemplate.create({
-
+            hid: item.hid,
             name: item.name,
             department: item.department,
             cat: item.cat,

@@ -110,7 +110,6 @@ module.exports = {
 
                 // 不存在，创建
                 Group.create({
-
                   hid: group.hid,
                     name: group.name,
                     doctor: group.doctor,

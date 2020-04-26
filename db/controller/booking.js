@@ -192,7 +192,7 @@ module.exports = {
 
         // 不存在，创建
         Booking.create({
-
+            hid: booking.hid,
             doctor: booking.doctor,
             user: booking.user,
             schedule: booking.schedule,

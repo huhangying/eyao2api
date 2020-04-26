@@ -56,11 +56,6 @@ module.exports = {
       return Status.returnStatus(res, Status.NO_NAME);
     }
 
-    // hid
-    if (!department.hid) {
-      return Status.returnStatus(res, Status.NO_HID);
-    }
-
     Department.find({ name: department.name }) // check if existed
       .exec(function (err, items) {
         if (err) {
@@ -105,8 +100,6 @@ module.exports = {
           return Status.returnStatus(res, Status.NULL);
         }
 
-        if (department.hid)
-          item.hid = department.hid;
         if (department.name)
           item.name = department.name;
         if (department.desc)
@@ -117,8 +110,6 @@ module.exports = {
           item.assetFolder = department.assetFolder;
         if (department.apply || department.apply === false)
           item.apply = department.apply;
-
-        // console.log(JSON.stringify(item));
 
         //
         item.save(function (err, raw) {
@@ -145,8 +136,6 @@ module.exports = {
           return Status.returnStatus(res, Status.NULL);
         }
 
-        //console.log(JSON.stringify(item))
-        //
         item.remove(function (err, raw) {
           if (err) {
             return Status.returnStatus(res, Status.ERROR, err);

@@ -7,7 +7,7 @@ module.exports = {
 
     GetAll: function (req, res) {
 
-        ArticleCat.find()
+        ArticleCat.find({hid: req.token.hid})
           .populate('department')
             .exec(function (err, items) {
                 if (err) {
@@ -16,12 +16,6 @@ module.exports = {
 
                 if (!items || items.length < 1) {
                     return Status.returnStatus(res, Status.NULL);
-                }
-
-                if (req.query.hid) {
-                    items = items.filter(function(item) {
-                        return item.department.hid === req.query.hid;
-                    });
                 }
 
                 res.json(items);

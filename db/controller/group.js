@@ -7,10 +7,8 @@ var Relationship = require('../model/relationship.js');
 module.exports = {
 
     GetAll: function (req, res) {
-      var query = {};
-      if (req.query.hid) {
-        query.hid = req.query.hid;
-      }
+      var query = {hid: req.token.hid};
+
         Group.find(query)
             .exec(function (err, items) {
                 if (err) {
@@ -26,10 +24,8 @@ module.exports = {
     },
 
     GetAllPopulated: function (req, res) {
-      var query = {};
-      if (req.query.hid) {
-        query.hid = req.query.hid;
-      }
+      var query = {hid: req.token.hid};
+
         Group.find(query)
             .populate('doctor')
             .exec(function (err, items) {
@@ -148,9 +144,6 @@ module.exports = {
                 }
                 group_name = item.name; // 原id的group name
 
-              if (group.hid) {
-                item.hid = group.hid;
-              }
                 if (group.doctor)
                     item.doctor = group.doctor;
                 if (group.name){

@@ -7,6 +7,7 @@ var Hospital = require('../model/hospital.js');
 module.exports = {
 
 
+  // ONLY one don't need HID
   GetAll: function (req, res) {
 
     Hospital.find()
@@ -75,7 +76,6 @@ module.exports = {
       return Status.returnStatus(res, Status.NO_NAME);
     }
 
-
     Hospital.find({ hid: hospital.hid }) // check if existed
       .exec(function (err, items) {
         if (err) {
@@ -120,8 +120,6 @@ module.exports = {
           return Status.returnStatus(res, Status.NULL);
         }
 
-        if (hospital.hid)
-          item.hid = hospital.hid;
         if (hospital.name)
           item.name = hospital.name;
         if (hospital.desc)

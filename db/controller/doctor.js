@@ -13,10 +13,7 @@ module.exports = {
     GetAllDoctors: function (req, res) {
         var number = 999; // set max return numbers
 
-        var query = { role: { $lt: 2 }, apply: true };
-        if (req.query.hid) {
-            query.hid = req.query.hid;
-        }
+        var query = { role: { $lt: 2 }, apply: true, hid: req.token.hid };
         if (req.params && req.params.number) {
             number = +req.params.number;
         }
@@ -88,10 +85,12 @@ module.exports = {
 
         if (req.params && req.params.user) {
             Relationship.getFocusDoctors(req.params.user).then(function (doctors) {
-                var query = { _id: { "$nin": doctors }, role: { $lt: 2 }, apply: true };
-                if (req.query.hid) {
-                    query.hid = req.query.hid;
-                }
+                var query = {
+                    _id: { "$nin": doctors },
+                    role: { $lt: 2 },
+                    apply: true,
+                    hid: req.token.hid
+                };
                 Doctor.find(query)
                     .sort({ order: 1, updated: -1 })
                     //.limit(number)
@@ -124,10 +123,11 @@ module.exports = {
         var skip = +req.params.skip;
         //console.log('number: ' + number + ', skip: ' + skip);
 
-        var query = { role: { $lt: 2 }, apply: true };
-        if (req.query.hid) {
-            query.hid = req.query.hid;
-        }
+        var query = {
+            role: { $lt: 2 },
+            apply: true,
+            hid: req.token.hid
+        };
         Doctor.find(query)
             .sort({ order: 1, updated: -1 })
             .skip(skip)
@@ -169,10 +169,11 @@ module.exports = {
     GetByCell: function (req, res) {
 
         if (req.params && req.params.cell) {
-            var query = { cell: req.params.cell, apply: true };
-            if (req.query.hid) {
-                query.hid = req.query.hid;
-            }
+            var query = {
+                cell: req.params.cell,
+                apply: true,
+                hid: req.token.hid
+            };
             Doctor.findOne(query)
                 .exec(function (err, item) {
                     if (err) {
@@ -390,8 +391,6 @@ module.exports = {
                 if (!item) {
                     return Status.returnStatus(res, Status.NULL);
                 }
-                if (doctor.hid)
-                    item.hid = doctor.hid;
 
                 if (doctor.password)
                     item.password = util.encrypt(doctor.password);
@@ -504,11 +503,11 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_PASSWORD);
         }
 
-        var query = { user_id: login.user_id, hid: hosptial.hid, apply: true };
-        // if (req.query.hid) {
-        //     query.hid = req.query.hid;
-        // }
-
+        var query = {
+            user_id: login.user_id,
+            hid: hosptial.hid,
+            apply: true
+        };
         Doctor.findOne(query,
             { _id: 1, user_id: 1, hid: 1, password: 1, name: 1, icon: 1, title: 1, department: 1, role: 1, token: 1 }, // select fields
             function (err, item) {

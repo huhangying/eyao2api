@@ -5,10 +5,8 @@ module.exports = {
 
 
     GetAll: function (req, res) {
-      var query = {};
-      if (req.query.hid) {
-        query.hid = req.query.hid;
-      }
+      var query = {hid: req.token.hid};
+
         Const.find(query)
             .exec( function (err, items) {
                 if (err) {
@@ -27,10 +25,8 @@ module.exports = {
     GetByName: function (req, res) {
 
         if (req.params && req.params.name) {
-          var query = {name: req.params.name};
-          if (req.query.hid) {
-            query.hid = req.query.hid;
-          }
+          var query = {name: req.params.name, hid: req.token.hid};
+
             Const.findOne(query)
                 .exec(function (err, item) {
                     if (err) {

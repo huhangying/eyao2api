@@ -118,7 +118,7 @@ module.exports = {
         if (department.apply || department.apply === false)
           item.apply = department.apply;
 
-        console.log(JSON.stringify(item));
+        // console.log(JSON.stringify(item));
 
         //
         item.save(function (err, raw) {

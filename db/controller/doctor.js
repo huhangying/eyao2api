@@ -527,9 +527,10 @@ module.exports = {
 
                 item.password = undefined; // remove password!
                 item.token = util.signToken({
-                    hid: 1, // set hid=1 for test 
+                    hid: 1, // set hid=1 for test
                     id: item.id,
-                    user_id: item.user_id
+                    user_id: item.user_id,
+                    role: item.role
                 });
                 return res.json(item);
                 //todo: remove returning _id later
@@ -556,7 +557,7 @@ module.exports = {
         }
     },
 
-    //====================================================== 
+    //======================================================
     // 药师的基本信息: 包括名字,专科名字,title
 
     GetBriefInfo: function (req, res) {

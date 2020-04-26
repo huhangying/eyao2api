@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
   'doctor',
   mongoose.Schema({
-    hid: { type: String },
+    hid: { type: Number },
     token: { type: String }, // token should not store into db
     user_id: { type: String, required: true },
     password: { type: String, required: true },
@@ -24,7 +24,7 @@ module.exports = mongoose.model(
     shortcuts: { type: String }, // 快捷回复, separated by '|'
     // associates: [ // NO USE now, in case one doctor has multiple positions in hospitals.
     //   {
-    //     hid: { type: String },
+    //     hid: Number,
     //     hdid: { type: String }
     //   }
     // ],

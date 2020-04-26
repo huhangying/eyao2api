@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = mongoose.model('faq',
     mongoose.Schema({
+        hid: Number,
         //department: { type: Schema.Types.ObjectId, ref: 'department', required: true },
         question: { type: String, required: true, trim: true },
         answer: { type: String, trim: true },

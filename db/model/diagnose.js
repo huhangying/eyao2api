@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'diagnose',
     mongoose.Schema({
-        hid: { type: String },
+        hid: Number,
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
 

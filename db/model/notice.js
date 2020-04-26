@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'notices',
     mongoose.Schema({
-
+        hid: Number,
         notices: [
             {
                 notice: { type: String, required: true, trim: true },

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'survey',
     mongoose.Schema({
+        hid: Number,
         surveyTemplate: { type: mongoose.Schema.Types.ObjectId, ref: 'survey_template' },
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },

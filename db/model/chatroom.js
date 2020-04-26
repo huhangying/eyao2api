@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'chatroom',
     mongoose.Schema({
-
+        hid: Number,
         name: String, // 聊天室名([user name]|[doctor name])
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },

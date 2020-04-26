@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'survey_template',
     mongoose.Schema({
-        hid: { type: String },
+        hid: Number,
         name: { type: String, required: true, trim: true }, // Survey section name
         department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
         type: { type: Number, required: true, min: 0, max: 6 },

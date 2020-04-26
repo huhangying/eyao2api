@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'booking',
     mongoose.Schema({
-
+        hid: Number,
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true }, // 病患
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true }, // 药师
         schedule: { type: mongoose.Schema.Types.ObjectId, ref: 'schedule', required: true }, // 预约

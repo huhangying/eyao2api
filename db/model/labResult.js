@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'lab_result',
     mongoose.Schema({
-
+        hid: Number,
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
 

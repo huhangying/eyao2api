@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'medicine',
     mongoose.Schema({
-
+        hid: Number,
         name: { type: String, required: true, trim: true },
         desc: { type: String, trim: true },
         unit: { type: String },

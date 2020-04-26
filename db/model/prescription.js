@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'prescription',
     mongoose.Schema({
-
+        hid: Number,
         booking: { type: mongoose.Schema.Types.ObjectId, ref: 'booking', required: true }, // not required for walk-in
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },

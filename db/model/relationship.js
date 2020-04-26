@@ -5,6 +5,7 @@ const Q = require('q');
 const Relationship = mongoose.model(
     'relationship',
     mongoose.Schema({
+        hid: Number,
         group: { type: mongoose.Schema.Types.ObjectId, ref: 'group' },
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' },
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },

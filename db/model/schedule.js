@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
   'schedule',
   mongoose.Schema({
-    hid: { type: String },
+    hid: Number,
     doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true }, // 药师
     period: { type: mongoose.Schema.Types.ObjectId, ref: 'period', required: true },
     date: { type: Date, required: true }, // 日期

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'article_page',
     mongoose.Schema({
-
+        hid: Number,
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },  // from
         // userList: [
         //         {type: String }

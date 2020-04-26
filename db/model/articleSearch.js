@@ -5,7 +5,7 @@ module.exports = mongoose.model(
     'article_search',
     mongoose.Schema({
 
-        hid: { type: String },
+        hid: Number,
         name: { type: String, required: true, trim: true }, // page section name
         cat: { type: String }, // 类别
         title: { type: String, required: true },

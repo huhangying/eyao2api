@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
     'user_feedback',
     mongoose.Schema({
+        hid: Number,
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },      // from
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },  // to
         type: { type: Number, required: true }, // 1: 不良反应反馈; 2: 联合用药

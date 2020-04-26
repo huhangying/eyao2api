@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
   'user',
   mongoose.Schema({
+    hid: Number,
     link_id: String,
     cell: String,
     name: String,
@@ -12,7 +13,7 @@ module.exports = mongoose.model(
     updated: { type: Date, default: Date.now },
     associates: [
       {
-        hid: { type: String },
+        hid: Number,
         huid: { type: String }
       }
     ],

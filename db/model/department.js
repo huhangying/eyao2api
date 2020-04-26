@@ -4,8 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
   'department',
   mongoose.Schema({
-
-    hid: String,
+    hid: Number,
     name: String,
     desc: String,
     order: Number,

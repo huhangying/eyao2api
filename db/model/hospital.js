@@ -4,8 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
   'hospital',
   mongoose.Schema({
-
-    hid: String,
+    hid: Number,
     name: String,
     desc: String,
     host: String,

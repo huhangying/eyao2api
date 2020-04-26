@@ -43,14 +43,25 @@ module.exports = {
                     if (!data.hid || !data.id) {
                         return res.sendStatus(401);
                     }
-                    req.token = data;
+                    // pre validation
+                    if (['PATCH', 'POST'].indexOf(req.method) >= 0) {
+                        // body is must
+                        if (!req.body) {
+                            return res.sendStatus(400);
+                        } else {
+                            req.body.hid = data.hid;
+                        }
+                    } else {
+                        // DELETE and GET 现在不能放入req.params，所以用req.token
+                        req.token = data;
+                    }
                     next();
                 });
             } else {
-                res.sendStatus(401);
+                return res.sendStatus(401);
             }
         } else {
-            res.sendStatus(401);
+            return res.sendStatus(401);
         }
     },
 }

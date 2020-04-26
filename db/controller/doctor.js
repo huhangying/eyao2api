@@ -40,10 +40,7 @@ module.exports = {
     // for CMS
     GetAll: function (req, res) {
         var number = 999; // set max return numbers
-        var query = {};
-        if (req.query.hid) {
-            query.hid = req.query.hid;
-        }
+        var query = { hid: req.token.hid };
         if (req.params && req.params.number) {
             number = +req.params.number;
         }
@@ -536,7 +533,7 @@ module.exports = {
                     hid: 1, // set hid=1 for test 
                     id: item.id,
                     user_id: item.user_id
-                }); 
+                });
                 return res.json(item);
                 //todo: remove returning _id later
             });

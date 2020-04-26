@@ -8,14 +8,10 @@ module.exports = {
 
 
   GetAll: function (req, res) {
-    var query = {};
-    if (req.hid) {
-      query.hid = req.hid;
-    }
 
-    Department.find(query)
-      .sort({order: 1})
-      .exec( function (err, items) {
+    Department.find({ hid: req.token.hid })
+      .sort({ order: 1 })
+      .exec(function (err, items) {
         if (err) {
           return Status.returnStatus(res, Status.ERROR, err);
         }
@@ -33,7 +29,7 @@ module.exports = {
 
     if (req.params && req.params.id) {
 
-      Department.findOne({_id: req.params.id, apply: true})
+      Department.findOne({ _id: req.params.id, apply: true })
         .exec(function (err, item) {
           if (err) {
             return Status.returnStatus(res, Status.ERROR, err);
@@ -66,7 +62,7 @@ module.exports = {
       return Status.returnStatus(res, Status.NO_HID);
     }
 
-    Department.find({name: department.name}) // check if existed
+    Department.find({ name: department.name }) // check if existed
       .exec(function (err, items) {
         if (err) {
           return Status.returnStatus(res, Status.ERROR, err);
@@ -108,7 +104,7 @@ module.exports = {
           return Status.returnStatus(res, Status.ERROR, err);
         }
 
-        if (!item){
+        if (!item) {
           return Status.returnStatus(res, Status.NULL);
         }
 
@@ -139,7 +135,7 @@ module.exports = {
     }
   },
 
-  DeleteById: function(req, res){
+  DeleteById: function (req, res) {
     if (req.params && req.params.id) { // params.id is doctor's user ID
       var id = req.params.id;
 
@@ -148,7 +144,7 @@ module.exports = {
           return Status.returnStatus(res, Status.ERROR, err);
         }
 
-        if (!item){
+        if (!item) {
           return Status.returnStatus(res, Status.NULL);
         }
 

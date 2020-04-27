@@ -7,7 +7,7 @@ var Relationship = require('../model/relationship.js');
 module.exports = {
 
     GetAll: function (req, res) {
-      var query = {hid: req.token.hid};
+        var query = { hid: req.token.hid };
 
         Group.find(query)
             .exec(function (err, items) {
@@ -24,7 +24,7 @@ module.exports = {
     },
 
     GetAllPopulated: function (req, res) {
-      var query = {hid: req.token.hid};
+        var query = { hid: req.token.hid };
 
         Group.find(query)
             .populate('doctor')
@@ -46,7 +46,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            Group.findOne({_id: req.params.id, apply: true})
+            Group.findOne({ _id: req.params.id, apply: true })
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -66,7 +66,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            Group.find({doctor: req.params.id, apply: true})
+            Group.find({ doctor: req.params.id, apply: true })
                 .exec(function (err, items) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -97,7 +97,7 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_DOCTOR);
         }
 
-        Group.findOne({name: group.name, doctor: group.doctor}) // check if existed
+        Group.findOne({ name: group.name, doctor: group.doctor }) // check if existed
             .exec(function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
@@ -110,10 +110,10 @@ module.exports = {
 
                 // 不存在，创建
                 Group.create({
-                  hid: group.hid,
+                    hid: group.hid,
                     name: group.name,
                     doctor: group.doctor,
-                    apply: group.apply || true
+                    apply: group.apply
                 }, function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -145,17 +145,14 @@ module.exports = {
 
                 if (group.doctor)
                     item.doctor = group.doctor;
-                if (group.name){
+                if (group.name) {
                     item.name = group.name;
                 }
                 if (group.apply || group.apply === false)
                     item.apply = group.apply;
 
-
-                //console.log(JSON.stringify(item));
-
                 // 如果group name 没有变,或者group name不需要更新,则不用check duplicated group name
-                if (group_name == item.name || !group.name){
+                if (group_name == item.name || !group.name) {
                     item.save(function (err, raw) {
                         if (err) {
                             return Status.returnStatus(res, Status.ERROR, err);
@@ -165,7 +162,7 @@ module.exports = {
                 }
 
                 // check if duplication group name in a doctor
-                Group.find({name: group.name, doctor: group.doctor}) // check if existed
+                Group.find({ name: group.name, doctor: group.doctor }) // check if existed
                     .exec(function (err, items) {
                         if (err) {
                             return Status.returnStatus(res, Status.ERROR, err);
@@ -192,20 +189,20 @@ module.exports = {
         if (req.params && req.params.id) { // params.id is group ID
 
             var group_id = req.params.id;
-            Group.findOne({_id: group_id}, function (err, item) {
+            Group.findOne({ _id: group_id }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
 
-                if (!item){
+                if (!item) {
                     return Status.returnStatus(res, Status.NULL);
                 }
 
                 // remove the related-group relationship (set group_ids to null)
-                Relationship.update({group: group_id}, { $set: {group: undefined}}, { multi: true } ).exec();
+                Relationship.update({ group: group_id }, { $set: { group: undefined } }, { multi: true }).exec();
 
                 // delete group
-                item.remove(function(err, raw){
+                item.remove(function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }

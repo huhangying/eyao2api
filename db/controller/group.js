@@ -83,7 +83,7 @@ module.exports = {
 
 
     // 创建关系组
-    FindOrAdd: function (req, res) {
+    FindOrAdd: async function (req, res) {
 
         // 获取请求数据（json）
         var group = req.body;
@@ -119,68 +119,36 @@ module.exports = {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
 
-                    return res.send(raw);
+                    return res.json(raw);
                 });
 
             });
     },
 
-    UpdateById: function (req, res) {
+    UpdateById: async function (req, res) {
         if (req.params && req.params.id) { // params.id is group ID
-            var id = req.params.id;
-
             // 获取数据（json）,只能更新关系组名
-            var group = req.body;
-            var group_name;
+            const group = req.body;
 
-            Group.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
+            let found = await Group.findById(req.params.id);
+            if (!found) return Status.returnStatus(res, Status.NULL);
+
+
+            // 如果group name 没有变,或者group name不需要更新,则不用check duplicated group name
+            if (group.name !== found.name) {
+                const foundOther = Group.findOne({ hid: group.hid, name: group.name, doctor: group.doctor });
+                if (foundOther) {
+                    return Status.returnStatus(res, Status.EXISTED_NAME);
                 }
+            }
+            // update value from req
+            found.name = group.name;
+            found.doctor = group.doctor;
+            found.apply = group.apply;
 
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-                group_name = item.name; // 原id的group name
-
-                if (group.doctor)
-                    item.doctor = group.doctor;
-                if (group.name) {
-                    item.name = group.name;
-                }
-                if (group.apply || group.apply === false)
-                    item.apply = group.apply;
-
-                // 如果group name 没有变,或者group name不需要更新,则不用check duplicated group name
-                if (group_name == item.name || !group.name) {
-                    item.save(function (err, raw) {
-                        if (err) {
-                            return Status.returnStatus(res, Status.ERROR, err);
-                        }
-                        return res.json(raw);
-                    });
-                }
-
-                // check if duplication group name in a doctor
-                Group.find({ name: group.name, doctor: group.doctor }) // check if existed
-                    .exec(function (err, items) {
-                        if (err) {
-                            return Status.returnStatus(res, Status.ERROR, err);
-                        }
-
-                        // 如果存在，直接返回
-                        if (items && items.length > 0 && items[0].name != group_name) {
-                            return Status.returnStatus(res, Status.EXISTED_NAME);
-                        }
-
-                        item.save(function (err, raw) {
-                            if (err) {
-                                return Status.returnStatus(res, Status.ERROR, err);
-                            }
-                            res.json(raw);
-                        });
-                    });
-            });
+            const response = await found.save();
+            if (!response) return Status.returnStatus(res, Status.NULL);
+            res.json(response);
         }
     },
 
@@ -199,7 +167,7 @@ module.exports = {
                 }
 
                 // remove the related-group relationship (set group_ids to null)
-                Relationship.update({ group: group_id }, { $set: { group: undefined } }, { multi: true }).exec();
+                Relationship.updateMany({ group: group_id }, { $set: { group: undefined } }, { multi: true }).exec();
 
                 // delete group
                 item.remove(function (err, raw) {

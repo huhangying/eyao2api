@@ -27,19 +27,19 @@ module.exports = {
     MISSING_PARAM: 'missing_param',
     INVALID_PARAM: 'invalid_param',
     NOT_REGISTERED: 'not_registered',
-    WRONG_PASSWORD: 'WRONG_PASSWORD',
+    WRONG_PASSWORD: 'wrong_password',
     PASS: 'PASS',
 
-    CHATROOM_ERROR: 'CHATROOM_ERROR',
-    NO_MESSAGE: 'NO_MESSAGE',
-    TOKEN_EXPIRED: 'TOKEN_EXPIRED',
-    TOKEN_INVALID: 'TOKEN_INVALID',
+    CHATROOM_ERROR: 'chatroom_error',
+    NO_MESSAGE: 'no_message',
+    TOKEN_EXPIRED: 'token_expired',
+    TOKEN_INVALID: 'token_invalid',
 
 
     returnStatus: function (res, status, err) {
         // let ret = _.extend({ return: status }, err);
         let ret = { ...err, return: status };
-        res.send(ret);
+        res.status(500).send(ret);
     },
 
 }

@@ -2,24 +2,25 @@
  * Created by hhu on 2016/5/9.
  */
 
-var Department = require('../model/department.js');
+const Department = require('../model/department.js');
 
 module.exports = {
-
 
   GetAll: (req, res, next) => {
 
     Department.find({ hid: req.token.hid })
       .sort({ order: 1 })
-      .exec((err, result) => err ? next(err) : res.json(result));
+      .lean()
+      .then((result) => res.json(result))
+      .catch(err => next(err));
   },
 
   // 根据ID获取详细信息
   GetById: (req, res, next) => {
-
     const { id } = req.params;
     Department.findOne({ _id: id })
-      .exec((err, result) => err ? next(err) : res.json(result));
+      .then((result) => res.json(result))
+      .catch(err => next(err));
   },
 
 
@@ -31,29 +32,29 @@ module.exports = {
       return Status.returnStatus(res, Status.NO_NAME);
     }
     Department.findOne({ name: department.name, hid: department.hid }) // check if existed
-      .exec((err, result) => {
-        if (err) return next(err);
+      .then((result) => {
         if (result) return Status.returnStatus(res, Status.EXISTED);
 
-        Department.create(department,
-          (err, result) => err ? next(err) : res.json(result)
-        );
-      });
-
+        Department.create(department)
+        .then((result) => res.json(result))
+        .catch(err => next(err));
+      })
+      .catch(err => next(err));
   },
 
   UpdateById: function (req, res, next) {
-
     const { id } = req.params;
     Department.findByIdAndUpdate(id, { ...req.body }, { new: true })
-      .exec((err, result) => err ? next(err) : res.json(result));
+      .then((result) => res.json(result))
+      .catch(err => next(err));
   },
 
   DeleteById: function (req, res, next) {
     // params.id is doctor's user ID
     const { id } = req.params;
     Department.findByIdAndDelete(id)
-      .exec((err, result) => err ? next(err) : res.json(result));
+      .then((result) => res.json(result))
+      .catch(err => next(err));
   },
 
 }

@@ -7,41 +7,19 @@ var Department = require('../model/department.js');
 module.exports = {
 
 
-  GetAll: function (req, res) {
+  GetAll: (req, res, next) => {
 
     Department.find({ hid: req.token.hid })
       .sort({ order: 1 })
-      .exec(function (err, items) {
-        if (err) {
-          return Status.returnStatus(res, Status.ERROR, err);
-        }
-
-        if (!items || items.length < 1) {
-          return Status.returnStatus(res, Status.NULL);
-        }
-
-        res.json(items);
-      });
+      .exec((err, result) => err ? next(err) : res.json(result));
   },
 
   // 根据ID获取详细信息
-  GetById: function (req, res) {
+  GetById: (req, res, next) => {
 
-    if (req.params && req.params.id) {
-
-      Department.findOne({ _id: req.params.id, apply: true })
-        .exec(function (err, item) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-
-          if (!item) {
-            return Status.returnStatus(res, Status.NULL);
-          }
-
-          res.json(item);
-        });
-    }
+    const { id } = req.params;
+    Department.findOne({ _id: id })
+      .exec((err, result) => err ? next(err) : res.json(result));
   },
 
 
@@ -49,7 +27,7 @@ module.exports = {
   Add: function (req, res) {
 
     // 获取department请求数据（json）
-    var department = req.body;
+    const department = req.body;
 
     // name
     if (!department.name) {
@@ -85,41 +63,39 @@ module.exports = {
   },
 
   UpdateById: function (req, res) {
-    if (req.params && req.params.id) { // params.id is doctor's user ID
-      var id = req.params.id;
-      // 获取user数据（json）
-      var department = req.body;
+    // 获取user数据（json）
+    var department = req.body;
 
-      Department.findById(id, function (err, item) {
+    // params.id is doctor's user ID
+    Department.findById(req.params.id, function (err, item) {
+      if (err) {
+        return Status.returnStatus(res, Status.ERROR, err);
+      }
+
+      if (!item) {
+        return Status.returnStatus(res, Status.NULL);
+      }
+
+      if (department.name)
+        item.name = department.name;
+      if (department.desc)
+        item.desc = department.desc;
+      if (department.order)
+        item.order = department.order;
+      if (department.assetFolder || department.assetFolder == '')
+        item.assetFolder = department.assetFolder;
+      if (department.apply || department.apply === false)
+        item.apply = department.apply;
+
+      //
+      item.save(function (err, raw) {
         if (err) {
           return Status.returnStatus(res, Status.ERROR, err);
         }
-
-        if (!item) {
-          return Status.returnStatus(res, Status.NULL);
-        }
-
-        if (department.name)
-          item.name = department.name;
-        if (department.desc)
-          item.desc = department.desc;
-        if (department.order)
-          item.order = department.order;
-        if (department.assetFolder || department.assetFolder == '')
-          item.assetFolder = department.assetFolder;
-        if (department.apply || department.apply === false)
-          item.apply = department.apply;
-
-        //
-        item.save(function (err, raw) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-          res.json(raw);
-        });
-
+        res.json(raw);
       });
-    }
+
+    });
   },
 
   DeleteById: function (req, res) {

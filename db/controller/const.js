@@ -1,168 +1,74 @@
 var Const = require('../model/const.js');
-// const Consts = require('../../util/consts');
 
 module.exports = {
 
+  GetAll: (req, res, next) => {
+    Const.find({ hid: req.token.hid })
+      .lean()
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
 
-    GetAll: function (req, res) {
-      var query = {hid: req.token.hid};
+  //
+  GetByName: (req, res, next) => {
+    const { name } = req.params.name;
+    const query = { name: name, hid: req.token.hid };
+    Const.findOne(query)
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
 
-        Const.find(query)
-            .exec( function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
+  // update: desc, type and value, but not name
+  UpdateById: (req, res, next) => {
+    const { id } = req.params;
+    const _const = { ...req.body };
+    if (_const.name) {
+      delete _const.name;
+    }
+    Const.findByIdAndUpdate(id, _const, { new: true })
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
 
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
 
-                res.json(items);
-            });
-    },
+  /////////////////////////////////////////////////////////////////////////
+  // 以下内部使用
 
-    //
-    GetByName: function (req, res) {
-
-        if (req.params && req.params.name) {
-          var query = {name: req.params.name, hid: req.token.hid};
-
-            Const.findOne(query)
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
+  // by util/const.js
+  _GetByName: function (_name) {
+    return Const.findOne({ name: _name })
+      .exec(function (err, item) {
+        if (err || !item) {
+          return '';
         }
-    },
+        return item;
+      });
+  },
 
-    // 内部使用。 by util/const.js
-    _GetByName: function (_name) {
-        return Const.findOne({name: _name})
-            .exec(function (err, item) {
-                if (err || !item) {
-                    return '';
-                }
-                //console.log(item);
-                return item;
-            });
-    },
+  // 创建 (Internal USE ONLY)
+  Add: (req, res, next) => {
+    const _const = req.body;
+    // name
+    if (!_const.name) {
+      return Status.returnStatus(res, Status.NO_NAME);
+    }
+    Const.findOne({ name: _const.name, hid: _const.hid }) // check if existed
+      .then((result) => {
+        if (result) return Status.returnStatus(res, Status.EXISTED);
 
+        Const.create(_const)
+          .then((result) => res.json(result))
+          .catch(err => next(err));
+      })
+      .catch(err => next(err));
+  },
 
-    // 创建医院科室
-    Add: function (req, res) {
-
-        var _const = req.body;
-
-        // name
-        if (!_const.name) {
-            return Status.returnStatus(res, Status.NO_NAME);
-        }
-        // if (!item.type) {
-        //     return Status.returnStatus(res, Status.NO_TYPE);
-        // }
-        if (!_const.value) {
-            return Status.returnStatus(res, Status.NO_VALUE);
-        }
-
-
-        Const.find({name: _const.name}) // check if existed
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (items && items.length > 0) {
-                    return Status.returnStatus(res, Status.EXISTED);
-                }
-
-                Const.create({
-                    hid: _const.hid,
-                    name: _const.name,
-                    desc: _const.desc,
-                    type: _const.type,
-                    value: _const.value
-                }, function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    return res.send(raw);
-                });
-
-            });
-    },
-
-    // update: desc, type and value, but not name
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) {
-            var id = req.params.id;
-            // 获取user数据（json）
-            var _const = req.body;
-
-            Const.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                // if (_const.name)
-                //     item.name = _const.name;
-                if (_const.type)
-                    item.type = _const.type;
-                if (_const.desc)
-                    item.desc = _const.desc;
-                if (_const.value)
-                    item.value = _const.value;
-
-                //
-                item.save(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    // Consts.clearCacheByName(_const.name); // clear cache
-                    // todo:
-                    res.json(raw);
-                });
-
-            });
-        }
-    },
-
-    DeleteById: function(req, res){
-        if (req.params && req.params.id) {
-            var id = req.params.id;
-
-            Const.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //console.log(JSON.stringify(item))
-                //
-                item.remove(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    res.json(raw);
-                });
-
-            });
-        }
-    },
+  // (Internal USE ONLY)
+  DeleteById: (req, res, next) => {
+    const { id } = req.params;
+    Const.findByIdAndDelete(id)
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
 
 }

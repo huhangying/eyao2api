@@ -24,103 +24,36 @@ module.exports = {
 
 
   // 创建医院科室
-  Add: function (req, res) {
-
-    // 获取department请求数据（json）
+  Add: (req, res, next) => {
     const department = req.body;
-
     // name
     if (!department.name) {
       return Status.returnStatus(res, Status.NO_NAME);
     }
+    Department.findOne({ name: department.name, hid: department.hid }) // check if existed
+      .exec((err, result) => {
+        if (err) return next(err);
+        if (result) return Status.returnStatus(res, Status.EXISTED);
 
-    Department.find({ name: department.name }) // check if existed
-      .exec(function (err, items) {
-        if (err) {
-          return Status.returnStatus(res, Status.ERROR, err);
-        }
-
-        if (items && items.length > 0) {
-          return Status.returnStatus(res, Status.EXISTED);
-        }
-
-        Department.create({
-          hid: department.hid,
-          name: department.name,
-          desc: department.desc,
-          order: department.order,
-          assetFolder: department.assetFolder,
-          apply: department.apply
-        }, function (err, raw) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-
-          return res.send(raw);
-        });
-
+        Department.create(department,
+          (err, result) => err ? next(err) : res.json(result)
+        );
       });
+
   },
 
-  UpdateById: function (req, res) {
-    // 获取user数据（json）
-    var department = req.body;
+  UpdateById: function (req, res, next) {
 
+    const { id } = req.params;
+    Department.findByIdAndUpdate(id, { ...req.body }, { new: true })
+      .exec((err, result) => err ? next(err) : res.json(result));
+  },
+
+  DeleteById: function (req, res, next) {
     // params.id is doctor's user ID
-    Department.findById(req.params.id, function (err, item) {
-      if (err) {
-        return Status.returnStatus(res, Status.ERROR, err);
-      }
-
-      if (!item) {
-        return Status.returnStatus(res, Status.NULL);
-      }
-
-      if (department.name)
-        item.name = department.name;
-      if (department.desc)
-        item.desc = department.desc;
-      if (department.order)
-        item.order = department.order;
-      if (department.assetFolder || department.assetFolder == '')
-        item.assetFolder = department.assetFolder;
-      if (department.apply || department.apply === false)
-        item.apply = department.apply;
-
-      //
-      item.save(function (err, raw) {
-        if (err) {
-          return Status.returnStatus(res, Status.ERROR, err);
-        }
-        res.json(raw);
-      });
-
-    });
-  },
-
-  DeleteById: function (req, res) {
-    if (req.params && req.params.id) { // params.id is doctor's user ID
-      var id = req.params.id;
-
-      Department.findById(id, function (err, item) {
-        if (err) {
-          return Status.returnStatus(res, Status.ERROR, err);
-        }
-
-        if (!item) {
-          return Status.returnStatus(res, Status.NULL);
-        }
-
-        item.remove(function (err, raw) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-
-          res.json(raw);
-        });
-
-      });
-    }
+    const { id } = req.params;
+    Department.findByIdAndDelete(id)
+      .exec((err, result) => err ? next(err) : res.json(result));
   },
 
 }

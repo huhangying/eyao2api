@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 module.exports = mongoose.model(
   'doctor',
   mongoose.Schema({
-    hid: { type: Number },
+    hid: Number,
     token: { type: String }, // token should not store into db
     user_id: { type: String, required: true },
     password: { type: String, required: true },

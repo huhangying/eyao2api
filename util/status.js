@@ -34,6 +34,7 @@ module.exports = {
     NO_MESSAGE: 'no_message',
     TOKEN_EXPIRED: 'token_expired',
     TOKEN_INVALID: 'token_invalid',
+    DELETE_NOT_ALLOWED: 'deleteNotAllowed',
 
 
     returnStatus: function (res, status, err) {

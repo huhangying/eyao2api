@@ -2,9 +2,14 @@
  * Created by hhu on 2016/5/9.
  */
 
-const Department = require('../model/department.js');
+const Department = require('../model/department');
+const Doctor = require('../model/doctor');
+const ArticleTemplate = require('../model/articleTemplate');
+const AdverseReaction = require('../model/adverseReaction');
+const SurveyTemplate = require('../model/surveyTemplate');
+const SurveyCat = require('../model/surveyCat');
 
-module.exports = {
+const self = module.exports = {
 
   GetAll: (req, res, next) => {
 
@@ -36,8 +41,8 @@ module.exports = {
         if (result) return Status.returnStatus(res, Status.EXISTED);
 
         Department.create(department)
-        .then((result) => res.json(result))
-        .catch(err => next(err));
+          .then((result) => res.json(result))
+          .catch(err => next(err));
       })
       .catch(err => next(err));
   },
@@ -49,12 +54,43 @@ module.exports = {
       .catch(err => next(err));
   },
 
-  DeleteById: function (req, res, next) {
+  DeleteById: async (req, res, next) => {
     // params.id is doctor's user ID
     const { id } = req.params;
+
+    const allow = await self.allowToDelete(id, req.token.hid);
+    if (!allow) {
+      return Status.returnStatus(res, Status.DELETE_NOT_ALLOWED)
+    }
+
     Department.findByIdAndDelete(id)
       .then((result) => res.json(result))
       .catch(err => next(err));
+  },
+
+  // functions
+  allowToDelete: async (id, hid) => {
+    let existed = true;
+    try {
+      existed = await Doctor.exists({ department: id, hid: hid })
+      if (existed) return false;
+
+      existed = await ArticleTemplate.exists({ department: id, hid: hid })
+      if (existed) return false;
+
+      existed = await AdverseReaction.exists({ department: id, hid: hid })
+      if (existed) return false;
+
+      existed = await SurveyTemplate.exists({ department: id, hid: hid })
+      if (existed) return false;
+
+      existed = await SurveyCat.exists({ department: id, hid: hid })
+      if (existed) return false;
+    } catch (e) {
+      return false;
+    }
+
+    return true;
   },
 
 }

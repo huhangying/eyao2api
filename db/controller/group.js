@@ -86,7 +86,7 @@ module.exports = {
             .then((result) => {
                 if (result) {
                     // remove the related-group relationship (set group_ids to null)
-                    Relationship.update({ group: id }, { $set: { group: undefined } }, { multi: true }).exec();
+                    Relationship.updateMany({ group: id }, { $set: { group: undefined } }, { multi: true }).exec();
                 }
                 return res.json(result)
             })

@@ -34,7 +34,7 @@ module.exports = {
             });
     },
 
-    // for CMS
+    // for CMS //never use?
     GetAll: function (req, res) {
         var number = 999; // set max return numbers
         var query = { hid: req.token.hid };

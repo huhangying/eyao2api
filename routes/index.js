@@ -664,7 +664,7 @@ router.route('/faq/:id')
     .patch(urlencodedParser, Faq.UpdateById);
 
 
-//---------------- FAQ
+//---------------- surveyStatusLogs
 var SurveyStatusLog = require('../db/controller/surveyStatusLog');
 
 router.route('/surveyStatusLogs')

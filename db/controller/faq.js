@@ -4,132 +4,59 @@ const Faq = require('../model/faq.js');
 
 module.exports = {
 
-
-    GetAll: function (req, res) {
-
-        Faq.find({apply: true}, 'question answer -_id')
-            .sort({order: 1})
-            .exec( function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+    // 返回所有有效的
+    GetAll: (req, res, next) => {
+        Faq.find({ hid: req.token.hid, apply: true })
+            .select('question answer')
+            .sort({ order: 1 })
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    GetEditAll: function (req, res) {
-
-        Faq.find()
-            .sort({order: 1})
-            .exec( function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+    GetEditAll: (req, res, next) => {
+        Faq.find({ hid: req.token.hid })
+            .select('-hid -__v')
+            .sort({ order: 1 })
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 创建
-    Add: function (req, res) {
-
-        var item = req.body;
-
-        // question
-        if (!item.question) {
+    Add: (req, res, next) => {
+        const faq = req.body;
+        // question and answer
+        if (!faq.question || !faq.answer) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
-        if (!item.answer) {
-            return Status.returnStatus(res, Status.MISSING_PARAM);
-        }
+        Faq.findOne({ question: faq.question, hid: faq.hid }) // check if existed
+            .then((result) => {
+                if (result) return Status.returnStatus(res, Status.EXISTED);
 
-
-        Faq.create({
-            hid: item.hid,
-            question: item.question,
-            answer: item.answer,
-            order: item.order
-        }, function (err, raw) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            return res.send(raw);
-        });
-
+                Faq.create(faq)
+                    .then((result) => res.json(result))
+                    .catch(err => next(err));
+            })
+            .catch(err => next(err));
     },
 
-    // update: desc, type and value, but not name
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) {
-            var id = req.params.id;
-            // 获取user数据（json）
-            var _faq = req.body;
-
-            Faq.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                if (_faq.question)
-                    item.question = _faq.question;
-                if (_faq.answer)
-                    item.answer = _faq.answer;
-                if (_faq.order)
-                    item.order = _faq.order;
-                if (_faq.apply || _faq.apply === false)
-                    item.apply = _faq.apply;
-
-                //
-                item.save(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
+    // update
+    UpdateById: (req, res, next) => {
+        const { id } = req.params;// params.id is group ID
+        const faq = { ...req.body };
+        Faq.findByIdAndUpdate(id, faq, { new: true })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    DeleteById: function(req, res){
-        if (req.params && req.params.id) {
-            var id = req.params.id;
-
-            Faq.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //console.log(JSON.stringify(item))
-                //
-                item.remove(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    res.json(raw);
-                });
-
-            });
-        }
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;// params.id is group ID
+        Faq.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 }

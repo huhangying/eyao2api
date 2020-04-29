@@ -45,37 +45,41 @@ router.route('/doctors/:number')
 router.route('/doctors/:number/all')
     .get(Doctor.GetAll);//
 
-router.route('/doctors/notfocus/:user')
+router.route('/doctors/notfocus/:did')
     .get(Doctor.GetAllNotFocus);//
 
 router.route('/doctors/find/:number/:skip')
     .get(Doctor.GetAndSkip);//
 
-router.route('/doctor/cell/:cell')
-    .get(Doctor.GetByCell);
-router.route('/doctor/userid/:userid')
-    .get(Doctor.GetByUserId);
+router.route('/doctors/department/:departmentid')
+    .get(Doctor.GetByDepartmentId);//
+
 
 router.route('/doctor/:id')
-    .get(Doctor.GetById)
+    .get(Doctor.GetById);
+
+router.route('/doctor/cell/:cell')
+    .get(Doctor.GetByCell);
+
+router.route('/doctor/userid/:userid')
+    .get(Doctor.GetByUserId)
     .delete(Doctor.DeleteByUserId)
     .post(urlencodedParser, Doctor.AddByUserId)
     .patch(urlencodedParser, Doctor.UpdateByUserId);
 
-router.route('/doctors/department/:departmentid')
-    .get(Doctor.GetByDepartmentId);//
-
 router.route('/login/doctor')
     .patch(urlencodedParser, Doctor.Login);
+
 router.route('/doctor/passwd/:did')
-    .get(Doctor.GetPassword);//
+    .get(Doctor.GetPassword);
 
 // 药师快捷回复
 router.route('/doctor/shortcuts/:did')
     .get(Doctor.GetShortcuts)
     .patch(urlencodedParser, Doctor.UpdateShortcuts);
-// 药师的基本信息:
-router.route('/doctor/brief/:did')
+
+// 药师的基本信息: ?? no one used ??
+router.route('/doctor/brief/:id')
     .get(Doctor.GetBriefInfo);//
 
 //---------------- 医患关系组

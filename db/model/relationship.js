@@ -55,10 +55,10 @@ function sortBy(key, reverse) {
 
 }
 
-Relationship.getFocusDoctors = function (userId) {
+Relationship.getFocusDoctors = function (userId, hid) {
     var deferred = Q.defer();
 
-    Relationship.find({ user: userId, apply: true })
+    Relationship.find({ user: userId, hid: hid, apply: true })
         .exec(function (err, items) {
             if (err) {
                 deferred.resolve([]);

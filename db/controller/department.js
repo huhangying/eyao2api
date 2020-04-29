@@ -2,149 +2,95 @@
  * Created by hhu on 2016/5/9.
  */
 
-var Department = require('../model/department.js');
+const Department = require('../model/department');
+const Doctor = require('../model/doctor');
+const ArticleTemplate = require('../model/articleTemplate');
+const AdverseReaction = require('../model/adverseReaction');
+const SurveyTemplate = require('../model/surveyTemplate');
+const SurveyCat = require('../model/surveyCat');
 
-module.exports = {
+const self = module.exports = {
 
-
-  GetAll: function (req, res) {
+  GetAll: (req, res, next) => {
 
     Department.find({ hid: req.token.hid })
       .sort({ order: 1 })
-      .exec(function (err, items) {
-        if (err) {
-          return Status.returnStatus(res, Status.ERROR, err);
-        }
-
-        if (!items || items.length < 1) {
-          return Status.returnStatus(res, Status.NULL);
-        }
-
-        res.json(items);
-      });
+      .lean()
+      .then((result) => res.json(result))
+      .catch(err => next(err));
   },
 
   // 根据ID获取详细信息
-  GetById: function (req, res) {
-
-    if (req.params && req.params.id) {
-
-      Department.findOne({ _id: req.params.id, apply: true })
-        .exec(function (err, item) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-
-          if (!item) {
-            return Status.returnStatus(res, Status.NULL);
-          }
-
-          res.json(item);
-        });
-    }
+  GetById: (req, res, next) => {
+    const { id } = req.params;
+    Department.findOne({ _id: id })
+      .then((result) => res.json(result))
+      .catch(err => next(err));
   },
 
 
   // 创建医院科室
-  Add: function (req, res) {
-
-    // 获取department请求数据（json）
-    var department = req.body;
-
+  Add: (req, res, next) => {
+    const department = req.body;
     // name
     if (!department.name) {
       return Status.returnStatus(res, Status.NO_NAME);
     }
+    Department.findOne({ name: department.name, hid: department.hid }) // check if existed
+      .then((result) => {
+        if (result) return Status.returnStatus(res, Status.EXISTED);
 
-    Department.find({ name: department.name }) // check if existed
-      .exec(function (err, items) {
-        if (err) {
-          return Status.returnStatus(res, Status.ERROR, err);
-        }
-
-        if (items && items.length > 0) {
-          return Status.returnStatus(res, Status.EXISTED);
-        }
-
-        Department.create({
-          hid: department.hid,
-          name: department.name,
-          desc: department.desc,
-          order: department.order,
-          assetFolder: department.assetFolder,
-          apply: department.apply
-        }, function (err, raw) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-
-          return res.send(raw);
-        });
-
-      });
+        Department.create(department)
+          .then((result) => res.json(result))
+          .catch(err => next(err));
+      })
+      .catch(err => next(err));
   },
 
-  UpdateById: function (req, res) {
-    if (req.params && req.params.id) { // params.id is doctor's user ID
-      var id = req.params.id;
-      // 获取user数据（json）
-      var department = req.body;
-
-      Department.findById(id, function (err, item) {
-        if (err) {
-          return Status.returnStatus(res, Status.ERROR, err);
-        }
-
-        if (!item) {
-          return Status.returnStatus(res, Status.NULL);
-        }
-
-        if (department.name)
-          item.name = department.name;
-        if (department.desc)
-          item.desc = department.desc;
-        if (department.order)
-          item.order = department.order;
-        if (department.assetFolder || department.assetFolder == '')
-          item.assetFolder = department.assetFolder;
-        if (department.apply || department.apply === false)
-          item.apply = department.apply;
-
-        //
-        item.save(function (err, raw) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-          res.json(raw);
-        });
-
-      });
-    }
+  UpdateById: function (req, res, next) {
+    const { id } = req.params;
+    Department.findByIdAndUpdate(id, { ...req.body }, { new: true })
+      .then((result) => res.json(result))
+      .catch(err => next(err));
   },
 
-  DeleteById: function (req, res) {
-    if (req.params && req.params.id) { // params.id is doctor's user ID
-      var id = req.params.id;
+  DeleteById: async (req, res, next) => {
+    // params.id is doctor's user ID
+    const { id } = req.params;
 
-      Department.findById(id, function (err, item) {
-        if (err) {
-          return Status.returnStatus(res, Status.ERROR, err);
-        }
-
-        if (!item) {
-          return Status.returnStatus(res, Status.NULL);
-        }
-
-        item.remove(function (err, raw) {
-          if (err) {
-            return Status.returnStatus(res, Status.ERROR, err);
-          }
-
-          res.json(raw);
-        });
-
-      });
+    const allow = await self.allowToDelete(id, req.token.hid);
+    if (!allow) {
+      return Status.returnStatus(res, Status.DELETE_NOT_ALLOWED)
     }
+
+    Department.findByIdAndDelete(id)
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
+
+  // functions
+  allowToDelete: async (id, hid) => {
+    let existed = true;
+    try {
+      existed = await Doctor.exists({ department: id, hid: hid })
+      if (existed) return false;
+
+      existed = await ArticleTemplate.exists({ department: id, hid: hid })
+      if (existed) return false;
+
+      existed = await AdverseReaction.exists({ department: id, hid: hid })
+      if (existed) return false;
+
+      existed = await SurveyTemplate.exists({ department: id, hid: hid })
+      if (existed) return false;
+
+      existed = await SurveyCat.exists({ department: id, hid: hid })
+      if (existed) return false;
+    } catch (e) {
+      return false;
+    }
+
+    return true;
   },
 
 }

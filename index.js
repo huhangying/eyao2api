@@ -12,7 +12,7 @@ mongoose.connect('mongodb://192.168.87.250/eyao', {
 });
 
 global.Status = require('./util/status.js');
-global.urlencodedParser = bodyParser.urlencoded({ extended: false })
+global.urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const app = express();
 
@@ -34,7 +34,6 @@ app.disable('etag'); //avoid 304 error
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(urlencodedParser);
 
 app.use(express.static(path.join(path.resolve(), 'public')));
 
@@ -43,7 +42,16 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use('*', (req, res) => {
-  res.sendStatus(405);
+  res.sendStatus(404);
+});
+
+// error handling
+app.use(function (err, req, res, next) {
+  if (res.headersSent) {
+    return next(err)
+  } else {
+    res.status(err.status || 503).send(err);
+  }
 });
 
 app.listen(3000, () => {

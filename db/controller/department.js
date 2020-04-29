@@ -15,6 +15,7 @@ const self = module.exports = {
 
     Department.find({ hid: req.token.hid })
       .sort({ order: 1 })
+      .select('-hid -__v')
       .lean()
       .then((result) => res.json(result))
       .catch(err => next(err));
@@ -24,6 +25,7 @@ const self = module.exports = {
   GetById: (req, res, next) => {
     const { id } = req.params;
     Department.findOne({ _id: id })
+      .select('-hid -__v')
       .then((result) => res.json(result))
       .catch(err => next(err));
   },
@@ -50,6 +52,7 @@ const self = module.exports = {
   UpdateById: function (req, res, next) {
     const { id } = req.params;
     Department.findByIdAndUpdate(id, { ...req.body }, { new: true })
+      .select('-hid -__v')
       .then((result) => res.json(result))
       .catch(err => next(err));
   },
@@ -64,6 +67,7 @@ const self = module.exports = {
     }
 
     Department.findByIdAndDelete(id)
+      .select('-hid -__v')
       .then((result) => res.json(result))
       .catch(err => next(err));
   },

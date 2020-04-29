@@ -4,6 +4,7 @@ module.exports = {
 
   GetAll: (req, res, next) => {
     Const.find({ hid: req.token.hid })
+      .select('-hid -__v')
       .lean()
       .then((result) => res.json(result))
       .catch(err => next(err));
@@ -14,6 +15,7 @@ module.exports = {
     const { name } = req.params.name;
     const query = { name: name, hid: req.token.hid };
     Const.findOne(query)
+      .select('-hid -__v')
       .then((result) => res.json(result))
       .catch(err => next(err));
   },
@@ -26,6 +28,7 @@ module.exports = {
       delete _const.name;
     }
     Const.findByIdAndUpdate(id, _const, { new: true })
+      .select('-hid -__v')
       .then((result) => res.json(result))
       .catch(err => next(err));
   },

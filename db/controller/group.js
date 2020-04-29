@@ -9,6 +9,7 @@ module.exports = {
     //
     GetAll: (req, res, next) => {
         Group.find({ hid: req.token.hid })
+            .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -17,6 +18,7 @@ module.exports = {
     //
     GetAllPopulated: (req, res, next) => {
         Group.find({ hid: req.token.hid })
+            .select('-hid -__v')
             .populate('doctor')
             .lean()
             .then((result) => res.json(result))
@@ -27,6 +29,7 @@ module.exports = {
     GetById: (req, res, next) => {
         const { id } = req.params;
         Group.findOne({ _id: id, apply: true })
+            .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
@@ -35,6 +38,7 @@ module.exports = {
     GetByDoctorId: (req, res, next) => {
         const { id } = req.params; // id is doctor id
         Group.findOne({ doctor: id, apply: true })
+            .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
@@ -69,14 +73,16 @@ module.exports = {
         // 获取数据（json）,只能更新关系组名
         const group = { ...req.body };
         Group.findByIdAndUpdate(id, group, { new: true })
-          .then((result) => res.json(result))
-          .catch(err => next(err));
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 
     DeleteById: (req, res, next) => {
         const { id } = req.params;// params.id is group ID
         Group.findByIdAndDelete(id)
+            .select('-hid -__v')
             .then((result) => {
                 if (result) {
                     // remove the related-group relationship (set group_ids to null)

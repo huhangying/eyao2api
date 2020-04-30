@@ -62,8 +62,10 @@ router.route('/doctor/userid/:userid')
 
 router.route('/doctor/:id')
     .get(Doctor.GetById)
-    .post(urlencodedParser, Doctor.Add)
     .delete(Doctor.DeleteById);
+
+router.route('/doctor')
+    .post(urlencodedParser, Doctor.Add)
 
 router.route('/doctor/:userid')
     .patch(urlencodedParser, Doctor.UpdateByUserId);

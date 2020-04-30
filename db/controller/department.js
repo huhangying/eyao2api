@@ -38,8 +38,8 @@ const self = module.exports = {
     if (!department.name) {
       return Status.returnStatus(res, Status.NO_NAME);
     }
-    Department.findOne({ name: department.name, hid: department.hid }) // check if existed
-      .then((result) => {
+    Department.exists({ name: department.name, hid: department.hid }) // check if existed
+      .then(result => {
         if (result) return Status.returnStatus(res, Status.EXISTED);
 
         Department.create(department)
@@ -72,7 +72,7 @@ const self = module.exports = {
       .catch(err => next(err));
   },
 
-  // functions
+  // functions for delete
   allowToDelete: async (id, hid) => {
     let existed = true;
     try {

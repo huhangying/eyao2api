@@ -54,17 +54,18 @@ router.route('/doctors/find/:number/:skip')
 router.route('/doctors/department/:departmentid')
     .get(Doctor.GetByDepartmentId);//
 
-
-router.route('/doctor/:id')
-    .get(Doctor.GetById);
-
 router.route('/doctor/cell/:cell')
     .get(Doctor.GetByCell);
 
 router.route('/doctor/userid/:userid')
-    .get(Doctor.GetByUserId)
-    .delete(Doctor.DeleteByUserId)
-    .post(urlencodedParser, Doctor.AddByUserId)
+    .get(Doctor.GetByUserId);
+
+router.route('/doctor/:id')
+    .get(Doctor.GetById)
+    .post(urlencodedParser, Doctor.Add)
+    .delete(Doctor.DeleteById);
+
+router.route('/doctor/:userid')
     .patch(urlencodedParser, Doctor.UpdateByUserId);
 
 router.route('/login/doctor')

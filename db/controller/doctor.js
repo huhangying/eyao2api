@@ -1,12 +1,21 @@
-/**
- * Created by hhu on 2016/5/7.
- */
-var Doctor = require('../model/doctor.js');
+
+const Doctor = require('../model/doctor.js');
 const Hospital = require('../model/hospital');
-var Relationship = require('../model/relationship.js');
+const Relationship = require('../model/relationship.js');
 const util = require('../../util/util');
 
-module.exports = {
+// for detele check
+const Booking = require('../model/booking');
+const Chatroom = require('../model/chatroom');
+const Diagnose = require('../model/diagnose');
+const Group = require('../model/group');
+const labResult = require('../model/labResult');
+const Prescription = require('../model/prescription');
+const Schedule = require('../model/schedule');
+const Survey = require('../model/survey');
+const UserFeedback = require('../model/userFeedback');
+
+const self = module.exports = {
 
     GetAllDoctors: (req, res, next) => {
         let { number } = req.params;
@@ -136,24 +145,13 @@ module.exports = {
     },
 
     // 根据用戶ID获取药师用户信息（用戶ID是唯一的，註冊前必須驗證）
-    GetByUserId: function (req, res) {
-
-        if (req.params && req.params.userid) {
-            Doctor.findOne({ user_id: req.params.userid, apply: true })
-                .select('-hid -password -__v')
-                .lean()
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetByUserId: (req, res, next) => {
+        const { userid } = req.params;
+        Doctor.findOne({ user_id: userid, apply: true, hid: req.token.hid })
+            .select('-hid -password -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据药师ID获取用户信息
@@ -210,181 +208,109 @@ module.exports = {
     },
 
     // 创建药师用户
-    AddByUserId: function (req, res) {
-        const { userid } = req.params; // doctor's user ID
-
-        // 获取doctor数据（json）
-        var doctor = req.body;
-
+    Add: (req, res, next) => {
+        const doctor = { ...req.body };
         // 用户参数验证
-
+        // name
+        if (!doctor.user_id) {
+            return Status.returnStatus(res, Status.NO_ID);
+        }
         // password
         if (!doctor.password) {
             return Status.returnStatus(res, Status.NO_PASSWORD);
         }
-
-        // role
-        if (!doctor.role) {
-            doctor.role = 0;
-        }
-
         // department
         if (!doctor.department) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
-
         // name
         if (!doctor.name) {
             return Status.returnStatus(res, Status.NO_NAME);
         }
-
         //验证手机号码
         if (!doctor.cell) {
             return Status.returnStatus(res, Status.NO_CELL);
         }
 
+        // default role
+        doctor.role = 0;
+        Doctor.exists({ user_id: doctor.user_id, hid: doctor.hid })// check if registered
+            .then(result => {
+                if (result) return Status.returnStatus(res, Status.EXISTED);
 
-        // gender
-
-        // expertise
-
-        // bulletin
-
-        // icon
-
-        Doctor.find({ user_id: userid, hid: doctor.hid }) // check if registered
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (items && items.length > 0) {
-                    return Status.returnStatus(res, Status.EXISTED);
-                }
-
-                Doctor.create({
-                    hid: doctor.hid,
-                    user_id: userid,
-                    password: util.encrypt(doctor.password),
-                    role: doctor.role,
-                    name: doctor.name,
-                    department: doctor.department,
-                    title: doctor.title,
-                    tel: doctor.tel,
-                    cell: doctor.cell,
-                    gender: doctor.gender,
-                    expertise: doctor.expertise,
-                    bulletin: doctor.bulletin,
-                    hours: doctor.hours,
-                    honor: doctor.honor,
-                    icon: doctor.icon,
-                    order: doctor.order,
-                    apply: doctor.apply || true
-                }, function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    // 同步消息给药师端 ()－－－ 现在不需要了
-                    // http://139.224.68.92/medical/wx/addDoctor 这是同步药师的接口，需要传入的参数1、userId 2、name
-                    // if (doctor.role === 0 || doctor.role === 1) {
-                    //     request.post({url:'http://139.224.68.92/zhaoys/wx/addDoctor', formData:{userId: userid, name: doctor.name}},
-                    //         function optionalCallback(err, httpResponse, body) {
-                    //             if (err) {
-                    //                 return console.error('sync failed:', err);
-                    //             }
-                    //             //console.log('sync successful!  Server responded with:', body);
-                    //         });
-                    // }
-
-                    return res.send(raw);
-                });
-
-            });
+                Doctor.create(doctor)
+                    .then((result) => res.json(result))
+                    .catch(err => next(err));
+            })
+            .catch(err => next(err));
     },
 
-    UpdateByUserId: function (req, res) {
+    UpdateByUserId: (req, res, next) => {
         const { userid } = req.params; // doctor's user ID
         // 获取user数据（json）
-        var doctor = req.body;
-
-        Doctor.findOne({ user_id: userid, hid: doctor.hid }, function (err, item) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            if (!item) {
-                return Status.returnStatus(res, Status.NULL);
-            }
-
-            if (doctor.password)
-                item.password = util.encrypt(doctor.password);
-            if (doctor.name)
-                item.name = doctor.name;
-            if (doctor.department)
-                item.department = doctor.department;
-            if (doctor.title)
-                item.title = doctor.title;
-            if (doctor.tel)
-                item.tel = doctor.tel;
-            if (doctor.cell)
-                item.cell = doctor.cell;
-            if (doctor.gender)
-                item.gender = doctor.gender;
-            if (doctor.expertise)
-                item.expertise = doctor.expertise;
-            if (doctor.bulletin)
-                item.bulletin = doctor.bulletin;
-            if (doctor.hours)
-                item.hours = doctor.hours;
-            if (doctor.honor)
-                item.honor = doctor.honor;
-            if (doctor.icon)
-                item.icon = doctor.icon;
-            if (doctor.role || doctor.role === 0)
-                item.role = doctor.role;
-            if (doctor.order || doctor.order === 0)
-                item.order = doctor.order;
-            if (doctor.apply || doctor.apply === false)
-                item.apply = doctor.apply;
-
-            if (doctor.status || doctor.status === 0) {
-                item.status = doctor.status;
-            }
-
-            //
-            item.save(function (err, raw) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
+        var doctor = { ...req.body };
+        if (doctor.password)
+            doctor.password = util.encrypt(doctor.password);
+        Doctor.findOneAndUpdate({ user_id: userid, hid: doctor.hid }, doctor, { new: true })
+            .then((result) => {
+                if (!result) {
+                    return Status.returnStatus(res, Status.NULL);
                 }
-                res.json(raw);
-            });
-
-        });
-
+                return res.json(result)
+            })
+            .catch(err => next(err));
     },
 
-    DeleteByUserId: function (req, res) {
-        const { userid } = req.params; // doctor's user ID
+    DeleteById: async (req, res, next) => {
+        const { id } = req.params; // doctor's _id
+        const allow = await self.allowToDelete(id, req.token.hid);
+        if (!allow) {
+            return Status.returnStatus(res, Status.DELETE_NOT_ALLOWED)
+        }
 
-        Doctor.findOne({ user_id: userid, hid: req.token.hid }, function (err, item) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
+        Doctor.findByIdAndDelete(id)
+            .select('-hid -__v -password')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
 
-            if (!item) {
-                return Status.returnStatus(res, Status.NULL);
-            }
+    // functions for delete
+    allowToDelete: async (id, hid) => {
+        let existed = true;
+        try {
+            existed = await Booking.exists({ doctor: id, hid: hid })
+            if (existed) return false;
 
-            //
-            item.remove(function (err, raw) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-                res.json(raw);
-            });
+            existed = await Chatroom.exists({ doctor: id, hid: hid })
+            if (existed) return false;
 
-        });
+            existed = await Diagnose.exists({ doctor: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Group.exists({ doctor: id, hid: hid })
+            if (existed) return false;
+
+            existed = await labResult.exists({ doctor: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Prescription.exists({ doctor: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Relationship.exists({ doctor: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Schedule.exists({ doctor: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Survey.exists({ doctor: id, hid: hid })
+            if (existed) return false;
+
+            existed = await UserFeedback.exists({ doctor: id, hid: hid })
+            if (existed) return false;
+        } catch (e) {
+            return false;
+        }
+        return true;
     },
 
     UpdateIcon: function (req, res) {
@@ -406,14 +332,17 @@ module.exports = {
 
     //================== login ===================
     // 注：login API 检测 hostname 得到hid，并需要返回token
-    Login: async (req, res) => {
+    Login: async (req, res, next) => {
         // 获取 login 数据（json）
-        var login = req.body;
-        if (!login) return res.sendStatus(400);
+        const login = req.body;
 
         // user_id
         if (!login.user_id) {
             return Status.returnStatus(res, Status.NO_ID);
+        }
+        // password
+        if (!login.password) {
+            return Status.returnStatus(res, Status.NO_PASSWORD);
         }
 
         const hosptial = await Hospital.findOne({ host: req.hostname, apply: true }, 'hid')
@@ -421,43 +350,32 @@ module.exports = {
             return Status.sendStatus(403);
         }
 
-        // password
-        if (!login.password) {
-            return Status.returnStatus(res, Status.NO_PASSWORD);
-        }
-
-        var query = {
+        const query = {
             user_id: login.user_id,
             hid: hosptial.hid,
             apply: true
         };
-        Doctor.findOne(query,
-            { _id: 1, user_id: 1, hid: 1, password: 1, name: 1, icon: 1, title: 1, department: 1, role: 1, token: 1 }, // select fields
-            function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
+        Doctor.findOne(query)
+            .select('_id user_id hid password name icon title department role token')
+            .then((result) => {
+                if (!result) {
                     return Status.returnStatus(res, Status.NOT_REGISTERED);
                 }
-
                 // check password
-                if (login.password != util.decrypt(item.password)) {
+                if (login.password != util.decrypt(result.password)) {
                     return Status.returnStatus(res, Status.WRONG_PASSWORD);
                 }
+                result.password = undefined; // remove password!
 
-                item.password = undefined; // remove password!
-                item.token = util.signToken({
-                    hid: 1, // set hid=1 for test
-                    id: item.id,
-                    user_id: item.user_id,
-                    role: item.role
+                result.token = util.signToken({
+                    hid: hosptial.hid,
+                    id: result.id,
+                    user_id: result.user_id,
+                    role: result.role
                 });
-                return res.json(item);
-                //todo: remove returning _id later
-            });
-
+                return res.json(result);
+            })
+            .catch(err => next(err));
     },
 
     GetPassword: (req, res, next) => {

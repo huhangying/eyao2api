@@ -114,9 +114,11 @@ router.route('/relationships')
 router.route('/relationships/doctor/:id')
     .get(Relationship.GetByDoctorId)
     .delete(Relationship.DeleteByDoctorId);
+
 router.route('/relationships/user/:id')
     .get(Relationship.GetByUserId)
     .delete(Relationship.DeleteByUserId);
+    
 router.route('/relationships/group/:group')
     .get(Relationship.GetByGroupId);
 

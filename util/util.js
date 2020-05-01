@@ -1,13 +1,18 @@
 /**
  * Created by hhu on 2016/5/8.
  */
-
+// const mongoose = require('mongoose');
 const CryptoJS = require("crypto-js");
 const jwt = require('jsonwebtoken');
 const ENCRYPT_KEY = 'xinhua e yao';
 const SECRET_KEY = "YRRAh";
 
 module.exports = {
+
+    // toObjectId: (id) => {
+    //     return mongoose.Types.ObjectId(id);
+
+    // },
 
     encrypt: function (str) {
         const ciphertext = CryptoJS.AES.encrypt(str, ENCRYPT_KEY);

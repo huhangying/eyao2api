@@ -5,40 +5,23 @@ var Relationship = require('../model/relationship.js');
 
 module.exports = {
 
-    GetAll: function (req, res) {
-
-        Relationship.find()
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+    GetAll: (req, res, next) => {
+        Relationship.find({ hid: req.token.hid })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
+    GetById: (req, res, next) => {
+        const { id } = req.params;
 
-        if (req.params && req.params.id) {
-
-            Relationship.findOne({_id: req.params.id, apply: true})
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+        Relationship.findById(id)
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据医生ID 和 病患ID，判断relationship是否存在
@@ -46,39 +29,29 @@ module.exports = {
 
         if (req.params && req.params.did && req.params.uid) {
 
-            Relationship.findOne({doctor: req.params.did, user: req.params.uid, apply: true})
+            Relationship.findOne({ doctor: req.params.did, user: req.params.uid, apply: true })
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
 
                     if (!item) {
-                        return res.json({existed: false});
+                        return res.json({ existed: false });
                     }
 
-                    res.json({existed: true});
+                    res.json({ existed: true });
                 });
         }
     },
 
     // 根据医生ID 获取相关的关系组
-    GetByDoctorId: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            Relationship.find({doctor: req.params.id, apply: true})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetByDoctorId: (req, res, next) => {
+        const { id } = req.params; // id is doctor id
+        Relationship.find({ doctor: id, hid: req.token.hid, apply: true })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 
@@ -88,7 +61,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            Relationship.find({doctor: req.params.id, apply: true}, 'group user -_id', {sort: {group: -1} })
+            Relationship.find({ doctor: req.params.id, apply: true }, 'group user -_id', { sort: { group: -1 } })
                 .populate('user', 'link_id name -_id')
                 .populate('group', 'name -_id')
                 .exec(function (err, items) {
@@ -108,35 +81,26 @@ module.exports = {
     // 根据医生ID 获取相关的关系组
     // 返回用户详细信息: [user name, cell, gender, birthdate, role]
     GetUserDetailsByDoctorId: function (req, res) {
+        const { id } = req.params; // id is doctor id
+        Relationship.find({ doctor: id, apply: true })//, 'user -_id')
+            // .populate('user', 'name cell gender birthdate role created -_id')
+            // .sort({'user.created': 1})
+            .populate({
+                path: 'user',
+                select: 'name cell gender birthdate role created -_id'
+            })
+            .sort({ 'user.created': 1 })
+            .exec(function (err, items) {
+                if (err) {
+                    return Status.returnStatus(res, Status.ERROR, err);
+                }
 
-        if (req.params && req.params.id) {
+                if (!items || items.length < 1) {
+                    return Status.returnStatus(res, Status.NULL);
+                }
 
-            Relationship.find({doctor: req.params.id, apply: true} )//, 'user -_id')
-                // .populate('user', 'name cell gender birthdate role created -_id')
-                // .sort({'user.created': 1})
-                .populate({
-                    path: 'user',
-                    select: 'name cell gender birthdate role created -_id'
-                })
-                .sort({'user.created': 1})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    // var _items = [];
-                    // items.map(function(item) {
-                    //     _items.push(item.user);
-                    // });
-                    // _items = _.sortBy(_items, 'created').reverse();
-
-                    res.json(items);
-                });
-        }
+                res.json(items);
+            });
     },
 
     // 根据患者ID 获取医患关系
@@ -144,7 +108,7 @@ module.exports = {
 
         if (req.params && req.params.id) {
 
-            Relationship.find({user: req.params.id, apply: true})
+            Relationship.find({ user: req.params.id, apply: true })
                 .exec(function (err, items) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -164,7 +128,7 @@ module.exports = {
 
         if (req.params && req.params.group) {
 
-            Relationship.find({group: req.params.group, apply: true})
+            Relationship.find({ group: req.params.group, apply: true })
                 .exec(function (err, items) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -194,7 +158,7 @@ module.exports = {
         }
 
 
-        Relationship.find({doctor: relationship.doctor, user: relationship.user, apply: true}) // check if existed
+        Relationship.find({ doctor: relationship.doctor, user: relationship.user, apply: true }) // check if existed
             .exec(function (err, items) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
@@ -204,7 +168,7 @@ module.exports = {
                 if (items) {
 
                     var found = false;
-                    for(var i = 0; i < items.length; i++) {
+                    for (var i = 0; i < items.length; i++) {
                         if (items[i].group == relationship.group) {
                             found = true;
                             break;
@@ -212,7 +176,7 @@ module.exports = {
                     }
 
                     // 如果存在，直接返回
-                    if (found){
+                    if (found) {
                         return res.json(items);
                     }
 
@@ -253,8 +217,8 @@ module.exports = {
 
                 if (relationship.doctor)
                     item.doctor = relationship.doctor;
-                if (relationship.group){
-                    if (relationship.group == '0000'){
+                if (relationship.group) {
+                    if (relationship.group == '0000') {
                         item.group = null;
                     }
                     else
@@ -284,17 +248,17 @@ module.exports = {
     DeleteById: function (req, res) {
         if (req.params && req.params.id) { // params.id is chatroom ID
 
-            Relationship.findOne({_id: req.params.id}, function (err, item) {
+            Relationship.findOne({ _id: req.params.id }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
 
-                if (!item){
+                if (!item) {
                     return Status.returnStatus(res, Status.NULL);
                 }
 
                 //
-                item.remove(function(err, raw){
+                item.remove(function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
@@ -308,7 +272,7 @@ module.exports = {
     DeleteByUserId: function (req, res) {
         if (req.params && req.params.id) { // params.id is user ID
 
-            Relationship.remove({user: req.params.id}, function (err) {
+            Relationship.remove({ user: req.params.id }, function (err) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
@@ -321,7 +285,7 @@ module.exports = {
     DeleteByDoctorId: function (req, res) {
         if (req.params && req.params.id) { // params.id is doctor ID
 
-            Relationship.remove({doctor: req.params.id}, function (err) {
+            Relationship.remove({ doctor: req.params.id }, function (err) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }

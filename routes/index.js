@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 // var bodyParser = require('body-parser');
 const util = require('../util/util');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
@@ -16,7 +16,7 @@ router.route('/').get((req, res) => {
 var User = require('../db/controller/user');
 
 router.route('/users/:number')
-    .get(User.GetAll);//
+    .get(User.GetAll); //
 
 router.route('/user/:id')
     .get(User.GetById)
@@ -25,12 +25,12 @@ router.route('/user/:id')
 router.route('/user/cell/:cell')
     .get(User.GetByCell);
 
-router.route('/user/wechat/:id')
+router.route('/user/wechat/:link_id')
     .get(User.GetByLinkId)
     .post(urlencodedParser, User.AddByLinkId)
     .patch(urlencodedParser, User.UpdateByLinkId);
 
-router.route('/user/preset/wechat/:id')
+router.route('/user/preset/wechat/:link_id')
     .post(urlencodedParser, User.AddPresetByLinkId);
 
 router.route('/users/search') //GET

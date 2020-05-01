@@ -163,52 +163,28 @@ module.exports = {
 
     },
 
-    UpdateByLinkId: function (req, res) {
+    UpdateByLinkId: (req, res, next) => {
         const { link_id } = req.params; // WeChat ID
         const user = req.body;
 
-        User.findOne({ link_id: link_id, hid: user.hid }, function (err, item) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
+        User.findOneAndUpdate({ link_id: link_id, hid: user.hid }, { ...req.body }, { new: true })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
 
-            if (!item) {
-                return Status.returnStatus(res, Status.NULL);
-            }
-
-            if (user.name)
-                item.name = user.name;
-            if (user.cell)
-                item.cell = user.cell;
-            if (user.gender)
-                item.gender = user.gender;
-            if (user.birthdate)
-                item.birthdate = user.birthdate;
-            if (user.role || user.role == 0)
-                item.role = user.role;
-            if (user.sin)
-                item.sin = user.sin;
-            if (user.admissionNumber)
-                item.admissionNumber = user.admissionNumber;
-            if (user.icon)
-                item.icon = user.icon || '';
-            if (user.apply || user.apply === false)
-                item.apply = user.apply;
-
-            if (user.visitedDepartments) {
-                item.visitedDepartments = user.visitedDepartments;
-            }
-
-            //
-            item.save(function (err, raw) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-                res.json(raw); //update user success
-            });
-
-        });
-
+        //     if (user.role || user.role == 0)
+        //         item.role = user.role;
+        //     if (user.sin)
+        //         item.sin = user.sin;
+        //     if (user.admissionNumber)
+        //         item.admissionNumber = user.admissionNumber;
+        //     if (user.icon)
+        //         item.icon = user.icon || '';
+        //     if (user.apply || user.apply === false)
+        //         item.apply = user.apply;
+        //     if (user.visitedDepartments) {
+        //         item.visitedDepartments = user.visitedDepartments;
+        //     }
     },
 
     // for test

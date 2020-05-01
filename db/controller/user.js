@@ -2,18 +2,9 @@
  * Created by hhu on 2016/4/27.
  */
 const User = require('../model/user');
+const { allowToDeleteUser } = require('../../util/allow-to');
 
-// for detele check
-const Booking = require('../model/booking');
-const Chatroom = require('../model/chatroom');
-const Diagnose = require('../model/diagnose');
-const labResult = require('../model/labResult');
-const Prescription = require('../model/prescription');
-const Relationship = require('../model/relationship');
-const Survey = require('../model/survey');
-const UserFeedback = require('../model/userFeedback');
-
-const self = module.exports = {
+module.exports = {
 
     GetAll: (req, res, next) => {
         let { number } = req.params;
@@ -241,8 +232,8 @@ const self = module.exports = {
 
     // for test
     DeleteById: async (req, res, next) => {
-        const {id} = req.params; // user's _id
-        const allow = await self.allowToDelete(id, req.token.hid);
+        const { id } = req.params; // user's _id
+        const allow = await allowToDeleteUser(id, req.token.hid);
         if (!allow) {
             return Status.returnStatus(res, Status.DELETE_NOT_ALLOWED)
         }
@@ -251,39 +242,6 @@ const self = module.exports = {
             .select('-hid -__v -password')
             .then((result) => res.json(result))
             .catch(err => next(err));
-    },
-
-    // functions for delete
-    allowToDelete: async (id, hid) => {
-        let existed = true;
-        try {
-            existed = await Booking.exists({ user: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Chatroom.exists({ user: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Diagnose.exists({ user: id, hid: hid })
-            if (existed) return false;
-
-            existed = await labResult.exists({ user: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Prescription.exists({ user: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Relationship.exists({ user: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Survey.exists({ user: id, hid: hid })
-            if (existed) return false;
-
-            existed = await UserFeedback.exists({ user: id, hid: hid })
-            if (existed) return false;
-        } catch (e) {
-            return false;
-        }
-        return true;
     },
 
     UpdateIcon: function (req, res) {

@@ -3,19 +3,9 @@ const Doctor = require('../model/doctor.js');
 const Hospital = require('../model/hospital');
 const Relationship = require('../model/relationship.js');
 const util = require('../../util/util');
+const { allowToDeleteDoctor } = require('../../util/allow-to');
 
-// for detele check
-const Booking = require('../model/booking');
-const Chatroom = require('../model/chatroom');
-const Diagnose = require('../model/diagnose');
-const Group = require('../model/group');
-const labResult = require('../model/labResult');
-const Prescription = require('../model/prescription');
-const Schedule = require('../model/schedule');
-const Survey = require('../model/survey');
-const UserFeedback = require('../model/userFeedback');
-
-const self = module.exports = {
+module.exports = {
 
     GetAllDoctors: (req, res, next) => {
         let { number } = req.params;
@@ -263,7 +253,7 @@ const self = module.exports = {
 
     DeleteById: async (req, res, next) => {
         const { id } = req.params; // doctor's _id
-        const allow = await self.allowToDelete(id, req.token.hid);
+        const allow = await allowToDeleteDoctor(id, req.token.hid);
         if (!allow) {
             return Status.returnStatus(res, Status.DELETE_NOT_ALLOWED)
         }
@@ -272,45 +262,6 @@ const self = module.exports = {
             .select('-hid -__v -password')
             .then((result) => res.json(result))
             .catch(err => next(err));
-    },
-
-    // functions for delete
-    allowToDelete: async (id, hid) => {
-        let existed = true;
-        try {
-            existed = await Booking.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Chatroom.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Diagnose.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Group.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await labResult.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Prescription.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Relationship.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Schedule.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await Survey.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-
-            existed = await UserFeedback.exists({ doctor: id, hid: hid })
-            if (existed) return false;
-        } catch (e) {
-            return false;
-        }
-        return true;
     },
 
     UpdateIcon: function (req, res) {

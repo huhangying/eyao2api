@@ -3,13 +3,9 @@
  */
 
 const Department = require('../model/department');
-const Doctor = require('../model/doctor');
-const ArticleTemplate = require('../model/articleTemplate');
-const AdverseReaction = require('../model/adverseReaction');
-const SurveyTemplate = require('../model/surveyTemplate');
-const SurveyCat = require('../model/surveyCat');
+const { allowToDeleteDepartment } = require('../../util/allow-to');
 
-const self = module.exports = {
+module.exports = {
 
   GetAll: (req, res, next) => {
 
@@ -61,7 +57,7 @@ const self = module.exports = {
     // params.id is doctor's user ID
     const { id } = req.params;
 
-    const allow = await self.allowToDelete(id, req.token.hid);
+    const allow = await allowToDeleteDepartment(id, req.token.hid);
     if (!allow) {
       return Status.returnStatus(res, Status.DELETE_NOT_ALLOWED)
     }
@@ -70,31 +66,6 @@ const self = module.exports = {
       .select('-hid -__v')
       .then((result) => res.json(result))
       .catch(err => next(err));
-  },
-
-  // functions for delete
-  allowToDelete: async (id, hid) => {
-    let existed = true;
-    try {
-      existed = await Doctor.exists({ department: id, hid: hid })
-      if (existed) return false;
-
-      existed = await ArticleTemplate.exists({ department: id, hid: hid })
-      if (existed) return false;
-
-      existed = await AdverseReaction.exists({ department: id, hid: hid })
-      if (existed) return false;
-
-      existed = await SurveyTemplate.exists({ department: id, hid: hid })
-      if (existed) return false;
-
-      existed = await SurveyCat.exists({ department: id, hid: hid })
-      if (existed) return false;
-    } catch (e) {
-      return false;
-    }
-
-    return true;
   },
 
 }

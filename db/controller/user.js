@@ -1,80 +1,57 @@
 /**
  * Created by hhu on 2016/4/27.
  */
-var User = require('../model/user.js');
+const User = require('../model/user');
 
-module.exports = {
+// for detele check
+const Booking = require('../model/booking');
+const Chatroom = require('../model/chatroom');
+const Diagnose = require('../model/diagnose');
+const labResult = require('../model/labResult');
+const Prescription = require('../model/prescription');
+const Relationship = require('../model/relationship');
+const Survey = require('../model/survey');
+const UserFeedback = require('../model/userFeedback');
 
+const self = module.exports = {
 
-    GetAll: function (req, res) {
-        var number = 999; // set max return numbers
-
-        if (req.params && req.params.number) {
-            number = +req.params.number;
-            //console.log(number);
-        }
-
-        User.find({})
-            .sort({updated: -1})
+    GetAll: (req, res, next) => {
+        let { number } = req.params;
+        number = +number || 999; // set default return numbers
+        User.find({ hid: req.token.hid })
+            .select('-hid -password -__v')
+            .sort({ updated: -1 })
             .limit(number)
-            .exec(function(err, users){
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!users || users.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(users);
-            });
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取用户信息
-    GetById: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            User.findOne({_id: req.params.id})
-                .exec(function(err, user) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!user) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(user);
-                });
-        }
+    GetById: (req, res, next) => {
+        const { id } = req.params;
+        User.findOne({ _id: id })
+            .select('-hid -password -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据微信号获取用户信息
-    GetByLinkId: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            User.findOne({link_id: req.params.id, apply: true})
-                .exec(function(err, user) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!user) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(user);
-                });
-        }
+    GetByLinkId: (req, res, next) => {
+        const { id } = req.params; // id is link_id
+        User.findOne({ link_id: id, apply: true, hid: req.token.hid })
+            .select('-hid -password -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取用户信息
-    Search: function (req, res) {
-        var option = req.body;
+    Search: (req, res, next) => {
+        const option = req.body;
 
-        var filter_options = {};
+        const filter_options = { hid: option.hid };
         if (option.name) {
             filter_options.name = new RegExp(option.name, "i");
         }
@@ -88,46 +65,26 @@ module.exports = {
             filter_options.sin = new RegExp(option.sin, "i");
         }
 
-        // console.log(filter_options);
-
         User.find(filter_options)
-            .exec(function(err, users) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!users) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(users);
-            });
-
+            .select('-hid -password -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据手机号码获取用户信息
-    GetByCell: function (req, res) {
+    GetByCell: (req, res, next) => {
+        const { cell } = req.params;
+        User.find({ cell: cell, apply: true, hid: req.token.hid })
+            .select('-hid -password -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
 
-        if (req.params && req.params.cell) {
-            User.find({cell: req.params.cell, apply: true})
-                .exec(function(err, users) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!users || users.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(users);
-                    //res.json(users[0]);
-                });
-
-        }
     },
 
     // 根据微信号创建用户
-    AddByLinkId: function(req, res){
+    AddByLinkId: function (req, res) {
         if (req.params && req.params.id) { // params.id is WeChat ID
             var linkId = req.params.id;
 
@@ -156,7 +113,7 @@ module.exports = {
 
             // admission number
 
-            User.findOne({link_id: linkId}) // check if registered
+            User.findOne({ link_id: linkId }) // check if registered
                 .exec(function (err, _user) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -170,14 +127,15 @@ module.exports = {
                         User.create({
                             hid: user.hid,
                             link_id: linkId,
-                                cell: user.cell,
-                                name: user.name,
-                                password: user.password,
-                                gender: user.gender,
-                                icon: user.icon,
-                                birthdate: user.birthdate,
-                                sin: user.sin,
-                                apply: user.apply || true},
+                            cell: user.cell,
+                            name: user.name,
+                            password: user.password,
+                            gender: user.gender,
+                            icon: user.icon,
+                            birthdate: user.birthdate,
+                            sin: user.sin,
+                            apply: user.apply || true
+                        },
                             function (err, raw) {
                                 if (err) {
                                     return Status.returnStatus(res, Status.ERROR, err);
@@ -206,7 +164,7 @@ module.exports = {
     },
 
     // 用于用户注册前,关联用户与药师的关系
-    AddPresetByLinkId: function(req, res){
+    AddPresetByLinkId: function (req, res) {
         if (req.params && req.params.id) { // params.id is WeChat ID
             var linkId = req.params.id;
 
@@ -215,7 +173,8 @@ module.exports = {
             User.create({
                 hid: linkId.hid,
                 link_id: linkId,
-                    apply: false},
+                apply: false
+            },
                 function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -227,19 +186,19 @@ module.exports = {
         }
     },
 
-    UpdateByLinkId: function(req, res){
+    UpdateByLinkId: function (req, res) {
         if (req.params && req.params.id) { // params.id is WeChat ID
             var linkId = req.params.id;
 
             // 获取user数据（json）
             var user = req.body;
 
-            User.findOne({link_id: linkId}, function (err, item) {
+            User.findOne({ link_id: linkId }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
 
-                if (!item){
+                if (!item) {
                     return Status.returnStatus(res, Status.NULL);
                 }
 
@@ -269,7 +228,7 @@ module.exports = {
                 //console.log(JSON.stringify(item));
 
                 //
-                item.save(function(err, raw){
+                item.save(function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
@@ -281,38 +240,60 @@ module.exports = {
     },
 
     // for test
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is ID
-
-            User.findOne({_id: req.params.id}, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function(err, raw){
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
+    DeleteById: async (req, res, next) => {
+        const {id} = req.params; // user's _id
+        const allow = await self.allowToDelete(id, req.token.hid);
+        if (!allow) {
+            return Status.returnStatus(res, Status.DELETE_NOT_ALLOWED)
         }
+
+        User.findByIdAndDelete(id)
+            .select('-hid -__v -password')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // functions for delete
+    allowToDelete: async (id, hid) => {
+        let existed = true;
+        try {
+            existed = await Booking.exists({ user: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Chatroom.exists({ user: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Diagnose.exists({ user: id, hid: hid })
+            if (existed) return false;
+
+            existed = await labResult.exists({ user: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Prescription.exists({ user: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Relationship.exists({ user: id, hid: hid })
+            if (existed) return false;
+
+            existed = await Survey.exists({ user: id, hid: hid })
+            if (existed) return false;
+
+            existed = await UserFeedback.exists({ user: id, hid: hid })
+            if (existed) return false;
+        } catch (e) {
+            return false;
+        }
+        return true;
     },
 
     UpdateIcon: function (req, res) {
         if (req.params && req.params.cell) {
-            var query = {cell: req.params.cell};
-            var update = {icon: 'http://101.200.81.99:808/server/icons/' + req.params.cell + '.jpg'};
-            var options = {new: false};
+            var query = { cell: req.params.cell };
+            var update = { icon: 'http://101.200.81.99:808/server/icons/' + req.params.cell + '.jpg' };
+            var options = { new: false };
 
             User.findOneAndUpdate(query, update, options,
-                function(err, usr){
+                function (err, usr) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
@@ -324,8 +305,8 @@ module.exports = {
 
     //====================================================== for service
 
-    GetNameById : function(id) {
-        User.findOne({_id: id})
+    GetNameById: function (id) {
+        User.findOne({ _id: id })
             .exec(function (err, item) {
                 console.log(JSON.stringify((item)));
 

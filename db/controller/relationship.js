@@ -94,50 +94,31 @@ module.exports = {
     },
 
     // 根据患者ID 获取医患关系
-    GetByUserId: function (req, res) {
+    GetByUserId: (req, res, next) => {
+        const { id } = req.params; // id is patient user id
 
-        if (req.params && req.params.id) {
-
-            Relationship.find({ user: req.params.id, apply: true })
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+        Relationship.find({ user: id, hid: req.token.hid, apply: true })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据Group ID 获取医患关系
-    GetByGroupId: function (req, res) {
+    GetByGroupId: (req, res, next) => {
+        const { group } = req.params;
 
-        if (req.params && req.params.group) {
-
-            Relationship.find({ group: req.params.group, apply: true })
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+        Relationship.find({ group: group, hid: req.token.hid, apply: true })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 创建医患关系
+    // ? This one is weird. The relationship should only be updated but not added.
     FindOrAdd: function (req, res) {
-
-        // 获取请求数据（json）
-        var relationship = req.body;
+        const relationship = req.body;
 
         // check doctor, user
         if (!relationship.doctor) {
@@ -147,8 +128,7 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_USER);
         }
 
-
-        Relationship.find({ doctor: relationship.doctor, user: relationship.user, apply: true }) // check if existed
+        Relationship.find({ doctor: relationship.doctor, user: relationship.user, hid: relationship.hid, apply: true }) // check if existed
             .exec(function (err, items) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
@@ -189,100 +169,76 @@ module.exports = {
             });
     },
 
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is group ID
-            var id = req.params.id;
+    UpdateById: (req, res, next) => {
+        const { id } = req.params; 
+        const relationship = req.body; // body should only include group
 
-            // 获取数据（json）,只能更新关系组名
-            var relationship = req.body;
+        Relationship.findByIdAndUpdate(id, relationship, { new: true })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
 
-            Relationship.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
+        // const { id } = req.params;
+        // // 获取数据（json）,只能更新关系组名
+        // const relationship = req.body;
 
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
+        // Relationship.findById(id, function (err, item) {
+        //     if (err) {
+        //         return Status.returnStatus(res, Status.ERROR, err);
+        //     }
 
-                if (relationship.doctor)
-                    item.doctor = relationship.doctor;
-                if (relationship.group) {
-                    if (relationship.group == '0000') {
-                        item.group = null;
-                    }
-                    else
-                        item.group = relationship.group;
-                }
+        //     if (!item) {
+        //         return Status.returnStatus(res, Status.NULL);
+        //     }
 
-                if (relationship.user)
-                    item.user = relationship.user;
-                if (relationship.apply || relationship.apply === false)
-                    item.apply = relationship.apply;
+        //     if (relationship.doctor)
+        //         item.doctor = relationship.doctor;
+        //     if (relationship.group) {
+        //         if (relationship.group == '0000') {
+        //             item.group = null;
+        //         }
+        //         else
+        //             item.group = relationship.group;
+        //     }
 
-                //console.log(JSON.stringify(item));
+        //     if (relationship.user)
+        //         item.user = relationship.user;
+        //     if (relationship.apply || relationship.apply === false)
+        //         item.apply = relationship.apply;
 
-                //
-                item.save(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
+        //     item.save(function (err, raw) {
+        //         if (err) {
+        //             return Status.returnStatus(res, Status.ERROR, err);
+        //         }
+        //         res.json(raw);
+        //     });
 
-            });
-        }
+        // });
     },
 
 
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is chatroom ID
-
-            Relationship.findOne({ _id: req.params.id }, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;
+        Relationship.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    DeleteByUserId: function (req, res) {
-        if (req.params && req.params.id) { // params.id is user ID
-
-            Relationship.remove({ user: req.params.id }, function (err) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                res.sendStatus(200);
-            });
-        }
+    // should not be used!!!
+    DeleteByUserId: (req, res, next) => {
+        const { id } = req.params; // id is user ID
+        Relationship.remove({ user: id, hid: req.token.hid })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    DeleteByDoctorId: function (req, res) {
-        if (req.params && req.params.id) { // params.id is doctor ID
-
-            Relationship.remove({ doctor: req.params.id }, function (err) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                res.sendStatus(200);
-            });
-        }
+    // should not be used!!!
+    DeleteByDoctorId: (req, res, next) => {
+        const { id } = req.params; // id is doctor ID
+        Relationship.remove({ doctor: id, hid: req.token.hid })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 }

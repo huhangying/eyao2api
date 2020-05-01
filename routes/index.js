@@ -118,7 +118,7 @@ router.route('/relationships/doctor/:id')
 router.route('/relationships/user/:id')
     .get(Relationship.GetByUserId)
     .delete(Relationship.DeleteByUserId);
-    
+
 router.route('/relationships/group/:group')
     .get(Relationship.GetByGroupId);
 
@@ -132,7 +132,7 @@ router.route('/relationship/:did/:uid')
 router.route('/relationship')
     .post(urlencodedParser, Relationship.FindOrAdd);
 
-
+// paths to reverse
 router.route('/relationships/doctor/:id/select')  // 返回用户组和用户信息: [group name, group id,] user name, user id
     .get(Relationship.GetSelectionByDoctorId);
 router.route('/relationships/doctor/:id/userdetails')  // 用于药师用户管理, 返回用户信息: [name, cell id,] user name, user id

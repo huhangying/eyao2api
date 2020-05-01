@@ -37,8 +37,9 @@ module.exports = {
     // 根据医生ID 获取相关的关系组
     GetByDoctorId: (req, res, next) => {
         const { id } = req.params; // id is doctor id
-        Group.findOne({ doctor: id, apply: true })
+        Group.find({ doctor: id, hid: req.token.hid, apply: true })
             .select('-hid -__v')
+            .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

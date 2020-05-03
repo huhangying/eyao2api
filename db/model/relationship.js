@@ -10,6 +10,8 @@ const Relationship = mongoose.model(
         group: { type: mongoose.Schema.Types.ObjectId, ref: 'group' },
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
         apply: { type: Boolean, default: true }
+    }, {
+        timestamps: true
     })
 );
 

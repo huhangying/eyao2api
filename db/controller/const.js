@@ -12,7 +12,7 @@ module.exports = {
 
   //
   GetByName: (req, res, next) => {
-    const { name } = req.params.name;
+    const { name } = req.params;
     const query = { name: name, hid: req.token.hid };
     Const.findOne(query)
       .select('-hid -__v')

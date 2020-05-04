@@ -65,7 +65,7 @@ module.exports = {
         }
         Schedule.find(query)
         .select('-hid -__v')
-        .populate('period', '-hid -__v')
+        // .populate('period', '-hid -__v')
         .sort({ date: 1, period: 1 })
         .lean()
         .then((result) => res.json(result))

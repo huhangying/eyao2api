@@ -49,34 +49,27 @@ module.exports = {
     },
 
     // 根据药师ID 获取相关的门诊(不包括当天的门诊)
-    GetByDoctorId: function (req, res) {
+    GetByDoctorId: (req, res, next) => {
         // var d = new Date(req.params.date);
         // if(d.getHours() < 12) {
         //     d.setHours(12,0,0,0); // next midnight/midday is midday
         // } else {
         //     d.setHours(24,0,0,0); // next midnight/midday is midnight
         // }
-        if (req.params && req.params.did) {
-
-            Schedule.find({
-                doctor: req.params.did,
-                apply: true,
-                date: { $gte: (+new Date(new Date().setHours(0, 0, 0, 0)) + 24 * 60 * 60 * 1000) }
-            })
-                //Schedule.find({doctor: req.params.did, date: {$gte: _date}})
-                .sort({ date: 1, period: 1 })
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
+        const {did} = req.params;
+        const query = {
+            doctor: did,
+            hid: req.token.hid,
+            apply: true,
+            // date: { $gte: (+new Date(new Date().setHours(0, 0, 0, 0)) + 24 * 60 * 60 * 1000) }
         }
+        Schedule.find(query)
+        .select('-hid -__v')
+        .populate('period', '-hid -__v')
+        .sort({ date: 1, period: 1 })
+        .lean()
+        .then((result) => res.json(result))
+        .catch(err => next(err));
     },
 
     // for test

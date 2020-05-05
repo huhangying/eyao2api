@@ -7,45 +7,31 @@ var $q = require('q');
 
 module.exports = {
 
-    GetAll: function (req, res) {
-        var query = {
+    GetAll: (req, res, next) => {
+        const query = {
             hid: req.token.hid,
             date: { $gte: (new Date()) }
         };
         Schedule.find(query)
+            .select('-hid -__v')
             .sort({ date: 1 })
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    GetAllPopulated: function (req, res) {
-        var query = {
+    GetAllPopulated: (req, res, next) => {
+        const query = {
             hid: req.token.hid,
             date: { $gte: (new Date()) }
         };
         Schedule.find(query)
             .populate('period')
-            .sort({ created: 1 })
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+            .select('-hid -__v')
+            .sort({ date: 1 })
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据药师ID 获取相关的门诊(不包括当天的门诊)
@@ -56,7 +42,7 @@ module.exports = {
         // } else {
         //     d.setHours(24,0,0,0); // next midnight/midday is midnight
         // }
-        const {did} = req.params;
+        const { did } = req.params;
         const query = {
             doctor: did,
             hid: req.token.hid,
@@ -64,34 +50,29 @@ module.exports = {
             // date: { $gte: (+new Date(new Date().setHours(0, 0, 0, 0)) + 24 * 60 * 60 * 1000) }
         }
         Schedule.find(query)
-        .select('-hid -__v')
-        // .populate('period', '-hid -__v')
-        .sort({ date: 1, period: 1 })
-        .lean()
-        .then((result) => res.json(result))
-        .catch(err => next(err));
+            .select('-hid -__v')
+            // .populate('period', '-hid -__v')
+            .sort({ date: 1, period: 1 })
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // for test
     // 根据药师ID 获取相关的门诊, 没有时间限制
-    GetAllByDoctorId: function (req, res) {
-
-        if (req.params && req.params.did) {
-
-            Schedule.find({ doctor: req.params.did })
-                .sort({ date: 1, period: 1 })
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
+    GetAllByDoctorId:  (req, res, next) => {
+        const { did } = req.params;
+        const query = {
+            doctor: did,
+            hid: req.token.hid,
         }
+        Schedule.find(query)
+            .select('-hid -__v')
+            // .populate('period', '-hid -__v')
+            .sort({ date: 1, period: 1 })
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据药师ID和日期 获取相关的门诊
@@ -142,23 +123,13 @@ module.exports = {
     },
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            Schedule.findOne({ _id: req.params.id })
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetById: (req, res, next) => {
+        const { id } = req.params;
+        Schedule.findById(id)
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 

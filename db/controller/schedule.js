@@ -47,7 +47,7 @@ module.exports = {
             doctor: did,
             hid: req.token.hid,
             apply: true,
-            // date: { $gte: (+new Date(new Date().setHours(0, 0, 0, 0)) + 24 * 60 * 60 * 1000) }
+            date: { $gte: (+new Date(new Date().setHours(0, 0, 0, 0)) + 24 * 60 * 60 * 1000) }
         }
         Schedule.find(query)
             .select('-hid -__v')
@@ -58,9 +58,9 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // for test
+    // for CMS
     // 根据药师ID 获取相关的门诊, 没有时间限制
-    GetAllByDoctorId:  (req, res, next) => {
+    GetAllByDoctorId: (req, res, next) => {
         const { did } = req.params;
         const query = {
             doctor: did,
@@ -134,109 +134,27 @@ module.exports = {
 
 
     // 创建门诊
-    Add: function (req, res) {
-
-        // 获取请求数据（json）
-        var schedule = req.body;
-
+    Add: (req, res, next) => {
+        const schedule = req.body;
         // doctor, date, period
-        if (!schedule.doctor) {
-            return Status.returnStatus(res, Status.MISSING_PARAM);
-        }
-        if (!schedule.period) {
-            return Status.returnStatus(res, Status.MISSING_PARAM);
-        }
-        if (!schedule.date) {
+        if (!schedule.doctor || !schedule.period || !schedule.date) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
 
-
-        Schedule.findOne({ doctor: schedule.doctor, date: schedule.date, period: schedule.period })
-            .exec(function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
-                    // 不存在，创建
-                    Schedule.create({
-                        hid: schedule.hid,
-                        doctor: schedule.doctor,
-                        period: schedule.period,
-                        date: schedule.date,
-                        limit: schedule.limit
-                    }, function (err, raw) {
-                        if (err) {
-                            return Status.returnStatus(res, Status.ERROR, err);
-                        }
-
-                        return res.send(raw);
-                    });
-                }
-                else {
-                    // 存在，更新
-                    if (!item.apply) {
-                        item.apply = true;
-                        //
-                        item.save(function (err, raw) {
-                            if (err) {
-                                return Status.returnStatus(res, Status.ERROR, err);
-                            }
-                            return res.json(raw);
-                        });
-                    }
-                    else {
-                        // 已经存在
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-                }
-
-            });
-
+        Schedule.findOneAndUpdate(
+            { doctor: schedule.doctor, date: schedule.date, period: schedule.period, hid: schedule.hid },
+            schedule,
+            { new: true, upsert: true })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is schedule ID
-            var id = req.params.id;
-
-            // 获取数据（json）
-            var schedule = req.body;
-
-            Schedule.findById(id)
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    if (schedule.period)
-                        item.period = schedule.period;
-                    if (schedule.doctor)
-                        item.doctor = schedule.doctor;
-
-                    if (schedule.date) {
-                        item.date = new Date(schedule.date);
-                    }
-                    if (schedule.limit)
-                        item.limit = schedule.limit;
-
-                    if (schedule.apply || schedule.apply == false)
-                        item.apply = schedule.apply;
-                    //console.log(JSON.stringify(item));
-
-                    //
-                    item.save(function (err, raw) {
-                        if (err) {
-                            return Status.returnStatus(res, Status.ERROR, err);
-                        }
-                        res.json(raw);
-                    });
-
-                });
-        }
+    UpdateById: (req, res, next) => {
+        const { id } = req.params;
+        const schedule = req.body;
+        Schedule.findByIdAndUpdate(id, schedule, { new: true })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 

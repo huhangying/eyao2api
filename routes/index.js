@@ -282,6 +282,14 @@ router.route('/schedules/find/doctors/:departmentid')
 router.route('/schedule/find/:did/:period/:date')
     .get(Schedule.GetByDoctorPeriodDate);
 
+// 批量创建和删除Schedule
+router.route('/schedules-bat-add')
+    .post(urlencodedParser, Schedule.BatAdd);
+router.route('/schedules-bat-delete')
+    .post(urlencodedParser, Schedule.BatDelete);
+
+
+
 //---------------- 门诊时间端
 var Period = require('../db/controller/period');
 

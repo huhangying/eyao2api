@@ -5,106 +5,70 @@ const moment = require('moment');
 
 module.exports = {
 
-    GetAll: function (req, res) {
-
-        Booking.find()
-            .sort({created: -1})
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+    GetAll: (req, res, next) => {
+        Booking.find({ hid: req.token.hid })
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    // cms 用
-    GetAllPopulated: function (req, res) {
-
-        Booking.find()
+    // CMS 用
+    GetAllPopulated: (req, res, next) => {
+        Booking.find({ hid: req.token.hid })
             .populate('schedule')
-            .sort({created: -1})
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            Booking.findOne({_id: req.params.id})
-                .populate('schedule')
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetById: (req, res, next) => {
+        const { id } = req.params;
+        Booking.findOne({ _id: id })
+            .populate('schedule')
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据患者ID 获取相关的预约
-    GetByUserId: function (req, res) {
-
-        if (req.params && req.params.uid) {
-
-            Booking.find({user: req.params.uid})
-                .sort({created: -1})
-                .populate('schedule')
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetByUserId: (req, res, next) => {
+        const { uid } = req.params;
+        Booking.find({ user: uid })
+            .sort({ created: -1 })
+            .populate('schedule')
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据药师ID 获取相关的预约
-    GetByDoctorId: function (req, res) {
-
-        if (req.params && req.params.did) {
-
-            Booking.find({doctor: req.params.did})
-                .sort({created: -1})
-                .populate('schedule')
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetByDoctorId: (req, res, next) => {
+        const { did } = req.params;
+        Booking.find({ doctor: did, hid: req.token.hid })
+            .sort({ created: -1 })
+            // .populate('schedule')
+            // .populate('user', '_id name user_id cell gender')
+            .populate([
+                {
+                    path: 'schedule',
+                    select: '-__v -hid'
+                },
+                {
+                    path: 'user',
+                    select: '_id name user_id cell gender'
+                }
+            ])
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据药师ID和日期 获取相关的预约
@@ -116,8 +80,8 @@ module.exports = {
             // var tomorrow = moment(today).add(1, 'days').format();
             var today = moment().format('YYYY-MM-DD');
             // Booking.find({ doctor: req.params.did })
-            Booking.find({doctor: req.params.did, status: 1 }) //, date: {$gte: today, $lt: tomorrow}
-                .sort({created: -1})
+            Booking.find({ doctor: req.params.did, status: 1 }) //, date: {$gte: today, $lt: tomorrow}
+                .sort({ created: -1 })
                 //.populate('schedule')
                 .populate('user') //, 'name cell')
                 .populate({
@@ -137,8 +101,8 @@ module.exports = {
                     //     return Status.returnStatus(res, Status.NULL);
                     // }
 
-                    items = items.filter(function(item){
-                        if (item.schedule && item.schedule._doc && item.schedule._doc.date){
+                    items = items.filter(function (item) {
+                        if (item.schedule && item.schedule._doc && item.schedule._doc.date) {
                             return moment(item.schedule._doc.date).format('YYYY-MM-DD') == today;
                         }
                     });
@@ -149,24 +113,15 @@ module.exports = {
     },
 
     //
-    GetByScheduleId: function (req, res) {
-
-        if (req.params && req.params.sid) {
-
-            Booking.find({schedule: req.params.sid, apply: true})
-                .sort({created: -1})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetByScheduleId: (req, res, next) => {
+        const { sid } = req.params;
+        Booking.find({ schedule: sid, apply: true, hid: req.token.hid })
+            .sort({ created: -1 })
+            .populate('schedule')
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 
@@ -205,7 +160,7 @@ module.exports = {
 
             // limit-- in schedule
             Schedule.findById(booking.schedule)
-                .exec( function (err, schedule) {
+                .exec(function (err, schedule) {
                     schedule.limit--;
                     schedule.save();
                 });
@@ -224,7 +179,7 @@ module.exports = {
             var booking = req.body;
 
             Booking.findById(id)
-                .exec( function (err, item) {
+                .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
@@ -257,7 +212,7 @@ module.exports = {
                         if (original_status === 1 && (item.status === 2 || item.status === 3)) {
                             // limit++ in schedule
                             Schedule.findById(item.schedule)
-                                .exec( function (err, schedule) {
+                                .exec(function (err, schedule) {
                                     schedule.limit++;
                                     schedule.save();
                                 });
@@ -270,28 +225,12 @@ module.exports = {
         }
     },
 
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is booking ID
-
-            Booking.findOne({_id: req.params.id}, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function(err, raw){
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;  // id is schedule ID
+        Booking.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 }

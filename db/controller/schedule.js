@@ -122,7 +122,6 @@ module.exports = {
         if (!schedule.doctor || !schedule.period || !schedule.date) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
-
         Schedule.findOneAndUpdate(
             { doctor: schedule.doctor, date: schedule.date, period: schedule.period, hid: schedule.hid },
             schedule,

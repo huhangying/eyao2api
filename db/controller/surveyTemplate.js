@@ -92,16 +92,13 @@ module.exports = {
         }
         // department
         if (!item.department) {
-            return Status.returnStatus(res, Status.MISSING_PARAM);
+            return Status.returnStatus(res, Status.NO_DEPARTMENT);
         }
         // type
         if (!item.type) {
             return Status.returnStatus(res, Status.NO_TYPE);
         }
-
         // questions ? allow to create a survey without questions?
-
-
 
         // 不存在，创建
         SurveyTemplate.create({
@@ -123,77 +120,20 @@ module.exports = {
 
     },
 
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is ID
-            var id = req.params.id;
-
-            // 获取数据（json）
-            var template = req.body;
-
-            SurveyTemplate.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                if (template.name)
-                    item.name = template.name;
-                if (template.department)
-                    item.department = template.department;
-                if (template.type)
-                    item.type = template.type;
-                // if (template.group)
-                //     item.group = template.group;
-                if (template.questions && template.questions.length > 0)
-                    item.questions = template.questions;
-                if (template.order)
-                    item.order = template.order;
-                if (template.availableDays)
-                    item.availableDays = template.availableDays;
-                if (template.apply || template.apply === false)
-                    item.apply = template.apply;
-
-                //console.log(JSON.stringify(item));
-
-                //
-                item.save(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-
-        }
+    UpdateById: (req, res, next) => {
+        const { id } = req.params;
+        const template = req.body;
+        SurveyTemplate.findByIdAndUpdate(id, template, { new: true })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is group ID
-
-            SurveyTemplate.findOne({ _id: req.params.id }, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;
+        SurveyTemplate.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 }

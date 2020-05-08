@@ -1,8 +1,4 @@
-/**
- * Created by harry on 16/9/13.
- */
-
-var SurveyTemplate = require('../model/surveyTemplate.js');
+const SurveyTemplate = require('../model/surveyTemplate.js');
 
 module.exports = {
 
@@ -81,10 +77,8 @@ module.exports = {
     },
 
     // 创建关系组
-    Add: function (req, res) {
-
-        // 获取请求数据（json）
-        var item = req.body;
+    Add: (req, res, next) => {
+        const item = req.body;
 
         // name
         if (!item.name) {
@@ -100,24 +94,10 @@ module.exports = {
         }
         // questions ? allow to create a survey without questions?
 
-        // 不存在，创建
-        SurveyTemplate.create({
-            hid: item.hid,
-            name: item.name,
-            department: item.department,
-            type: item.type,
-            //group: template.group,
-            questions: item.questions,
-            availableDays: item.availableDays,
-            order: item.order
-        }, function (err, raw) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            return res.send(raw);
-        });
-
+        // 创建 with no conditions
+        SurveyTemplate.create(item)
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     UpdateById: (req, res, next) => {

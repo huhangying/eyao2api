@@ -1,160 +1,72 @@
-/**
- * Created by harry on 16/11/20.
- */
-var ArticleCat = require('../model/articleCat.js');
+const ArticleCat = require('../model/articleCat.js');
 
 module.exports = {
 
-    GetAll: function (req, res) {
+    GetAll: (req, res, next) => {
 
-        ArticleCat.find({hid: req.token.hid})
-          .populate('department')
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+        ArticleCat.find({ hid: req.token.hid })
+            .populate('department')
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            ArticleCat.findOne({_id: req.params.id})
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetById: (req, res, next) => {
+        const { id } = req.params;
+        ArticleCat.findOne({ _id: id })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据Department ID获取 page list
-    GetArticleCatsByDepartmentId: function (req, res) {
-
-        if (req.params && req.params.did) {
-
-            ArticleCat.find({department: req.params.did})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetArticleCatsByDepartmentId: (req, res, next) => {
+        const { did } = req.params;
+        ArticleCat.find({ department: did, hid: req.token.hid })
+            .sort({ order: 1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 创建问卷类别
-    Add: function (req, res) {
-
-        // 获取请求数据（json）
-        var cat = req.body;
-
+    Add: (req, res, next) => {
+        const cat = req.body;
         // department
         if (!cat.department) {
             return Status.returnStatus(res, Status.NO_DEPARTMENT);
         }
-
         // name
         if (!cat.name) {
             return Status.returnStatus(res, Status.NO_NAME);
         }
+        ArticleCat.exists({ name: cat.name, hid: cat.hid }) // check if existed
+            .then(result => {
+                if (result) return Status.returnStatus(res, Status.EXISTED);
 
-        // 不存在，创建
-        ArticleCat.create({
-            hid: cat.hid,
-            department: cat.department,
-            name: cat.name,
-            desc: cat.desc
-        }, function (err, raw) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            return res.send(raw);
-        });
-
+                ArticleCat.create(cat)
+                    .then((result) => res.json(result))
+                    .catch(err => next(err));
+            })
+            .catch(err => next(err));
     },
 
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is group ID
-            var id = req.params.id;
-
-            // 获取数据（json）
-            var cat = req.body;
-
-            ArticleCat.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-                if (cat.department)
-                    item.department = cat.department;
-                if (cat.name)
-                    item.name = cat.name;
-                if (cat.desc)
-                    item.desc = cat.desc;
-                if (cat.apply || cat.apply === false)
-                    item.apply = cat.apply;
-
-
-                //
-                item.save(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-
-        }
+    UpdateById: function (req, res, next) {
+        const { id } = req.params;
+        ArticleCat.findByIdAndUpdate(id, { ...req.body }, { new: true })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is page ID
-
-            ArticleCat.findOne({_id: req.params.id}, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function(err, raw){
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;  // id is schedule ID
+        ArticleCat.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
-
 }

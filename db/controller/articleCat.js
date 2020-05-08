@@ -43,7 +43,7 @@ module.exports = {
         if (!cat.name) {
             return Status.returnStatus(res, Status.NO_NAME);
         }
-        ArticleCat.exists({ name: cat.name, hid: cat.hid }) // check if existed
+        ArticleCat.exists({ name: cat.name, department: cat.department, hid: cat.hid }) // check if existed
             .then(result => {
                 if (result) return Status.returnStatus(res, Status.EXISTED);
 
@@ -56,7 +56,8 @@ module.exports = {
 
     UpdateById: function (req, res, next) {
         const { id } = req.params;
-        ArticleCat.findByIdAndUpdate(id, { ...req.body }, { new: true })
+        const cat = req.body;
+        ArticleCat.findByIdAndUpdate(id, cat, { new: true })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));

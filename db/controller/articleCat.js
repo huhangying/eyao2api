@@ -15,7 +15,7 @@ module.exports = {
     // 根据ID获取详细信息
     GetById: (req, res, next) => {
         const { id } = req.params;
-        ArticleCat.findOne({ _id: id })
+        ArticleCat.findById(id)
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -64,7 +64,7 @@ module.exports = {
     },
 
     DeleteById: (req, res, next) => {
-        const { id } = req.params;  // id is schedule ID
+        const { id } = req.params;  // id is cat ID
         ArticleCat.findByIdAndDelete(id)
             .select('-hid -__v')
             .then((result) => res.json(result))

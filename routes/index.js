@@ -17,9 +17,14 @@ var User = require('../db/controller/user');
 
 router.route('/users/:number')
     .get(User.GetAll); //
+router.route('/users/cms/:number')
+    .get(User.GetAllCms);
+router.route('/users/role/:role')
+    .get(User.GetAllByRole);
 
 router.route('/user/:id')
     .get(User.GetById)
+    .patch(User.UpdateById)
     .delete(User.DeleteById); // for test
 
 router.route('/user/cell/:cell')

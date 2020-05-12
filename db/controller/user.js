@@ -9,10 +9,32 @@ module.exports = {
     GetAll: (req, res, next) => {
         let { number } = req.params;
         number = +number || 999; // set default return numbers
+        User.find({ hid: req.token.hid, apply: true })
+            .select('-hid -password -__v')
+            .sort({ updated: -1 })
+            .limit(number)
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    GetAllCms: (req, res, next) => {
+        let { number } = req.params;
+        number = +number || 999; // set default return numbers
         User.find({ hid: req.token.hid })
             .select('-hid -password -__v')
             .sort({ updated: -1 })
             .limit(number)
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    GetAllByRole: (req, res, next) => {
+        let { role } = req.params;
+        User.find({ hid: req.token.hid, role: role, apply: true })
+            .select('-hid -password -__v')
+            .sort({ updated: -1 })
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -32,7 +54,10 @@ module.exports = {
     Search: (req, res, next) => {
         const option = req.body;
 
-        const filter_options = { hid: option.hid };
+        const filter_options = { 
+            hid: option.hid,
+            apply: true
+        };
         if (option.name) {
             filter_options.name = new RegExp(option.name, "i");
         }
@@ -161,6 +186,14 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
 
+    },
+
+    UpdateById: (req, res, next) => {
+        const { id } = req.params;
+        User.findByIdAndUpdate(id, req.body, { new: true })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     UpdateByLinkId: (req, res, next) => {

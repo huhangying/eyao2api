@@ -7,80 +7,51 @@ const moment = require('moment');
 
 module.exports = {
 
-    GetAll: function (req, res) {
+    GetAll: (req, res, next) => {
 
-        ArticlePage.find()
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+        ArticlePage.find({ hid: req.token.hid })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            ArticlePage.findOne({_id: req.params.id})
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetById: (req, res, next) => {
+        const { id } = req.params;
+        ArticlePage.findById(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据 doctor ID获取 article page list
-    GetArticlePagesByDoctorId: function (req, res) {
+    GetArticlePagesByDoctorId: (req, res, next) => {
+        const { did } = req.params;
+        ArticlePage.find({ doctor: did, hid: req.token.hid })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
 
-        if (req.params && req.params.did) {
-
-            ArticlePage.find({doctor: req.params.did})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetArticlePagesByDoctorIdAndCatId: (req, res, next) => {
+        const { did, catid } = req.params;
+        ArticlePage.find({ cat: catid, doctor: did, hid: req.token.hid })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据Cat ID获取 article page list
-    GetArticlePagesByCatId: function (req, res) {
-
-        if (req.params && req.params.catid) {
-
-            ArticlePage.find({cat: req.params.catid})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetArticlePagesByCatId: (req, res, next) => {
+        const { catid } = req.params;
+        ArticlePage.find({ cat: catid, hid: req.token.hid })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据 id 显示 article 页面

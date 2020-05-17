@@ -525,6 +525,8 @@ router.route('/pages/cat/:catid')
     .get(ArticlePage.GetArticlePagesByCatId);
 router.route('/pages/doctor/:did')
     .get(ArticlePage.GetArticlePagesByDoctorId);
+router.route('/pages/doctor/:did/:catid')
+    .get(ArticlePage.GetArticlePagesByDoctorIdAndCatId);
 
 router.route('/page')
     .post(urlencodedParser, ArticlePage.Add);

@@ -169,32 +169,14 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    UpdateShortcuts: function (req, res) {
+    //todo: combine with UpdateByUserId
+    UpdateShortcuts:  (req, res, next) => {
         const { did } = req.params;   //doctor user id
-        // 获取user数据（json）
-        var doctor = req.body;
-
-        Doctor.findOne({ user_id: did, hid: doctor.hid, apply: true }, function (err, item) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            if (!item) {
-                return Status.returnStatus(res, Status.NULL);
-            }
-
-            if (doctor.shortcuts || doctor.shortcuts == '') {
-                item.shortcuts = doctor.shortcuts;
-            }
-
-            //
-            item.save(function (err, raw) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-                res.json(raw.shortcuts || '');
-            });
-        });
+        const item = req.body;
+        Doctor.findOneAndUpdate({user_id: did, hid: item.hid}, item, { new: true })
+        .select('-hid -__v')
+        .then((result) => res.json(result))
+        .catch(err => next(err));
     },
 
     // 创建药师用户

@@ -174,7 +174,7 @@ module.exports = {
         const { did } = req.params;   //doctor user id
         const item = req.body;
         Doctor.findOneAndUpdate({user_id: did, hid: item.hid}, item, { new: true })
-        .select('-hid -__v')
+        .select('shortcuts')
         .then((result) => res.json(result))
         .catch(err => next(err));
     },

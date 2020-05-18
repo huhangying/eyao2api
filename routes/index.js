@@ -39,7 +39,7 @@ router.route('/user/preset/wechat/:link_id')
     .post(urlencodedParser, User.AddPresetByLinkId);
 
 router.route('/users/search') //GET
-    .post(urlencodedParser, User.Search)
+    .patch(urlencodedParser, User.Search)
 
 
 //---------------- 药师注册

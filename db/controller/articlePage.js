@@ -54,25 +54,23 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // to be removed
     // 根据 id 显示 article 页面
-    RenderById: function(req, res) {
-        if (req.params && req.params.id) {
-
-            ArticlePage.findOne({_id: req.params.id})
-                .populate({ path: 'doctor', select: 'name title' })
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.set('Content-Type', 'text/html');
-                    res.render('article', { content: item.content, name: item.name, title: item.title, timestamp: moment(item.createdAt).format('YYYY 年 M 月 D 日'), doctor: item.doctor.name + ' ' + item.doctor.title });
+    RenderById: (req, res, next) => {
+        const { id } = req.params;
+        ArticlePage.findOne({ _id: id, hid: req.token.hid })
+            .populate({ path: 'doctor', select: 'name title' })
+            .then((item) => {
+                res.set('Content-Type', 'text/html');
+                res.render('article', {
+                    content: item.content,
+                    name: item.name,
+                    title: item.title,
+                    timestamp: moment(item.createdAt).format('YYYY 年 M 月 D 日'),
+                    doctor: item.doctor.name + ' ' + item.doctor.title
                 });
-        }
+            })
+            .catch(err => next(err));
     },
 
     // 创建页面
@@ -170,17 +168,17 @@ module.exports = {
     DeleteById: function (req, res) {
         if (req.params && req.params.id) { // params.id is group ID
 
-            ArticlePage.findOne({_id: req.params.id}, function (err, item) {
+            ArticlePage.findOne({ _id: req.params.id }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
 
-                if (!item){
+                if (!item) {
                     return Status.returnStatus(res, Status.NULL);
                 }
 
                 //
-                item.remove(function(err, raw){
+                item.remove(function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="新华e药宣教材料">
+    <title><%= name %></title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+    <link rel='stylesheet' href='/stylesheets/main.css' />
+</head>
+<body>
+<header>
+    <% include partials/header %>
+</header>
+    <div class="container">
+        <div class="h4 text-xs-center text-primary"><%= title %></div>
+        <br/>
+        <p class="font-italic text-muted"><%= doctor %> 发送于 <%= timestamp %> </p>
+        <br/>
+        <%- content %>
+        <br/>
+    </div>
+</body>
+</html>

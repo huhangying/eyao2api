@@ -53,8 +53,6 @@ module.exports = {
         const { did } = req.params;
         Booking.find({ doctor: did, hid: req.token.hid })
             .sort({ created: -1 })
-            // .populate('schedule')
-            // .populate('user', '_id name user_id cell gender')
             .populate([
                 {
                     path: 'schedule',
@@ -62,7 +60,7 @@ module.exports = {
                 },
                 {
                     path: 'user',
-                    select: '_id name user_id cell gender birthdate'
+                    select: '_id name user_id cell gender birthdate visitedDepartments'
                 }
             ])
             .select('-hid -__v')
@@ -73,18 +71,20 @@ module.exports = {
 
     // 根据药师ID和日期 获取相关的预约
     GetTodaysByDoctorId: function (req, res) {
+        const { did } = req.params;
 
-        if (req.params && req.params.did) {
-
-            // var today = moment().startOf('day').format();
-            // var tomorrow = moment(today).add(1, 'days').format();
-            var today = moment().format('YYYY-MM-DD');
-            // Booking.find({ doctor: req.params.did })
-            Booking.find({ doctor: req.params.did, status: 1 }) //, date: {$gte: today, $lt: tomorrow}
-                .sort({ created: -1 })
-                //.populate('schedule')
-                .populate('user') //, 'name cell')
-                .populate({
+        // var today = moment().startOf('day').format();
+        // var tomorrow = moment(today).add(1, 'days').format();
+        var today = moment().format('YYYY-MM-DD');
+        // Booking.find({ doctor: req.params.did })
+        Booking.find({ doctor: req.params.did, status: 1 }) //, date: {$gte: today, $lt: tomorrow}
+            .sort({ created: -1 })
+            .populate(
+                {
+                    path: 'user',
+                    select: '_id name user_id cell gender birthdate visitedDepartments'
+                },
+                {
                     path: 'schedule',
                     select: 'date period',
                     populate: {
@@ -92,24 +92,23 @@ module.exports = {
                         select: 'name -_id'
                     }
                 })
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
+            .exec(function (err, items) {
+                if (err) {
+                    return Status.returnStatus(res, Status.ERROR, err);
+                }
+
+                // if (!items || items.length < 1) {
+                //     return Status.returnStatus(res, Status.NULL);
+                // }
+
+                items = items.filter(function (item) {
+                    if (item.schedule && item.schedule._doc && item.schedule._doc.date) {
+                        return moment(item.schedule._doc.date).format('YYYY-MM-DD') == today;
                     }
-
-                    // if (!items || items.length < 1) {
-                    //     return Status.returnStatus(res, Status.NULL);
-                    // }
-
-                    items = items.filter(function (item) {
-                        if (item.schedule && item.schedule._doc && item.schedule._doc.date) {
-                            return moment(item.schedule._doc.date).format('YYYY-MM-DD') == today;
-                        }
-                    });
-
-                    res.json(items);
                 });
-        }
+
+                res.json(items);
+            });
     },
 
     //

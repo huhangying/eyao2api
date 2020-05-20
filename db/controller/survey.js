@@ -6,71 +6,44 @@ var Survey = require('../model/survey.js');
 
 module.exports = {
 
-    GetAll: function (req, res) {
-
-        Survey.find()
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+    GetAll: (req, res, next) => {
+        Survey.find({ hid: req.token.hid })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            Survey.findOne({_id: req.params.id})
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetById: (req, res, next) => {
+        const { id } = req.params;
+        Survey.findById(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据 doctor & type & user 获取Survey list
-    GetSurveysByUserType: function (req, res) {
+    GetSurveysByUserType: (req, res, next) => {
+        const { user, doctor, type, readonly } = req.params;
 
         var searchCriteria = {
-            user: req.params.user,
-            doctor: req.params.doctor,
-            type: req.params.type,
-            finished: req.params.readonly == 1
+            user: user,
+            doctor: doctor,
+            type: type,
+            hid: req.token.hid,
+            finished: readonly == 1
         };
-        if (req.params.readonly != 1) {
+        if (readonly != 1) {
             searchCriteria.availableBy = { $gt: new Date() };
         }
 
-        if (req.params && req.params.doctor && req.params.type && req.params.user) {
-
-            Survey.find(searchCriteria)
-                .sort({order: 1})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+        Survey.find(searchCriteria)
+            .sort({ order: 1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据 doctor & type & user and list to retrieve details
@@ -88,7 +61,7 @@ module.exports = {
 
         if (req.params && req.params.doctor && req.params.type && req.params.user && req.params.list) {
             Survey.find(searchCriteria)
-                .sort({order: 1})
+                .sort({ order: 1 })
                 .exec(function (err, items) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -100,7 +73,7 @@ module.exports = {
 
                     var surveyList = req.params.list.split('|');
 
-                    items = items.filter(function(item) {
+                    items = items.filter(function (item) {
                         return surveyList.indexOf(item._id.toString()) > -1;
                     });
 
@@ -111,51 +84,34 @@ module.exports = {
 
 
     // 获取 user 的未完成 surveys
-    GetMySurveys: function (req, res) {
+    GetMySurveys: (req, res, next) => {
+        const { user } = req.params;
 
-        if (req.params && req.params.user) {
-            var searchCriteria = {
-                user: req.params.user,
-                type: { $gt: 0, $lt: 5 },
-                availableBy: { $gt: new Date() },
-                finished: false
-            };
+        const searchCriteria = {
+            user: user,
+            hid: req.token.hid,
+            type: { $gt: 0, $lt: 5 },
+            availableBy: { $gt: new Date() },
+            finished: false
+        };
 
-            Survey.find(searchCriteria)
-                .populate({ path: 'doctor', select: 'name title department' })
-                .sort({updatedAt: -1})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+        Survey.find(searchCriteria)
+            .populate({ path: 'doctor', select: 'name title department' })
+            .sort({ updatedAt: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据Department ID获取Survey list
-    GetSurveysByDepartmentId: function (req, res) {
-
-        if (req.params && req.params.did) {
-
-            Survey.find({department: req.params.did})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetSurveysByDepartmentId: (req, res, next) => {
+        const { did } = req.params; // did is department id
+        Survey.find({ department: did, hid: req.token.hid })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 关闭所有该药师和该用户相关的surveys（set finished=true for type in [1,2,5]）
@@ -168,7 +124,7 @@ module.exports = {
                     user: req.params.user,
                     doctor: req.params.doctor,
                     finished: false,
-                    type: { $in: [1, 2, 5]}
+                    type: { $in: [1, 2, 5] }
 
                 },
                 {
@@ -310,28 +266,12 @@ module.exports = {
     },
 
 
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is ID
-
-            Survey.findOne({_id: req.params.id}, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function(err, raw){
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;
+        Survey.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 }

@@ -19,7 +19,8 @@ module.exports = mongoose.model(
                 way: { type: String, trim: true }, // 饭前/饭后/隔几小时
                 frequency: { type: Number, required: true },
                 count: { type: Number, min: 0 }
-            }
+            },
+            note: { type: String },  // for diagnose!
         }],
         // cat: { type: Schema.Types.ObjectId, ref: 'medicine_cat', required: true },
         notices: [{

@@ -6,43 +6,22 @@ const moment = require('moment');
 module.exports = {
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            Diagnose.findOne({_id: req.params.id})
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetById: (req, res, next) => {
+        const { id } = req.params;
+        Diagnose.findOne({ _id: id })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
+
     // 根据doctor id and patient ID获取当前的门诊
-    GetByUserAndDoctor: function (req, res) {
-
-        if (req.params && req.params.user && req.params.doctor) {
-
-            Diagnose.findOne({user: req.params.user, doctor: req.params.doctor, status: {$ne : 3} })
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetByUserAndDoctor: (req, res, next) => {
+        const { user, doctor } = req.params;
+        Diagnose.findOne({ user: user, doctor: doctor, hid: req.token.hid, status: { $ne: 3 } })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 获取药师当月门诊完成数
@@ -56,7 +35,7 @@ module.exports = {
             //console.log(lastDay);
             Diagnose.countDocuments({
                 doctor: req.params.doctor,
-                updatedAt: {$gte: firstDay, $lt: lastDay},
+                updatedAt: { $gte: firstDay, $lt: lastDay },
                 status: 3
             })
                 .exec(function (err, count) {
@@ -70,93 +49,57 @@ module.exports = {
     },
 
     // 获取用户的门诊历史记录
-    GetUserHistoryList: function (req, res) {
-
-        if (req.params && req.params.user) {
-
-            Diagnose.find({user: req.params.user, status: 3})
-                .populate({
-                    path: 'doctor',
-                    select: 'name title department',
-                    populate: {
-                        path: 'department',
-                        select: 'name -_id'
-                    }
-                })
-                .sort({updatedAt: -1})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetUserHistoryList: (req, res, next) => {
+        const { user } = req.params;
+        Diagnose.find({ user: user, hid: req.token.hid, status: 3 })
+            .populate({
+                path: 'doctor',
+                select: 'name title department',
+                populate: {
+                    path: 'department',
+                    select: 'name -_id'
+                }
+            })
+            .sort({ updatedAt: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then(results => res.json(results))
+            .catch(err => next(err));
     },
 
     // 获取用户最近一次的门诊(history)
-    GetUserLatestDiagnose: function (req, res) {
-
-        if (req.params && req.params.user) {
-
-            Diagnose.find({user: req.params.user, status: 3})
-                .populate({ path: 'doctor', select: 'name title department' })
-                .sort({updatedAt: -1})
-                .limit(1)
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items[0]);
-                });
-        }
+    GetUserLatestDiagnose: (req, res, next) => {
+        const { user } = req.params;
+        Diagnose.find({ user: user, hid: req.token.hid, status: 3 })
+            .populate({ path: 'doctor', select: 'name title department' })
+            .sort({ updatedAt: -1 })
+            .limit(1)
+            .select('-hid -__v')
+            .then(results => {
+                if (results && results.length > 0) {
+                    res.json(results[0]);
+                } else {
+                    res.json(null);
+                }
+            })
+            .catch(err => next(err));
     },
 
-    // 创建关系组
-    Add: function (req, res) {
-
-        // 获取请求数据（json）
-        var item = req.body;
+    // 创建 Diagnose
+    Add: (req, res, next) => {
+        const item = req.body;
 
         // doctor
         if (!item.doctor) {
             return Status.returnStatus(res, Status.NO_DOCTOR);
         }
-
         // user
         if (!item.user) {
             return Status.returnStatus(res, Status.NO_USER);
         }
-
-        // 不存在，创建
-        Diagnose.create({
-            hid: item.hid,
-            doctor: item.doctor,
-            user: item.user,
-            booking: item.booking,
-            surveys: item.surveys,
-            assessment: item.assessment,
-            prescription: item.prescription,
-            notices: item.notices,
-            labResults: item.labResults,
-            status: item.status
-        }, function (err, raw) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            return res.send(raw);
-        });
-
+        Diagnose.create(item)
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     UpdateById: function (req, res) {
@@ -165,7 +108,7 @@ module.exports = {
             // 获取数据（json）
             var diagnose = req.body;
 
-            Diagnose.findOne({_id: req.params.id}, function (err, item) {
+            Diagnose.findOne({ _id: req.params.id }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
@@ -213,36 +156,19 @@ module.exports = {
         }
     },
 
-
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is group ID
-
-            Diagnose.findOne({_id: req.params.id}, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function(err, raw){
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;
+        Diagnose.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     GetAssessmentById: function (req, res) {
 
         if (req.params && req.params.id) {
 
-            Diagnose.findOne({_id: req.params.id}, 'assessment')
+            Diagnose.findOne({ _id: req.params.id }, 'assessment')
                 .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
@@ -263,7 +189,7 @@ module.exports = {
             // 获取数据（json）
             var diagnose = req.body;
 
-            Diagnose.findOne({_id: req.params.id}, function (err, item) {
+            Diagnose.findOne({ _id: req.params.id }, function (err, item) {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
@@ -323,8 +249,8 @@ module.exports = {
                         return Status.returnStatus(res, Status.NULL);
                     }
 
-                    var finishedCount=0, unfinishedCount=0;
-                    for (var i=0; i<items.length; i++) {
+                    var finishedCount = 0, unfinishedCount = 0;
+                    for (var i = 0; i < items.length; i++) {
                         if (items[i].status >= 3) {
                             finishedCount++;
                         }

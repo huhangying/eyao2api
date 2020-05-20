@@ -25,23 +25,11 @@ module.exports = {
     },
 
     // 根据医生ID 和 病患ID，判断relationship是否存在
-    CheckIfRelationshipExisted: function (req, res) {
-
-        if (req.params && req.params.did && req.params.uid) {
-
-            Relationship.findOne({ doctor: req.params.did, user: req.params.uid, apply: true })
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return res.json({ existed: false });
-                    }
-
-                    res.json({ existed: true });
-                });
-        }
+    CheckIfRelationshipExisted: (req, res, next) => {
+        const { did, uid } = req.params;
+        Relationship.findOne({ doctor: did, user: uid, hid: req.token.hid, apply: true })
+            .then(result => res.json({ existed: !!result }))
+            .catch(err => next(err));
     },
 
     // 根据医生ID 获取相关的关系组
@@ -171,7 +159,7 @@ module.exports = {
     },
 
     UpdateById: (req, res, next) => {
-        const { id } = req.params; 
+        const { id } = req.params;
         const relationship = req.body; // body should only include group
 
         Relationship.findByIdAndUpdate(id, relationship, { new: true })

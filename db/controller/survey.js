@@ -47,39 +47,33 @@ module.exports = {
     },
 
     // 根据 doctor & type & user and list to retrieve details
-    GetSurveysByUserTypeAndList: function (req, res) {
+    GetSurveysByUserTypeAndList: (req, res, next) => {
 
-        var searchCriteria = {
+        const searchCriteria = {
             user: req.params.user,
             doctor: req.params.doctor,
             type: req.params.type,
+            hid: req.token.hid,
             finished: req.params.readonly == 1
         };
         if (req.params.readonly != 1) {
             searchCriteria.availableBy = { $gt: new Date() };
         }
 
-        if (req.params && req.params.doctor && req.params.type && req.params.user && req.params.list) {
-            Survey.find(searchCriteria)
-                .sort({ order: 1 })
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    var surveyList = req.params.list.split('|');
-
-                    items = items.filter(function (item) {
+        Survey.find(searchCriteria)
+            .sort({ order: 1 })
+            .select('-hid -__v')
+            .lean()
+            .then(items => {
+                if (items.length && req.params.list) {
+                    const surveyList = req.params.list.split('|');
+                    items = items.filter(item => {
                         return surveyList.indexOf(item._id.toString()) > -1;
                     });
-
-                    res.json(items);
-                });
-        }
+                }
+                res.json(items)
+            })
+            .catch(err => next(err));
     },
 
 
@@ -211,60 +205,15 @@ module.exports = {
 
     },
 
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is ID
-            var id = req.params.id;
+    UpdateById: (req, res, next) => {
+        const { id } = req.params;
+        const survey = req.body;
 
-            // 获取数据（json）
-            var survey = req.body;
-
-            Survey.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                if (survey.doctor)
-                    item.doctor = survey.doctor;
-                if (survey.user)
-                    item.user = survey.user;
-                if (survey.surveyTemplate)
-                    item.surveyTemplate = survey.surveyTemplate;
-                if (survey.name)
-                    item.name = survey.name;
-                if (survey.department)
-                    item.department = survey.department;
-                // if (survey.group)
-                //     item.group = survey.group;
-                if (survey.type || survey.type == 0)
-                    item.type = survey.type;
-                if (survey.questions && survey.questions.length > 0)
-                    item.questions = survey.questions;
-                if (survey.order)
-                    item.order = survey.order;
-                if (survey.availableBy)
-                    item.availableBy = survey.availableBy;
-                if (survey.finished || survey.finished === false)
-                    item.finished = survey.finished;
-
-                //console.log(JSON.stringify(item));
-
-                //
-                item.save(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-
-        }
+        Survey.findByIdAndUpdate(id, survey, { new: true })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
-
 
     DeleteById: (req, res, next) => {
         const { id } = req.params;

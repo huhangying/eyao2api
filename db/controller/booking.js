@@ -76,8 +76,8 @@ module.exports = {
         // var today = moment().startOf('day').format();
         // var tomorrow = moment(today).add(1, 'days').format();
         var today = moment().format('YYYY-MM-DD');
-        // Booking.find({ doctor: req.params.did })
-        Booking.find({ doctor: req.params.did, status: 1 }) //, date: {$gte: today, $lt: tomorrow}
+        // Booking.find({ doctor: did })
+        Booking.find({ doctor: did, status: 1 }) //, date: {$gte: today, $lt: tomorrow}
             .sort({ created: -1 })
             .populate(
                 {

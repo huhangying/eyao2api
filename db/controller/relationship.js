@@ -16,7 +16,6 @@ module.exports = {
     // 根据ID获取详细信息
     GetById: (req, res, next) => {
         const { id } = req.params;
-
         Relationship.findById(id)
             .select('-hid -__v')
             .lean()

@@ -6,40 +6,23 @@ var Period = require('../model/period.js');
 
 module.exports = {
 
-    GetAll: function (req, res) {
-
-        Period.find()
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+    GetAll:(req, res, next) => {
+        Period.find({ hid: req.token.hid })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
+    GetById: (req, res, next) => {
+        const { id } = req.params;
 
-        if (req.params && req.params.id) {
-
-            Period.findOne({_id: req.params.id})
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+        Period.findById(id)
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 创建关系组
@@ -57,7 +40,6 @@ module.exports = {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
 
-
         // 不存在，创建
         Period.create({
             hid: period.hid,
@@ -74,67 +56,21 @@ module.exports = {
 
     },
 
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is group ID
-            var id = req.params.id;
-
-            // 获取数据（json）,只能更新关系组名
-            var period = req.body;
-
-            Period.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-                if (period.name)
-                    item.name = period.name;
-                if (period.from)
-                    item.from = period.from;
-                if (period.to)
-                    item.to = period.to;
-
-
-                //console.log(JSON.stringify(item));
-
-                //
-                item.save(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-
-        }
+    UpdateById: (req, res, next) => {
+        const { id } = req.params;
+        const period = req.body;
+        Period.findByIdAndUpdate(id, period, { new: true })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is group ID
-
-            Period.findOne({_id: req.params.id}, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function(err, raw){
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
-    },
+    DeleteById:  (req, res, next) => {
+        const { id } = req.params;
+        Period.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    }
 
 }

@@ -115,7 +115,7 @@ module.exports = {
     },
 
 
-    // 创建门诊
+    // 创建门诊预约
     Add: (req, res, next) => {
         const schedule = req.body;
         // doctor, date, period

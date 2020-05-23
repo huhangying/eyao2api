@@ -2,6 +2,7 @@
 
 var Diagnose = require('../model/diagnose');
 const moment = require('moment');
+const Survey = require('../model/survey');
 
 module.exports = {
 
@@ -102,65 +103,30 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is ID
-
-            // 获取数据（json）
-            var diagnose = req.body;
-
-            Diagnose.findOne({ _id: req.params.id }, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                // tricky: 如果不需要更新prescription的话,把 prescription 设置成 undefined!!
-                if (diagnose.prescription) {
-                    // update prescription array, include prescription=[]
-                    item.prescription = diagnose.prescription;
-                }
-
-                if (diagnose.user)
-                    item.user = diagnose.user;
-                if (diagnose.doctor)
-                    item.doctor = diagnose.doctor;
-                if (diagnose.booking)
-                    item.booking = diagnose.booking;
-                if (diagnose.surveys)
-                    item.surveys = diagnose.surveys;
-                if (diagnose.assessment)
-                    item.assessment = diagnose.assessment;
-                if (diagnose.notices)
-                    item.notices = diagnose.notices;
-                if (diagnose.labResults)
-                    item.labResults = diagnose.labResults;
-                if (diagnose.status)
-                    item.status = diagnose.status;
-
-
-                //console.log(JSON.stringify(item));
-
-                //
-                item.save(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-
-        }
+    UpdateById: function (req, res, next) {
+        const { id } = req.params;
+        Diagnose.findByIdAndUpdate(id, { ...req.body }, { new: true })
+          .select('-hid -__v')
+          .then((result) => res.json(result))
+          .catch(err => next(err));
     },
 
     DeleteById: (req, res, next) => {
         const { id } = req.params;
         Diagnose.findByIdAndDelete(id)
             .select('-hid -__v')
-            .then((result) => res.json(result))
+            .then((result) => {
+                if (result && result.surveys && result.surveys.length) {
+                    result.surveys.map(survey => {
+                        if (survey.list && survey.list.length) {
+                            survey.list.map(_ => {
+                                Survey.deleteOne({_id: _}).exec();
+                            });
+                        }
+                    })
+                }
+                res.json(result)
+            })
             .catch(err => next(err));
     },
 

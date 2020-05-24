@@ -6,7 +6,7 @@ var Period = require('../model/period.js');
 
 module.exports = {
 
-    GetAll:(req, res, next) => {
+    GetAll: (req, res, next) => {
         Period.find({ hid: req.token.hid })
             .select('-hid -__v')
             .lean()

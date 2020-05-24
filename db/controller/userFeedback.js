@@ -6,175 +6,101 @@ var UserFeedback = require('../model/userFeedback');
 
 module.exports = {
 
-    GetAll: function (req, res) {
-
-        UserFeedback.find()
-            .sort({created: -1})
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!items || items.length < 1) {
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                res.json(items);
-            });
+    GetAll: (req, res, next) => {
+        UserFeedback.find({ hid: req.token.hid })
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
-
-        if (req.params && req.params.id) {
-
-            UserFeedback.findOne({_id: req.params.id})
-                //.populate('schedule')
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(item);
-                });
-        }
+    GetById: (req, res, next) => {
+        const { id } = req.params;
+        UserFeedback.findById(id)
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据患者 ID, 类型 获取相关类型的反馈
-    GetByUserId: function (req, res) {
+    GetByUserId: (req, res, next) => {
+        const { uid, type } = req.params;
+        UserFeedback.find({ user: uid, type: type, hid: req.token.hid })
+            .populate({
+                path: 'doctor',
+                select: 'name title'
+            })
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
 
-        if (req.params && req.params.uid && req.params.type) {
-
-            UserFeedback.find({user: req.params.uid, type: req.params.type })
-                .populate({
-                    path: 'doctor',
-                    select: 'name title'})
-                .sort({created: -1})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
     },
 
-    GetByUserIdDoctorId: function (req, res) {
-
-        if (req.params && req.params.uid && req.params.did && req.params.type) {
-
-            UserFeedback.find({user: req.params.uid, doctor: req.params.did, type: req.params.type })
-                .populate({
-                    path: 'doctor',
-                    select: 'name title'})
-                .sort({created: -1})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetByUserIdDoctorId: (req, res, next) => {
+        const { uid, did, type } = req.params;
+        UserFeedback.find({ user: uid, did, type: type, hid: req.token.hid })
+            .populate({
+                path: 'doctor',
+                select: 'name title'
+            })
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据药师 ID, 类型 获取相关类型的反馈
-    GetByDoctorId: function (req, res) {
-
-        if (req.params && req.params.did && req.params.type) {
-
-            UserFeedback.find({ doctor: req.params.did, type: req.params.type })
-                .sort({created: -1})
-                //.populate('user')
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetByDoctorId: (req, res, next) => {
+        const { did, type } = req.params;
+        UserFeedback.find({ doctor: did, type: type, hid: req.token.hid })
+            .sort({ created: -1 })
+            //.populate('user')
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据药师 ID, 类型 获取相关类型的反馈
-    GetUnreadByDoctorId: function (req, res) {
-
-        if (req.params && req.params.did && req.params.type) {
-
-            UserFeedback.find({ doctor: req.params.did, type: req.params.type, status: 0 }) // only 1 and 0 for now.
-                .sort({created: -1})
-                .populate('user', 'name icon')
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetUnreadByDoctorId: (req, res, next) => {
+        const { did, type } = req.params;
+        UserFeedback.find({ doctor: did, type: type, hid: req.token.hid, status: 0 }) // only 1 and 0 for now.
+            .sort({ created: -1 })
+            .populate('user', 'name icon')
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据病患 ID, 类型 获取相关的反馈
-    GetUnreadByDoctorIdUserId: function (req, res) {
-
-        if (req.params && req.params.did && req.params.uid && req.params.type) {
-
-            UserFeedback.find({ doctor: req.params.did, user: req.params.uid, type: req.params.type, status: 2 }) // only 2 and 0 for now.
-                .populate({
-                    path: 'doctor',
-                    select: 'name title'
-                })
-                .sort({created: -1})
-                //.populate('user', 'name icon')
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetUnreadByDoctorIdUserId: (req, res, next) => {
+        const { uid, did, type } = req.params;
+        UserFeedback.find({ doctor: did, user: uid, type: type, hid: req.token.hid, status: 2 }) // only 2 and 0 for now.
+            .populate({
+                path: 'doctor',
+                select: 'name title'
+            })
+            .sort({ created: -1 })
+            //.populate('user', 'name icon')
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据药师 ID, 类型 获取相关类型的反馈个数
-    GetUnreadCountByDoctorId: function (req, res) {
-
-        if (req.params && req.params.did && req.params.type) {
-
-            UserFeedback.count({ doctor: req.params.did, type: req.params.type, status: 0 }) // 0 is unread.
-                .exec(function (err, count) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    res.json({count: count});
-                });
-        }
+    GetUnreadCountByDoctorId: (req, res, next) => {
+        const { did, type } = req.params;
+        UserFeedback.count({ doctor: did, type: type, hid: req.token.hid, status: 0 }) // 0 is unread.
+        .then((count) => res.json({count: count}))
+        .catch(err => next(err));
     },
 
     // 创建Feedback
@@ -228,7 +154,7 @@ module.exports = {
             var feedback = req.body;
 
             UserFeedback.findById(id)
-                .exec( function (err, item) {
+                .exec(function (err, item) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
@@ -253,28 +179,12 @@ module.exports = {
         }
     },
 
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is booking ID
-
-            UserFeedback.findOne({_id: req.params.id}, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function(err, raw){
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-                    res.json(raw);
-                });
-
-            });
-        }
-    },
+    DeleteById:  (req, res, next) => {
+        const { id } = req.params;
+        UserFeedback.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    }
 
 }

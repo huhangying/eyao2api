@@ -229,33 +229,42 @@ router.route('/chatrooms/check/user/:id')
 //---------------- 聊天 chat
 var Chat = require('../db/controller/chat');
 
-router.route('/chats')
-    .get(Chat.GetAll);
+// router.route('/chats')
+//     .get(Chat.GetAll);
+
+router.route('/chats/:room')
+    .get(Chat.GetAllByRoom);
+
+router.route('/chats/history/:sender')
+    .get(Chat.GetAllByRoomBySender)
+
+    router.route('/chats/history/:sender/:to')
+    .get(Chat.getChatHistoryBySenderAndTo)
 
 router.route('/chat/:id')
     .get(Chat.GetById)
-    .patch(urlencodedParser, Chat.UpdateById)
+    // .patch(urlencodedParser, Chat.UpdateById)
     .delete(Chat.DeleteById);
 
-router.route('/chats/chatroom/:chatroom')
-    .delete(Chat.DeleteByChatroom);
+// router.route('/chats/chatroom/:chatroom')
+//     .delete(Chat.DeleteByChatroom);
 
-router.route('/chat')
-    .post(urlencodedParser, Chat.Add);
-
+// router.route('/chat')
+//     .post(urlencodedParser, Chat.Add);
 
 router.route('/chat/send')
     .post(urlencodedParser, Chat.SendMsg);
 
-router.route('/chats/receive')
-    .post(urlencodedParser, Chat.ReceiveMsg);
+// router.route('/chats/receive')
+//     .post(urlencodedParser, Chat.ReceiveMsg);
 
-router.route('/chats/load/doctor/:chatroom')
-    .get(Chat.LoadDoctorMsg);
-router.route('/chats/load/user/:chatroom')
-    .get(Chat.LoadUserMsg);
-router.route('/chats/load/:chatroom')
-    .get(Chat.LoadMsg);
+// router.route('/chats/load/doctor/:chatroom')
+//     .get(Chat.LoadDoctorMsg);
+// router.route('/chats/load/user/:chatroom')
+//     .get(Chat.LoadUserMsg);
+// router.route('/chats/load/:chatroom')
+//     .get(Chat.LoadMsg);
+
 
 
 //---------------- 门诊

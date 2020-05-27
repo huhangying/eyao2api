@@ -17,7 +17,7 @@ global.urlencodedParser = bodyParser.urlencoded({ extended: false });
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-const { onConnect } = require('./io/socketio');
+require('./io/socketio')(io);
 
 //设置跨域访问
 app.use(cors());
@@ -56,8 +56,6 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 503).send(err);
   }
 });
-
-io.on('connection', onConnect);
 
 server.listen(3000, () => {
   console.log('Server running at 3000 port.');

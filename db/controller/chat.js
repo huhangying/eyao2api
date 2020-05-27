@@ -31,7 +31,7 @@ module.exports = {
         const { sender, to } = req.params;
         Chat.find({ hid: req.token.hid })
             .or([{ sender: sender, to: to }, { sender: to, to: sender }]) // either sender or
-            .sort({ created: -1 })
+            .sort({ created: 1 })
             .limit(40)
             .select('-hid -__v')
             .lean()
@@ -44,7 +44,7 @@ module.exports = {
         const { room } = req.params;
 
         Chat.find({ hid: req.token.hid, room: room })
-            .sort({ created: -1 })
+            .sort({ created: 1 })
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))

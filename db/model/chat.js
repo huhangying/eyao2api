@@ -7,6 +7,7 @@ module.exports = mongoose.model(
         hid: Number,
         room: String,
         sender: { type: mongoose.Schema.Types.ObjectId, required: true },
+        senderName: String,
         to: { type: mongoose.Schema.Types.ObjectId, required: true },
         // chatroom: { type: mongoose.Schema.Types.ObjectId, ref: 'chatroom', required: true }, // 聊天室
         // direction: Number, // 消息方向：   0： user->doctor;      1: doctor->user

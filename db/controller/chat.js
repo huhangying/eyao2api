@@ -51,6 +51,30 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // used by doctor
+    getUnreadByDoctor: (req, res, next) => {
+        const { did } = req.params;
+
+        Chat.find({ to: did, hid: req.token.hid, read: 0 })
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // used by patient
+    getUnreadByPatient: (req, res, next) => {
+        const { uid } = req.params;
+
+        Chat.find({ to: uid, hid: req.token.hid, read: 0 })
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     //todo: reverse the last one
 
     //todo: read++

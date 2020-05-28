@@ -194,7 +194,7 @@ router.route('/disease/:id')
     .delete(Disease.DeleteById)
     .patch(urlencodedParser, Disease.UpdateById);
 
-
+//todo: remove
 //---------------- 聊天室
 var Chatroom = require('../db/controller/chatroom');
 
@@ -238,8 +238,14 @@ router.route('/chats/:room')
 router.route('/chats/history/:sender')
     .get(Chat.GetAllByRoomBySender)
 
-    router.route('/chats/history/:sender/:to')
-    .get(Chat.getChatHistoryBySenderAndTo)
+router.route('/chats/history/:sender/:to')
+    .get(Chat.getChatHistoryBySenderAndTo);
+
+// unread list
+router.route('/chats/unread/doctor/:did')
+    .get(Chat.getUnreadByDoctor);
+router.route('/chats/unread/user/:uid')
+    .get(Chat.getUnreadByPatient);
 
 router.route('/chat/:id')
     .get(Chat.GetById)

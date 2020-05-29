@@ -15,6 +15,10 @@ module.exports = (io) => {
             // }
             //todo: save to db
             socket.to(room).emit('chat', chat);
+
+            socket.to(room).emit('notification', {
+               //todo: 
+            })
             
             // console.log('chat message: ', room, msg);
         });

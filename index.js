@@ -41,7 +41,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(path.resolve(), 'public')));
 
 const routes = require('./routes/index');
-app.use('/', routes);
+app.use('/api/', routes);
 
 // catch 404 and forward to error handler
 app.use('*', (req, res) => {

@@ -732,5 +732,9 @@ router.route('/admin/userdata/:id')
     .delete(Admin.DeleteUserAndRelatedData);
 
 ///////////////////////////////////////////////////////////////////////////////////
+const wechat = require('../wechat/sign');
+
+router.route('/wechat/signtest')
+    .get(wechat.sign);
 
 module.exports = router;

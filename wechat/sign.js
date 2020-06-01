@@ -33,11 +33,12 @@ module.exports = {
         const wx = new Wechat(wxConfig);
         //const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat/', 'snsapi_base', '101');
         //console.log(url);
+        const url = 'http://timebox.i234.me/wechat/?openid=' + openid;
         
-        // res.render("oauth-page", {
-        //     wechatOAuthUrl: url,
-        // });
-        res.redirect('/wechat/?openid=' + openid);
+        res.render("oauth-page", {
+            wechatOAuthUrl: url,
+        });
+        // res.redirect('/wechat/?openid=' + openid);
         // res.send(openid);
     },
 

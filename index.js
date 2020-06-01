@@ -40,8 +40,8 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(path.resolve(), 'public')));
 
-const routes = require('./routes/index');
-app.use('/api/', routes);
+app.use('/api/', require('./routes/index'));
+app.use('/wechat/', require('./routes/wechat'));
 
 // catch 404 and forward to error handler
 app.use('*', (req, res) => {

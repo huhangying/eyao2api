@@ -20,7 +20,7 @@ const wxConfig = {
 module.exports = {
     // wechat sign test
     signTest: (req, res) => {
-        const { signature, timestamp, nonce, echostr } = req.params;
+        const { signature, timestamp, nonce, echostr } = req.query;
         console.log(signature, timestamp, nonce, echostr);
         res.set('Content-Type', 'text')
         res.send(echostr);

@@ -26,11 +26,12 @@ module.exports = {
         res.send(echostr);
     },
 
-    checkSign: async (req, res) => {
+    checkSign: (req, res) => {
         const wx = new Wechat(wxConfig);
         try {
-            const signatureData = await wx.jssdk.getSignature(req.query.url);
-            res.json(signatureData);
+            wx.jssdk.getSignature(req.query.url).then(signatureData => {
+                res.json(signatureData);
+            });
         } catch (error) {
             res.sendStatus(500).json(error);
         }

@@ -29,14 +29,15 @@ module.exports = {
     signatureAuth: (req, res) => {
         const { signature, timestamp, nonce, openid } = req.query;
         console.log(signature, timestamp, nonce, openid);
-        const body = req.body;
-        console.log(body);
 
         const wx = new Wechat(wxConfig);
-        const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat', 'snsapi_base', '101');
-        res.render("oauth-page", {
-            wechatOAuthUrl: url,
-        });
+        const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat/', 'snsapi_base', '101');
+        console.log(url);
+        
+        // res.render("oauth-page", {
+        //     wechatOAuthUrl: url,
+        // });
+        res.redirect('/wechat/?openid=' + openid);
         // res.send(openid);
     },
 

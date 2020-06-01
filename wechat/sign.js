@@ -31,8 +31,8 @@ module.exports = {
         console.log(signature, timestamp, nonce, openid);
 
         const wx = new Wechat(wxConfig);
-        const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat/', 'snsapi_base', '101');
-        console.log(url);
+        //const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat/', 'snsapi_base', '101');
+        //console.log(url);
         
         // res.render("oauth-page", {
         //     wechatOAuthUrl: url,

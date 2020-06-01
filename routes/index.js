@@ -735,6 +735,8 @@ router.route('/admin/userdata/:id')
 const wechat = require('../wechat/sign');
 
 router.route('/wechat/signtest')
-    .get(wechat.sign);
+    .get(wechat.signTest);
+router.route('/wechat/checkSign')
+    .get(wechat.checkSign);
 
 module.exports = router;

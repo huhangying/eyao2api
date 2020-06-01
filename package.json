@@ -21,7 +21,8 @@
     "morgan": "~1.10.0",
     "q": "^1.5.1",
     "socket.io": "^2.3.0",
-    "util": "^0.12.2"
+    "util": "^0.12.2",
+    "wechat-jssdk": "^5.0.4"
   },
   "devDependencies": {
     "@types/socket.io": "^2.1.8",

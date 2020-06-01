@@ -22,7 +22,7 @@ module.exports = {
     signTest: (req, res) => {
         const { signature, timestamp, nonce, echostr } = req.params;
         console.log(signature, timestamp, nonce, echostr);
-
+        res.set('Content-Type', 'text')
         res.send(echostr);
     },
 

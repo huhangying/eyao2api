@@ -1,8 +1,9 @@
 const TOKEN = 'harry';
 const Wechat = require('wechat-jssdk');
+
 const wxConfig = {
     //set your oauth redirect url, defaults to localhost
-    // "wechatRedirectUrl": "http://localhost:4000/wechat/oauth-callback",
+    "wechatRedirectUrl": "http://timebox.i234.me/wechat/oauth-callback",
     //"wechatToken": "wechat_token", //not necessary required
     "appId": 'wxac12d83affdb4dd5',
     "appSecret": 'a6cdf7e9c01039d03f3255cf5826a189',
@@ -19,14 +20,23 @@ const wxConfig = {
 
 module.exports = {
     // wechat sign test
-    signTest: (req, res) => {
+    signatureTest: (req, res) => {
         const { signature, timestamp, nonce, echostr } = req.query;
-        console.log(signature, timestamp, nonce, echostr);
-        // res.set('Content-Type', 'text')
+        // console.log(signature, timestamp, nonce, echostr);
         res.send(echostr);
     },
 
-    checkSign: (req, res) => {
+    signatureAuth: (req, res) => {
+        const { signature, timestamp, nonce, openid } = req.query;
+        console.log(signature, timestamp, nonce, openid);
+        const body = req.body;
+        console.log(body);
+        
+        const wx = new Wechat(wxConfig);
+        res.send(openid);
+    },
+
+    checkSignature: (req, res) => {
         const wx = new Wechat(wxConfig);
         try {
             wx.jssdk.getSignature(req.query.url).then(signatureData => {
@@ -35,5 +45,9 @@ module.exports = {
         } catch (error) {
             res.sendStatus(500).json(error);
         }
+    },
+
+    createMenu: (req, res) => {
+
     }
 }

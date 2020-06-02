@@ -1,4 +1,6 @@
 const TOKEN = 'harry';
+const Hospital = require('../db/model/hospital');
+const util = require('../../util/util');
 const Wechat = require('wechat-jssdk');
 const wxConfig = {
     //set your oauth redirect url, defaults to localhost
@@ -14,7 +16,6 @@ module.exports = {
     // wechat sign test
     signatureTest: (req, res) => {
         const { echostr } = req.query;
-        console.log(req.query);
         res.send(echostr);
         // const wx = new Wechat(wxConfig);
         // if (wx.jssdk.verifySignature(req.query)) {
@@ -24,6 +25,7 @@ module.exports = {
         // res.send("error");
     },
 
+    // no user for now
     signatureAuth: (req, res) => {
         const { signature, timestamp, nonce, openid } = req.query;
         console.log(req.query);
@@ -31,11 +33,11 @@ module.exports = {
         // const wx = new Wechat(wxConfig);
         // const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat/', 'snsapi_base', '101');
         //console.log(url);
-        const url = 'http://timebox.i234.me/wechat/?openid=' + openid;
+        const url = 'http://timebox.i234.me/wechat/entry?openid=' + openid;
 
-        // res.render("oauth-page", {
-        //     wechatOAuthUrl: url,
-        // });
+        res.render("oauth-page", {
+            wechatOAuthUrl: url,
+        });
     },
 
     getSignature: (req, res) => {
@@ -51,5 +53,21 @@ module.exports = {
 
     createMenu: (req, res) => {
 
+    },
+
+    ///
+    // api
+    ///
+    generateApiToken: async (req, res) => {
+        const {uid} = req.params;
+        const hosptial = await Hospital.findOne({ host: req.hostname, apply: true }, 'hid')
+        if (!hosptial) {
+            return Status.sendStatus(403);
+        }
+        res.json(util.signToken({
+            hid: hosptial.hid,
+            id: uid
+        }));
     }
+
 }

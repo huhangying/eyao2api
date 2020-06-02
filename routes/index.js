@@ -736,9 +736,11 @@ const wechat = require('../wechat/sign');
 
 router.route('/wechat/signature')
     .get(wechat.signatureTest)
-    .post(wechat.signatureAuth);
+    .post(wechat.signatureAuth); // oauth, no use for now
 router.route('/wechat/getSignature')
     .get(wechat.getSignature);
-
+    
+router.route('/wechat/login/:uid')
+    .get(wechat.generateApiToken)
 
 module.exports = router;

@@ -19,6 +19,8 @@ module.exports = {
         // res.send(echostr);
         const wx = new Wechat(wxConfig);
         if (wx.jssdk.verifySignature(req.query)) {
+            console.log('test success -->', req.query);
+            
             res.send(req.query.echostr);
             return;
         }

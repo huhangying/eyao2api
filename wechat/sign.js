@@ -15,14 +15,14 @@ const wxConfig = {
 module.exports = {
     // wechat sign test
     signatureTest: (req, res) => {
-        const { echostr } = req.query;
-        res.send(echostr);
-        // const wx = new Wechat(wxConfig);
-        // if (wx.jssdk.verifySignature(req.query)) {
-        //     res.send(req.query.echostr);
-        //     return;
-        // }
-        // res.send("error");
+        // const { echostr } = req.query;
+        // res.send(echostr);
+        const wx = new Wechat(wxConfig);
+        if (wx.jssdk.verifySignature(req.query)) {
+            res.send(req.query.echostr);
+            return;
+        }
+        res.send("error");
     },
 
     // no user for now

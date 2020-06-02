@@ -1,6 +1,6 @@
 const TOKEN = 'harry';
 const Hospital = require('../db/model/hospital');
-const util = require('../../util/util');
+const util = require('../util/util');
 const Wechat = require('wechat-jssdk');
 const wxConfig = {
     //set your oauth redirect url, defaults to localhost

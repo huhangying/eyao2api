@@ -28,18 +28,20 @@ module.exports = {
         res.send("error");
     },
 
-    // no user for now
-    signatureAuth: (req, res) => {
+    // save signature
+    signatureAuth: (req, res, next) => {
         const { signature, timestamp, nonce, openid } = req.query;
         console.log(req.query);
 
-        // const wx = new Wechat(wxConfig);
+        const wx = new Wechat(wxConfig);
         // const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat/', 'snsapi_base', '101');
         //console.log(url);
         const url = 'http://timebox.i234.me/wechat/entry?openid=' + openid;
-
-        res.render("oauth-page", {
-            wechatOAuthUrl: url,
+        wx.jssdk.getSignature(url)
+        .then(rsp => res.json(rsp))
+        .catch(err => {
+            console.log(err);
+            next(err);
         });
     },
 

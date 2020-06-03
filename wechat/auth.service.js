@@ -29,17 +29,6 @@ module.exports = {
 	// save signature
 	receiveAuth: (req, res) => {
 		const { signature, timestamp, nonce, openid } = req.query;
-		//this.getWechatSettings()
-		// const wx = new Wechat(wxConfig);
-		// const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat/', 'snsapi_base', '101');
-		//console.log(url);
-		// const url = 'http://timebox.i234.me/wechat?openid=' + openid;
-		// wx.jssdk.getSignature(url)
-		// 	.then(rsp => res.json(rsp))
-		// 	.catch(err => {
-		// 		console.log(err);
-		// 		next(err);
-		// 	});
 		SignatureStore.UpsertSignature({
 			signature: signature,
 			timestamp: timestamp,
@@ -49,7 +38,10 @@ module.exports = {
 		res.end();
 	},
 
-	getSignature: (req, res, next) => {
+	getSignatureByOpenId: (req, res, next) => {
+		const {openid} = req.params;
+		// get from signature store
+		SignatureStore.GetByOpenId(openid);
 		const wx = new Wechat(wxConfig);
 		wx.jssdk.getSignature(req.query.url)
 			.then((signatureData) => {

@@ -735,14 +735,13 @@ router.route('/admin/userdata/:id')
 
 ///////////////////////////////////////////////////////////////////////////////////
 const wechat = require('../wechat/auth.service');
+const SignatureStore = require('../wechat/signature.controller');
 
 router.route('/wechat/signature')
     .get(wechat.authTest)
     .post(wechat.receiveAuth); 
-router.route('/wechat/getSignature') // input is req.query.url
-    .get(wechat.getSignature);
-router.route('/wechat/getWeixinToken')
-    .get(wechat.getWeixinToken);
+router.route('/wechat/getSignature/:openid')
+    .get(SignatureStore.GetByOpenId);
 
 router.route('/wechat/getWeixinToken')
     .get(wechat.getWeixinToken);

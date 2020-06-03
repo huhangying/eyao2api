@@ -34,7 +34,7 @@ module.exports = {
   // internal functions
   UpsertSignature: (signature) => {
     return Signature.findOneAndUpdate(
-      { open: signature.openid },
+      { openid: signature.openid },
       signature,
       { new: true, upsert: true });
   },

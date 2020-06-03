@@ -4,6 +4,7 @@ const Hospital = require('../db/controller/hospital');
 const util = require('../util/util');
 const Wechat = require('wechat-jssdk');
 const Const = require('../db/controller/const');
+const SignatureStore = require('./signature.controller');
 const wxConfig = {
 	//set your oauth redirect url, defaults to localhost
 	// "wechatRedirectUrl": "http://timebox.i234.me/wechat/",
@@ -26,20 +27,26 @@ module.exports = {
 	},
 
 	// save signature
-	receiveAuth: (req, res, next) => {
+	receiveAuth: (req, res) => {
 		const { signature, timestamp, nonce, openid } = req.query;
-		console.log(req);
 		//this.getWechatSettings()
-		const wx = new Wechat(wxConfig);
+		// const wx = new Wechat(wxConfig);
 		// const url = wx.oauth.generateOAuthUrl('http://timebox.i234.me/wechat/', 'snsapi_base', '101');
 		//console.log(url);
-		const url = 'http://timebox.i234.me/wechat?openid=' + openid;
-		wx.jssdk.getSignature(url)
-			.then(rsp => res.json(rsp))
-			.catch(err => {
-				console.log(err);
-				next(err);
-			});
+		// const url = 'http://timebox.i234.me/wechat?openid=' + openid;
+		// wx.jssdk.getSignature(url)
+		// 	.then(rsp => res.json(rsp))
+		// 	.catch(err => {
+		// 		console.log(err);
+		// 		next(err);
+		// 	});
+		SignatureStore.UpsertSignature({
+			signature: signature,
+			timestamp: timestamp,
+			nonce: nonce,
+			openid: openid
+		}).exec();
+		res.end();
 	},
 
 	getSignature: (req, res, next) => {

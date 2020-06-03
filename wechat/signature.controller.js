@@ -5,8 +5,8 @@ module.exports = {
   // 根据openid获取详细信息
   GetByOpenId: (req, res, next) => {
     const { openid } = req.params;
-    Signature.findOne({ openid: openid, hid: req.token.hid })
-      .select('-hid -__v')
+    Signature.findOne({ openid: openid })
+      .select('-__v')
       .then((result) => res.json(result))
       .catch(err => next(err));
   },
@@ -17,10 +17,7 @@ module.exports = {
     if (!signature.openid) {
       return Status.returnStatus(res, Status.MISSING_PARAM);
     }
-    Signature.findOneAndUpdate(
-      { open: signature.openid, hid: signature.hid },
-      signature,
-      { new: true, upsert: true })
+    this.UpsertSignature(signature)
       .then((result) => res.json(result))
       .catch(err => next(err));
   },
@@ -31,6 +28,15 @@ module.exports = {
     Signature.findByIdAndDelete(id)
       .then((result) => res.json(result))
       .catch(err => next(err));
+  },
+
+  /////////////////////////////////////
+  // internal functions
+  UpsertSignature: (signature) => {
+    return Signature.findOneAndUpdate(
+      { open: signature.openid },
+      signature,
+      { new: true, upsert: true });
   },
 
 }

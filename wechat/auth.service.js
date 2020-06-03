@@ -81,14 +81,14 @@ module.exports = {
 	// api
 	///
 	generateApiToken: async (req, res) => {
-		const { uid } = req.params;
+		const { openid } = req.params;
 		const hosptial = await Hospital.findHidByHost(req.hostname);
 		if (!hosptial) {
 			return Status.returnStatus(res, Status.FAILED);
 		}
 		res.json(util.signToken({
 			hid: hosptial.hid,
-			id: uid
+			id: openid
 		}));
 	},
 

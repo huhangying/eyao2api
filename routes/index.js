@@ -748,7 +748,7 @@ router.route('/wechat/getWeixinToken')
     .get(wechat.getWeixinToken);
 
     
-router.route('/wechat/login/:uid')
+router.route('/wechat/login/:openid')
     .get(wechat.generateApiToken)
 
 module.exports = router;

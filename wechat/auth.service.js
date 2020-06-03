@@ -90,11 +90,11 @@ module.exports = {
 	getWechatSettings: async (hid) => {
 
 		const results = await Const.getByGroup(2, hid); // 2 is for wechat
-		const appId = results.find(_ => _.name === 'appId').value;
-		const appSecret = results.find(_ => _.name === 'secret').value;
+		const appid = results.find(_ => _.name === 'appid').value;
+		const secret = results.find(_ => _.name === 'secret').value;
 		return {
-			appId: appId,
-			appSecret: appSecret,
+			appid: appid,
+			secret: secret,
 		};
 	}
 

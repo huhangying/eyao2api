@@ -7,9 +7,8 @@ module.exports = mongoose.model(
     hid: Number,
     name: String,
     desc: String,
-    host: String,
+    ipList: [{type : String}],
     // parent: {type : String, default: null}, // 用于医院联盟 （下期）
-    order: Number,
     apply: { type: Boolean, default: true }
   }, {
     timestamps: true

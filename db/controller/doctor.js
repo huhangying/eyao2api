@@ -1,6 +1,6 @@
 
 const Doctor = require('../model/doctor.js');
-const Hospital = require('../model/hospital');
+const Hospital = require('./hospital');
 const Relationship = require('../model/relationship.js');
 const util = require('../../util/util');
 const { allowToDeleteDoctor } = require('../../util/allow-to');
@@ -277,8 +277,8 @@ module.exports = {
         if (!login.password) {
             return Status.returnStatus(res, Status.NO_PASSWORD);
         }
-
-        const hosptial = await Hospital.findOne({ host: req.hostname, apply: true }, 'hid')
+        Hospital.findHidByHost(req.hostname)
+        const hosptial = await Hospital.findHidByHost(req.hostname);
         if (!hosptial) {
             return Status.sendStatus(403);
         }

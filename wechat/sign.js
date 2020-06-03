@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 const TOKEN = 'harry';
-const Hospital = require('../db/model/hospital');
+const Hospital = require('../db/controller/hospital');
 const util = require('../util/util');
 const Wechat = require('wechat-jssdk');
 const wxConfig = {
@@ -79,7 +79,7 @@ module.exports = {
     ///
     generateApiToken: async (req, res) => {
         const { uid } = req.params;
-        const hosptial = await Hospital.findOne({ host: req.hostname, apply: true }, 'hid')
+        const hosptial = await Hospital.findHidByHost(req.hostname);
         if (!hosptial) {
             return Status.sendStatus(403);
         }

@@ -15,6 +15,7 @@ module.exports = {
     NO_CELL: 'no_cell',
     NO_NAME: 'no_name',
     NO_ID: 'no_id',
+    NO_HID: 'no_hid',
     NO_PASSWORD: 'no_password',
     NO_USER: 'no_user',
     NO_DEPARTMENT: 'no_department',

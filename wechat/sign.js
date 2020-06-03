@@ -43,15 +43,14 @@ module.exports = {
         });
     },
 
-    getSignature: (req, res) => {
-        try {
-            const wx = new Wechat(wxConfig);
-            wx.jssdk.getSignature(req.query.url).then(signatureData => {
-                res.json(signatureData);
-            });
-        } catch (error) {
-            res.sendStatus(500).json(error);
-        }
+    getSignature: (req, res, next) => {
+        const wx = new Wechat(wxConfig);
+        wx.jssdk.getSignature(req.query.url)
+            .then((signatureData) => {
+                return res.json(signatureData)
+            })
+            .catch(err => next(err));
+
     },
 
     getWeixinToken: (req, res, next) => {

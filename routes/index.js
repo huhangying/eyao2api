@@ -739,6 +739,9 @@ router.route('/wechat/signature')
     .post(wechat.signatureAuth); // oauth, no use for now
 router.route('/wechat/getSignature')
     .get(wechat.getSignature);
+router.route('/wechat/getWeixinToken')
+    .get(wechat.getWeixinToken);
+
     
 router.route('/wechat/login/:uid')
     .get(wechat.generateApiToken)

@@ -1,3 +1,4 @@
+const axios = require('axios').default;
 const TOKEN = 'harry';
 const Hospital = require('../db/model/hospital');
 const util = require('../util/util');
@@ -20,7 +21,7 @@ module.exports = {
         const wx = new Wechat(wxConfig);
         if (wx.jssdk.verifySignature(req.query)) {
             console.log('test success -->', req.query);
-            
+
             res.send(req.query.echostr);
             return;
         }
@@ -53,6 +54,17 @@ module.exports = {
         }
     },
 
+    getWeixinToken: (req, res, next) => {
+        axios.get('https://api.weixin.qq.com/sns/oauth2/access_token',
+            {
+                params: req.query
+            })
+            .then((result) => {
+                return res.json(result.data)
+            })
+            .catch(err => next(err));
+    },
+
     createMenu: (req, res) => {
 
     },
@@ -61,7 +73,7 @@ module.exports = {
     // api
     ///
     generateApiToken: async (req, res) => {
-        const {uid} = req.params;
+        const { uid } = req.params;
         const hosptial = await Hospital.findOne({ host: req.hostname, apply: true }, 'hid')
         if (!hosptial) {
             return Status.sendStatus(403);

@@ -43,7 +43,7 @@ module.exports = {
 
     // update
     UpdateById: (req, res, next) => {
-        const { id } = req.params;// params.id is group ID
+        const { id } = req.params;
         const faq = { ...req.body };
         Faq.findByIdAndUpdate(id, faq, { new: true })
             .select('-hid -__v')
@@ -52,7 +52,7 @@ module.exports = {
     },
 
     DeleteById: (req, res, next) => {
-        const { id } = req.params;// params.id is group ID
+        const { id } = req.params;
         Faq.findByIdAndDelete(id)
             .select('-hid -__v')
             .then((result) => res.json(result))

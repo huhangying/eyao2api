@@ -6,6 +6,6 @@ module.exports = mongoose.model(
         openid: String, // key
         nonce: String,
         signature: String,
-        timestamp: String
+        timestamp: Number
     })
 );

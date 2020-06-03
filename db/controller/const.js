@@ -23,8 +23,8 @@ module.exports = {
   // update: desc, type and value, but not name
   UpdateById: (req, res, next) => {
     const { id } = req.params;
-    const _const = { ...req.body };
-    if (_const.name) {
+    const _const = req.body;
+    if (_const.name) { // name cannot be changed!
       delete _const.name;
     }
     Const.findByIdAndUpdate(id, _const, { new: true })

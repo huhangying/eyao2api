@@ -21,6 +21,14 @@ module.exports = {
       .catch(err => next(err));
   },
 
+  getByGroup: (req, res, next) => {
+    const { group } = req.params;
+    Const.find({ group: group, hid: req.token.hid })
+      .select('name type value')
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
+
   // update: desc, type and value, but not name
   UpdateById: (req, res, next) => {
     const { id } = req.params;
@@ -74,10 +82,4 @@ module.exports = {
       .then((result) => res.json(result))
       .catch(err => next(err));
   },
-
-  getByGroup: (group, hid) => {
-    return Const.find({ group: group, hid: hid })
-      .select('name type value');
-  }
-
 }

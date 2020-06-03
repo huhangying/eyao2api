@@ -366,6 +366,8 @@ router.route('/const/:id')
 
 router.route('/const/:name')
     .get(Const.GetByName);
+router.route('/const/group/:group')
+    .get(Const.getByGroup);
 
 
 //===================================== Version 1.0

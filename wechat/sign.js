@@ -49,7 +49,10 @@ module.exports = {
             .then((signatureData) => {
                 return res.json(signatureData)
             })
-            .catch(err => next(err));
+            .catch(err => {
+                console.log(err);
+                next(err);
+            });
 
     },
 

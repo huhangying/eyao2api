@@ -277,10 +277,9 @@ module.exports = {
         if (!login.password) {
             return Status.returnStatus(res, Status.NO_PASSWORD);
         }
-        Hospital.findHidByHost(req.hostname)
         const hosptial = await Hospital.findHidByHost(req.hostname);
         if (!hosptial) {
-            return Status.sendStatus(403);
+            return Status.returnStatus(res, Status.FAILED);
         }
 
         const query = {

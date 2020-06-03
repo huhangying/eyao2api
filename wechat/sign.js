@@ -81,7 +81,7 @@ module.exports = {
         const { uid } = req.params;
         const hosptial = await Hospital.findHidByHost(req.hostname);
         if (!hosptial) {
-            return Status.sendStatus(403);
+            return Status.returnStatus(res, Status.FAILED);
         }
         res.json(util.signToken({
             hid: hosptial.hid,

@@ -4,7 +4,7 @@ module.exports = mongoose.model(
     'signature',
     mongoose.Schema({
         openid: String, // key
-        nonceStr: String,
+        nonce: String,
         signature: String,
         timestamp: String
     })

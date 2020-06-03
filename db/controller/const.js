@@ -1,4 +1,5 @@
-var Const = require('../model/const.js');
+const Const = require('../model/const.js');
+//todo: add caching functions
 
 module.exports = {
 
@@ -73,5 +74,10 @@ module.exports = {
       .then((result) => res.json(result))
       .catch(err => next(err));
   },
+
+  getByGroup: (group, hid) => {
+    return Const.find({ group: group, hid: hid })
+      .select('name type value');
+  }
 
 }

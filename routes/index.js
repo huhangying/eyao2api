@@ -732,13 +732,16 @@ router.route('/admin/userdata/:id')
     .delete(Admin.DeleteUserAndRelatedData);
 
 ///////////////////////////////////////////////////////////////////////////////////
-const wechat = require('../wechat/sign');
+const wechat = require('../wechat/auth.service');
 
 router.route('/wechat/signature')
-    .get(wechat.signatureTest)
-    .post(wechat.signatureAuth); // oauth, no use for now
+    .get(wechat.authTest)
+    .post(wechat.receiveAuth); 
 router.route('/wechat/getSignature') // input is req.query.url
     .get(wechat.getSignature);
+router.route('/wechat/getWeixinToken')
+    .get(wechat.getWeixinToken);
+
 router.route('/wechat/getWeixinToken')
     .get(wechat.getWeixinToken);
 

@@ -1,5 +1,4 @@
 const axios = require('axios').default;
-const TOKEN = 'harry';
 const Hospital = require('../db/controller/hospital');
 const util = require('../util/util');
 const Wechat = require('wechat-jssdk');
@@ -15,8 +14,7 @@ const wxConfig = {
 module.exports = {
 	// wechat sign test
 	authTest: (req, res) => {
-		const wx = new Wechat(wxConfig);
-		if (wx.jssdk.verifySignature(req.query)) {
+		if (util.verifySignature(req.query)) {
 			res.send(req.query.echostr);
 			return;
 		}
@@ -37,7 +35,7 @@ module.exports = {
 
 	//todo: remove
 	getSignatureByUrl: (req, res, next) => {
-		const {url} = req.params;
+		const { url } = req.params;
 		// // get from signature store
 		// SignatureStore.GetByOpenId(openid);
 		const wx = new Wechat(wxConfig);

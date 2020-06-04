@@ -8,6 +8,7 @@ const ENCRYPT_KEY = 'xinhua e yao';
 const SECRET_KEY = "YRRAh";
 //1h 59m, weixin token is only valid within 2 hours
 const REFRESH_INTERVAL = 1000 * 119 * 60;
+const TOKEN = 'harry';
 
 module.exports = {
 
@@ -91,6 +92,16 @@ module.exports = {
         /* istanbul ignore else  */
         if (interval === undefined) interval = REFRESH_INTERVAL;
         return Date.now() - new Date(modifyDate).getTime() > interval;
+    },
+    verifySignature(query) {
+        const keys = [
+            TOKEN,
+            query['timestamp'],
+            query['nonce'],
+        ];
+        let str = keys.sort().join('');
+        str = this.genSHA1(str);
+        return str === query.signature;
     }
 
 }

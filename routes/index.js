@@ -745,6 +745,8 @@ router.route('/wechat/getSignature/:openid')
 
 router.route('/wechat/getWeixinToken')
     .get(wechat.getWeixinToken);
+router.route('/wechat/refreshWeixinToken')
+    .get(wechat.refreshWeixinToken);
 
     
 router.route('/wechat/login/:openid')

@@ -38,6 +38,7 @@ module.exports = {
 		res.end();
 	},
 
+	//todo: remove
 	getSignatureByOpenId: (req, res, next) => {
 		const {openid} = req.params;
 		// get from signature store
@@ -51,11 +52,21 @@ module.exports = {
 				console.log(err);
 				next(err);
 			});
-
 	},
 
 	getWeixinToken: (req, res, next) => {
 		axios.get('https://api.weixin.qq.com/sns/oauth2/access_token',
+			{
+				params: req.query
+			})
+			.then((result) => {
+				return res.json(result.data)
+			})
+			.catch(err => next(err));
+	},
+
+	refreshWeixinToken: (req, res, next) => {
+		axios.get('https://api.weixin.qq.com/sns/oauth2/refresh_token',
 			{
 				params: req.query
 			})

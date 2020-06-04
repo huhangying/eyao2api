@@ -14,12 +14,13 @@ const wxConfig = {
 module.exports = {
 	// wechat sign test
 	authTest: (req, res) => {
-		if (util.verifySignature(req.query)) {
-			res.send(req.query.echostr);
-			return;
-		}
-		//res.send("error");
 		res.send(req.query.echostr);
+		// if (util.verifySignature(req.query)) {
+		// 	res.send(req.query.echostr);
+		// 	return;
+		// }
+		// res.send("error");
+
 	},
 
 	// save signature

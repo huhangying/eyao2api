@@ -18,7 +18,8 @@ module.exports = {
 			res.send(req.query.echostr);
 			return;
 		}
-		res.send("error");
+		//res.send("error");
+		res.send(req.query.echostr);
 	},
 
 	// save signature

@@ -737,7 +737,7 @@ router.route('/admin/userdata/:id')
 const wechat = require('../wechat/auth.service');
 const SignatureStore = require('../wechat/signature.controller');
 
-router.route('/wechat/signature')
+router.route('/wechat/auth')
     .get(wechat.authTest)
     .post(wechat.receiveAuth);
 router.route('/wechat/getSignature/:openid')

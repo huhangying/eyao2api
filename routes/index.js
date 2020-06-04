@@ -739,16 +739,18 @@ const SignatureStore = require('../wechat/signature.controller');
 
 router.route('/wechat/signature')
     .get(wechat.authTest)
-    .post(wechat.receiveAuth); 
+    .post(wechat.receiveAuth);
 router.route('/wechat/getSignature/:openid')
     .get(SignatureStore.GetByOpenId);
+router.route('/wechat/getSignature')
+    .get(wechat.getSignatureByUrl);
 
 router.route('/wechat/getWeixinToken')
     .get(wechat.getWeixinToken);
 router.route('/wechat/refreshWeixinToken')
     .get(wechat.refreshWeixinToken);
 
-    
+
 router.route('/wechat/login/:openid')
     .get(wechat.generateApiToken)
 

@@ -6,9 +6,6 @@ const Wechat = require('wechat-jssdk');
 const Const = require('../db/controller/const');
 const SignatureStore = require('./signature.controller');
 const wxConfig = {
-	//set your oauth redirect url, defaults to localhost
-	// "wechatRedirectUrl": "http://timebox.i234.me/wechat/",
-	//"wechatToken": "wechat_token", //not necessary required
 	"appId": 'wxac12d83affdb4dd5',
 	"appSecret": 'a6cdf7e9c01039d03f3255cf5826a189',
 }
@@ -39,10 +36,10 @@ module.exports = {
 	},
 
 	//todo: remove
-	getSignatureByOpenId: (req, res, next) => {
-		const {openid} = req.params;
-		// get from signature store
-		SignatureStore.GetByOpenId(openid);
+	getSignatureByUrl: (req, res, next) => {
+		// const {openid} = req.params;
+		// // get from signature store
+		// SignatureStore.GetByOpenId(openid);
 		const wx = new Wechat(wxConfig);
 		wx.jssdk.getSignature(req.query.url)
 			.then((signatureData) => {

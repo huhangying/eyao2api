@@ -31,7 +31,7 @@ module.exports = {
 
     // middleware
     verifyToken: (req, res, next) => {
-        if (req.url.indexOf('login') > 0 || req.url.indexOf('wechat') > 0) {
+        if (req.url.indexOf('login') > 0) {
             return next(); // login is the only exception
         }
 

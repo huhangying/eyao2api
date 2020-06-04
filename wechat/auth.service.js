@@ -80,7 +80,8 @@ module.exports = {
 		}
 		res.json(util.signToken({
 			hid: hosptial.hid,
-			id: openid
+			id: openid,
+			role: 0
 		}));
 	},
 

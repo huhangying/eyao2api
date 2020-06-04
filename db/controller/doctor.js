@@ -302,7 +302,6 @@ module.exports = {
                 result.token = util.signToken({
                     hid: hosptial.hid,
                     id: result.id,
-                    user_id: result.user_id,
                     role: result.role
                 });
                 return res.json(result);

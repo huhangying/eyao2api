@@ -37,11 +37,11 @@ module.exports = {
 
 	//todo: remove
 	getSignatureByUrl: (req, res, next) => {
-		// const {openid} = req.params;
+		const {url} = req.params;
 		// // get from signature store
 		// SignatureStore.GetByOpenId(openid);
 		const wx = new Wechat(wxConfig);
-		wx.jssdk.getSignature(req.query.url)
+		wx.jssdk.getSignature(url)
 			.then((signatureData) => {
 				return res.json(signatureData)
 			})

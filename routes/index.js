@@ -742,7 +742,7 @@ router.route('/wechat/signature')
     .post(wechat.receiveAuth);
 router.route('/wechat/getSignature/:openid')
     .get(SignatureStore.GetByOpenId);
-router.route('/wechat/getSignature')
+router.route('/wechat/get-signature/:url')
     .get(wechat.getSignatureByUrl);
 
 router.route('/wechat/getWeixinToken')

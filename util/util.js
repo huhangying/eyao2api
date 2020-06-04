@@ -6,12 +6,13 @@ const CryptoJS = require("crypto-js");
 const jwt = require('jsonwebtoken');
 const ENCRYPT_KEY = 'xinhua e yao';
 const SECRET_KEY = "YRRAh";
+//1h 59m, weixin token is only valid within 2 hours
+const REFRESH_INTERVAL = 1000 * 119 * 60;
 
 module.exports = {
 
     // toObjectId: (id) => {
     //     return mongoose.Types.ObjectId(id);
-
     // },
 
     encrypt: function (str) {
@@ -69,4 +70,27 @@ module.exports = {
             return res.sendStatus(401);
         }
     },
+    ///////////////////////////////////////////
+    // for Wechat belows
+    genHash: (content, algorithm) => {
+        const c = crypto.createHash(algorithm);
+        c.update(content, 'utf8');
+        return c.digest('hex');
+    },
+
+    genSHA1: content => this.genHash(content, 'sha1'),
+    nonceStr: function () {
+        return Math.random()
+            .toString(36)
+            .substr(2, 15);
+    },
+    timestamp: function () {
+        return parseInt(new Date().getTime() / 1000) + '';
+    },
+    isExpired: function (modifyDate, interval) {
+        /* istanbul ignore else  */
+        if (interval === undefined) interval = REFRESH_INTERVAL;
+        return Date.now() - new Date(modifyDate).getTime() > interval;
+    }
+
 }

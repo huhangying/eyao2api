@@ -96,8 +96,8 @@ module.exports = {
     verifySignature(query) {
         const keys = [
             TOKEN,
-            query['timestamp'],
-            query['nonce'],
+            query.timestamp,
+            query.nonce
         ];
         let str = keys.sort().join('');
         str = this.genSHA1(str);

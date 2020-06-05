@@ -740,14 +740,14 @@ const SignatureStore = require('../wechat/signature.controller');
 router.route('/wechat/auth')
     .get(wechat.authTest)
     .post(wechat.receiveAuth);
-router.route('/wechat/getSignature/:openid')
+router.route('/wechat/authSignature/:openid')
     .get(SignatureStore.GetByOpenId);
-router.route('/wechat/get-signature/:url')
+router.route('/wechat/auth-signature/:url')
     .get(wechat.getSignatureByUrl);
 
-router.route('/wechat/getWeixinToken')
+router.route('/wechat/authWeixinToken')
     .get(wechat.getWeixinToken);
-router.route('/wechat/refreshWeixinToken')
+router.route('/wechat/authRefreshWeixinToken')
     .get(wechat.refreshWeixinToken);
 
 

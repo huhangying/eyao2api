@@ -76,8 +76,13 @@ module.exports = {
   /////////////////////////////////////////////////////
   // Functions belows
   findHidByHost(host) {
-    return Hospital.findOne({ipList: host})
+    return Hospital.findOne({ipList: host, apply: true})
       .select('hid');
+  },
+
+  getWechatSecretByHid(hid) {
+    return Hospital.findOne({hid: hid, apply: true})
+      .select('appid secret');
   }
 
 }

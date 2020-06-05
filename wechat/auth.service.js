@@ -80,14 +80,10 @@ module.exports = {
 	///
 	// api
 	///
-	generateApiToken: async (req, res) => {
-		const { openid } = req.params;
-		const hosptial = await Hospital.findHidByHost(req.hostname);
-		if (!hosptial) {
-			return Status.returnStatus(res, Status.FAILED);
-		}
+	generateApiToken: (req, res) => {
+		const { openid, hid } = req.params;
 		res.json(util.signToken({
-			hid: hosptial.hid,
+			hid: hid,
 			id: openid,
 			role: 0
 		}));

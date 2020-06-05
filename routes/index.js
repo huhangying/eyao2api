@@ -161,6 +161,9 @@ router.route('/hospital/:id')
 router.route('/hospital/hid/:hid')
     .get(Hospital.GetByHid)
 
+router.route('/hospital/wechat/auth/:hid')
+    .get(Hospital.getWechatSecretByHid)
+
 
 //---------------- 医院科室
 var Department = require('../db/controller/department');
@@ -366,7 +369,7 @@ router.route('/const/:id')
 
 router.route('/const/:name')
     .get(Const.GetByName);
-router.route('/const/group/:group')
+router.route('/consts/group/:group')
     .get(Const.getByGroup);
 
 
@@ -751,7 +754,7 @@ router.route('/wechat/authRefreshWeixinToken')
     .get(wechat.refreshWeixinToken);
 
 
-router.route('/wechat/login/:openid')
+router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
     .get(wechat.generateApiToken)
 
 module.exports = router;

@@ -32,7 +32,7 @@ module.exports = {
 			nonce: nonce,
 			openid: openid
 		}).exec();
-		res.end();
+		res.sendStatus(200);
 	},
 
 	//todo: remove

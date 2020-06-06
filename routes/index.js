@@ -143,6 +143,9 @@ router.route('/relationships/doctor/:id/select')  // 返回用户组和用户信
 router.route('/relationships/doctor/:id/userdetails')  // 用于药师用户管理, 返回用户信息: [name, cell id,] user name, user id
     .get(Relationship.GetUserDetailsByDoctorId);
 
+router.route('/relationships/get-doctors/user/:id')  // 用于微信端用户获取我的药师
+    .get(Relationship.GetDoctorsByUser);
+    
 
 //---------------- 医院+
 var Hospital = require('../db/controller/hospital');

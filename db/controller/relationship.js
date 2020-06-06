@@ -92,6 +92,19 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 微信
+    // 根据患者ID 获取关联医生的详细信息
+    GetDoctorsByUser: (req, res, next) => {
+        const { id } = req.params; // id is patient user id
+        Relationship.find({ user: id, hid: req.token.hid, apply: true })
+            .select('doctor')
+            .populate({ path: 'doctor', select: '_id name department title bulletin expertise gender honor hours icon status' })
+            .populate({ path: 'doctor', populate: { path: 'department', select: '_id name' } })
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据Group ID 获取医患关系
     GetByGroupId: (req, res, next) => {
         const { group } = req.params;

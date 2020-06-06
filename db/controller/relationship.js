@@ -228,6 +228,13 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
+    RemoveRelationship: (req, res, next) => {
+        const { did, uid } = req.params;
+        Relationship.findOneAndDelete({user: uid, doctor: did})
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
 
     // should not be used!!!
     DeleteByUserId: (req, res, next) => {

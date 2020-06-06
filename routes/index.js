@@ -145,6 +145,8 @@ router.route('/relationships/doctor/:id/userdetails')  // 用于药师用户管�
 
 router.route('/relationships/get-doctors/user/:id')  // 用于微信端用户获取已关注的药师
     .get(Relationship.GetFocusDoctorsByUser);
+router.route('/relationship/remove/:did/:uid')
+    .delete(Relationship.RemoveRelationship);
 
 //---------------- 医院+
 var Hospital = require('../db/controller/hospital');

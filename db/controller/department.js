@@ -9,6 +9,16 @@ module.exports = {
 
   GetAll: (req, res, next) => {
 
+    Department.find({ hid: req.token.hid, apply: true })
+      .sort({ order: 1 })
+      .select('-hid -__v')
+      .lean()
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
+
+  GetCmsAll: (req, res, next) => {
+
     Department.find({ hid: req.token.hid })
       .sort({ order: 1 })
       .select('-hid -__v')

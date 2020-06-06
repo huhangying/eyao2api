@@ -174,6 +174,8 @@ var Department = require('../db/controller/department');
 
 router.route('/departments')
     .get(Department.GetAll);
+router.route('/departments/cms')
+    .get(Department.GetCmsAll);
 
 router.route('/department')
     .post(urlencodedParser, Department.Add);

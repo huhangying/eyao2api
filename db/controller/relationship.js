@@ -94,12 +94,15 @@ module.exports = {
 
     // 微信
     // 根据患者ID 获取关联医生的详细信息
-    GetDoctorsByUser: (req, res, next) => {
+    GetFocusDoctorsByUser: (req, res, next) => {
         const { id } = req.params; // id is patient user id
         Relationship.find({ user: id, hid: req.token.hid, apply: true })
             .select('doctor')
-            .populate({ path: 'doctor', select: '_id name department title bulletin expertise gender honor hours icon status' })
-            .populate({ path: 'doctor', populate: { path: 'department', select: '_id name' } })
+            .populate({
+                path: 'doctor',
+                populate: { path: 'department', select: '_id name' },
+                select: '_id name department title bulletin expertise gender honor hours icon status',
+            })
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));

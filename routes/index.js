@@ -351,6 +351,8 @@ router.route('/bookings/today/doctor/:did')
 
 router.route('/bookings/schedule/:sid')
     .get(Booking.GetByScheduleId);
+router.route('/bookings/my/user/:uid')
+    .get(Booking.getPopulatedBookingsByUser);
 
 router.route('/booking')
     .post(urlencodedParser, Booking.Add);

@@ -111,10 +111,33 @@ module.exports = {
             });
     },
 
+    // Wechat:
+    getPopulatedBookingsByUser: (req, res, next) => {
+        const { uid } = req.params;
+        Booking.find({ user: uid, hid: req.token.hid })
+            .sort({ created: -1 })
+            .populate({
+                path: 'schedule',
+                populate: [
+                    {
+                        path: 'doctor',
+                        populate: 'department',
+                        select: '_id name department'
+                    },
+                    { path: 'period', select: '_id name' },
+                ],
+                select: 'date period created doctor'
+            })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     //
     GetByScheduleId: (req, res, next) => {
         const { sid } = req.params;
-        Booking.find({ schedule: sid, apply: true, hid: req.token.hid })
+        Booking.find({ schedule: sid, hid: req.token.hid })
             .sort({ created: -1 })
             .populate('schedule')
             .select('-hid -__v')

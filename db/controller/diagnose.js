@@ -72,7 +72,14 @@ module.exports = {
     GetUserLatestDiagnose: (req, res, next) => {
         const { user } = req.params;
         Diagnose.find({ user: user, hid: req.token.hid, status: 3 })
-            .populate({ path: 'doctor', select: 'name title department' })
+            .populate({
+                path: 'doctor',
+                select: 'name title department',
+                populate: {
+                    path: 'department',
+                    select: 'name -_id'
+                }
+            })
             .sort({ updatedAt: -1 })
             .limit(1)
             .select('-hid -__v')
@@ -106,9 +113,9 @@ module.exports = {
     UpdateById: function (req, res, next) {
         const { id } = req.params;
         Diagnose.findByIdAndUpdate(id, { ...req.body }, { new: true })
-          .select('-hid -__v')
-          .then((result) => res.json(result))
-          .catch(err => next(err));
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     DeleteById: (req, res, next) => {
@@ -120,7 +127,7 @@ module.exports = {
                     result.surveys.map(survey => {
                         if (survey.list && survey.list.length) {
                             survey.list.map(_ => {
-                                Survey.deleteOne({_id: _}).exec();
+                                Survey.deleteOne({ _id: _ }).exec();
                             });
                         }
                     })

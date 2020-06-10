@@ -2,7 +2,7 @@
  * Created by hhu on 2016/5/20.
  */
 var Relationship = require('../model/relationship.js');
-
+const Schedule = require('../controller/schedule');
 module.exports = {
 
     GetAll: (req, res, next) => {
@@ -105,6 +105,32 @@ module.exports = {
             })
             .lean()
             .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // 微信
+    // 根据患者ID 获取有门诊的关联医生的详细信息
+    GetScheduleDoctorsByUser: (req, res, next) => {
+        const { id } = req.params; // id is patient user id
+        Relationship.find({ user: id, hid: req.token.hid, apply: true })
+            .select('doctor apply')
+            .populate({
+                path: 'doctor',
+                populate: { path: 'department', select: '_id name' },
+                select: '_id name department title gender icon status',
+            })
+            .lean()
+            .then(async (results) => {
+                const promises = results.map(rel => {
+                    return Schedule.checkDoctorHasSchedules(rel.doctor, req.token.hid)
+                        .then(_ => {
+                            rel.apply = _;
+                            return rel;
+                        });
+                });
+                Promise.all(promises)
+                .then((results) => res.json(results))
+            })
             .catch(err => next(err));
     },
 

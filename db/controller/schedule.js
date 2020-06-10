@@ -221,5 +221,17 @@ module.exports = {
         }
     },
 
+    //////////////////////////////////////////////////////
+    // Functions
+
+    checkDoctorHasSchedules(did, hid) {
+        return Schedule.exists({
+            doctor: did,
+            hid: hid,
+            apply: true,
+            date: { $gte: (+new Date(new Date().setHours(0, 0, 0, 0)) + 24 * 60 * 60 * 1000) }
+        })
+    },
+
 
 }

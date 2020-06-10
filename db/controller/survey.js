@@ -145,21 +145,17 @@ module.exports = {
     },
 
     // 创建
-    Add: function (req, res) {
-
-        // 获取请求数据（json）
-        var survey = req.body;
+    Add: (req, res, next) => {
+        const survey = req.body;
 
         // doctor
         if (!survey.doctor) {
             return Status.returnStatus(res, Status.NO_DOCTOR);
         }
-
         // user
         if (!survey.user) {
             return Status.returnStatus(res, Status.NO_USER);
         }
-
         // name
         if (!survey.name) {
             return Status.returnStatus(res, Status.NO_NAME);
@@ -172,36 +168,12 @@ module.exports = {
         if (!survey.type) {
             return Status.returnStatus(res, Status.NO_TYPE);
         }
-        // group
-        // if (!survey.group) {
-        //     return Status.returnStatus(res, Status.NO_GROUP);
-        // }
-
         // questions ? allow to create a survey without questions?
 
-
-
         // 不存在，创建
-        Survey.create({
-            hid: survey.hid,
-            doctor: survey.doctor,
-            user: survey.user,
-            surveyTemplate: survey.surveyTemplate,
-
-            name: survey.name,
-            department: survey.department,
-            type: survey.type,
-            //group: survey.group,
-            order: survey.order,
-            availableBy: survey.availableBy,
-            questions: survey.questions
-        }, function (err, raw) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            return res.send(raw);
-        });
+        Survey.create(survey)
+            .then((result) => res.json(result))
+            .catch(err => next(err));
 
     },
 

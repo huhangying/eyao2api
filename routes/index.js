@@ -145,6 +145,8 @@ router.route('/relationships/doctor/:id/userdetails')  // 用于药师用户管�
 
 router.route('/relationships/get-doctors/user/:id')  // 用于微信端用户获取已关注的药师
     .get(Relationship.GetFocusDoctorsByUser);
+router.route('/relationships/get-schedule-doctors/user/:id')  // 用于微信端用户获取已关注的有门诊的药师
+    .get(Relationship.GetScheduleDoctorsByUser);
 router.route('/relationship/remove/:did/:uid')
     .delete(Relationship.RemoveRelationship);
 

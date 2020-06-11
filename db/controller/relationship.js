@@ -117,7 +117,7 @@ module.exports = {
             .populate({
                 path: 'doctor',
                 populate: { path: 'department', select: '_id name' },
-                select: '_id name department title gender icon status',
+                select: '_id name department title bulletin expertise gender honor hours icon status',
             })
             .lean()
             .then(async (results) => {

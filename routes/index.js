@@ -313,6 +313,9 @@ router.route('/schedules/find/doctors/:departmentid')
 router.route('/schedule/find/:did/:period/:date')
     .get(Schedule.GetByDoctorPeriodDate);
 
+router.route('/schedules/find-a-week/:did/:date')
+    .get(Schedule.GetOneWeekByDoctorDate);
+
 // 批量创建和删除Schedule
 router.route('/schedules-bat-add')
     .post(urlencodedParser, Schedule.BatAdd);

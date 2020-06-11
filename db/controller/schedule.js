@@ -104,6 +104,23 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据 DID 和 start date 获取一星期的 Schedule
+    GetOneWeekByDoctorDate: (req, res, next) => {
+        const did = req.params.did;
+        const date = new Date(req.params.date);
+        Schedule.find({
+            doctor: did,
+            date: { $gte: new Date(date), $lt: (new Date(date.setHours(0, 0, 0, 0) + 7* 24 * 60 * 60 * 1000)) },
+            hid: req.token.hid,
+            apply: true
+        })
+            .select('-hid -__v')
+            .populate('period', '_id name')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据ID获取详细信息
     GetById: (req, res, next) => {
         const { id } = req.params;

@@ -33,6 +33,14 @@ module.exports = {
       .catch(err => next(err));
   },
 
+  getWechatSecretByHid: (req, res, next) => {
+    const { hid } = req.params;
+    return Hospital.findOne({hid: hid, apply: true})
+      .select('appid secret')
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
+
   // 创建医院
   Add: (req, res, next) => {
     const hospital = req.body;
@@ -79,10 +87,5 @@ module.exports = {
     return Hospital.findOne({ipList: host, apply: true})
       .select('hid');
   },
-
-  getWechatSecretByHid(hid) {
-    return Hospital.findOne({hid: hid, apply: true})
-      .select('appid secret');
-  }
 
 }

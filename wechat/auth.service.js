@@ -2,18 +2,20 @@ const axios = require('axios').default;
 const util = require('../util/util');
 const Wechat = require('wechat-jssdk');
 const Hospital = require('../db/controller/hospital');
+const { Buffer } = require('buffer');
 const SignatureStore = require('./signature.controller');
 const wxConfig = {
 	"appId": 'wxac12d83affdb4dd5',
 	"appSecret": 'a6cdf7e9c01039d03f3255cf5826a189',
 }
+const messageHandler = require('./message-handler');
 
 
 
 const self = module.exports = {
 	// wechat sign test
 	authTest: (req, res) => {
-//		res.send(req.query.echostr);
+		//		res.send(req.query.echostr);
 		if (util.verifySignature(req.query)) {
 			res.send(req.query.echostr);
 			return;
@@ -24,34 +26,46 @@ const self = module.exports = {
 
 	// save signature
 	receiveAuth: (req, res) => {
-		let _data;
-    req.on("data",function(data){
+		const buffer = [];
+		req.on("data", function (data) {
 			/*微信服务器传过来的是xml格式的，是buffer类型，因为js本身只有字符串数据类型，所以需要通过toString把xml转换为字符串*/
-			_data = data.toString("utf-8");
+			// _data = data.toString("utf-8");
+			buffer.push(data);
+		});
+		req.on('end', async function () {
+			const msgXml = Buffer.concat(buffer).toString('utf-8');
+      try {
+        const r = await messageHandler.msgHandler(msgXml);
+        console.log('send Data:', r);
+        res.send(r);
+      } catch (error) {
+        console.log('公众号消息事件Error:', error);
+        res.send('error');
+      }
+    });
 
-	});
-	req.on("end",function(){
-			//console.log("end");
-			var ToUserName = util.getXMLNodeValue('ToUserName',_data);
-			var FromUserName = util.getXMLNodeValue('FromUserName',_data);
-			var CreateTime = util.getXMLNodeValue('CreateTime',_data);
-			var MsgType = util.getXMLNodeValue('MsgType',_data);
-			var Content = util.getXMLNodeValue('Content',_data);
-			var MsgId = util.getXMLNodeValue('MsgId',_data);
-			console.log(ToUserName);
-			console.log(FromUserName);
-			console.log(CreateTime);
-			console.log(MsgType);
-			console.log(Content);
-			console.log(MsgId);
-			var xml = '<xml><ToUserName>'+FromUserName+'</ToUserName><FromUserName>'+ToUserName+'</FromUserName><CreateTime>'+CreateTime+'</CreateTime><MsgType>'+MsgType+'</MsgType><Content>'+Content+'</Content></xml>';
-			res.send(xml);
-	});
-		// const { signature, timestamp, nonce, openid } = req.query;
+
+		// req.on("end", function () {
+		// 	//console.log("end");
+		// 	var ToUserName = util.getXMLNodeValue('ToUserName', _data);
+		// 	var FromUserName = util.getXMLNodeValue('FromUserName', _data);
+		// 	var CreateTime = util.getXMLNodeValue('CreateTime', _data);
+		// 	var MsgType = util.getXMLNodeValue('MsgType', _data);
+		// 	var Content = util.getXMLNodeValue('Content', _data);
+		// 	var MsgId = util.getXMLNodeValue('MsgId', _data);
+		// 	console.log(ToUserName);
+		// 	console.log(FromUserName);
+		// 	console.log(CreateTime);
+		// 	console.log(MsgType);
+		// 	console.log(Content);
+		// 	console.log(MsgId);
+		// 	var xml = '<xml><ToUserName>' + FromUserName + '</ToUserName><FromUserName>' + ToUserName + '</FromUserName><CreateTime>' + CreateTime + '</CreateTime><MsgType>' + MsgType + '</MsgType><Content>' + Content + '</Content></xml>';
+		// 	res.send(xml);
+		// });
 
 		// check if openid registered
 
-		
+
 		// SignatureStore.UpsertSignature({
 		// 	signature: signature,
 		// 	timestamp: timestamp,

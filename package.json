@@ -23,7 +23,8 @@
     "q": "^1.5.1",
     "socket.io": "^2.3.0",
     "util": "^0.12.2",
-    "wechat-jssdk": "^5.0.4"
+    "wechat-jssdk": "^5.0.4",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@types/socket.io": "^2.1.8",

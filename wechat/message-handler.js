@@ -59,6 +59,7 @@ module.exports = {
                     },
                   },
                 }, baseData);
+                resolve(builder.buildObject(data));
                 break;
 
               case 'subscribe':

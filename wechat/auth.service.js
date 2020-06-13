@@ -25,6 +25,9 @@ const self = module.exports = {
 	// save signature
 	receiveAuth: (req, res) => {
 		const { signature, timestamp, nonce, openid } = req.query;
+		console.log(req.query);
+		console.log(req.body);
+		
 		SignatureStore.UpsertSignature({
 			signature: signature,
 			timestamp: timestamp,

@@ -1,8 +1,7 @@
 const axios = require('axios').default;
-const Hospital = require('../db/controller/hospital');
 const util = require('../util/util');
 const Wechat = require('wechat-jssdk');
-const Const = require('../db/controller/const');
+const Hospital = require('../db/controller/hospital');
 const SignatureStore = require('./signature.controller');
 const wxConfig = {
 	"appId": 'wxac12d83affdb4dd5',
@@ -11,7 +10,7 @@ const wxConfig = {
 
 
 
-module.exports = {
+const self = module.exports = {
 	// wechat sign test
 	authTest: (req, res) => {
 		res.send(req.query.echostr);
@@ -73,8 +72,31 @@ module.exports = {
 			.catch(err => next(err));
 	},
 
-	createMenu: (req, res) => {
-
+	getDoctorQrcode: async (req, res, next) => {
+		const { did } = req.params;
+		const token = await self.getWechatToken(req.token.hid);
+		const data = {
+			action_name: 'QR_LIMIT_STR_SCENE',
+			action_info: {
+				scene: {
+					scene_str: did
+				}
+			}
+		};
+		axios.post('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' + token.data.access_token,
+			data,
+			{
+				params: {
+					access_token: token.data.access_token,
+				}
+			}
+		).then((result) => {
+			if (!result || !result.data || !result.data.ticket) {
+				return Status.returnStatus(res, Status.FAILED)
+			}
+			return res.json(result.data);
+		})
+			.catch(err => next(err));
 	},
 
 	///
@@ -92,15 +114,18 @@ module.exports = {
 	//////////////////////////////////////////////////////////////
 	// Functions belows
 
-	getWechatSettings: async (hid) => {
+	getWechatToken: async (hid) => {
+		// 1. get secret
+		const secret = await Hospital.getSecretByHid(hid);
 
-		const results = await Const.getByGroup(2, hid); // 2 is for wechat
-		const appid = results.find(_ => _.name === 'appid').value;
-		const secret = results.find(_ => _.name === 'secret').value;
-		return {
-			appid: appid,
-			secret: secret,
-		};
+		// 2. get access_token
+		return axios.get('https://api.weixin.qq.com/cgi-bin/token', {
+			params: {
+				appid: secret.appid,
+				secret: secret.secret,
+				grant_type: 'client_credential'
+			}
+		});
 	}
 
 

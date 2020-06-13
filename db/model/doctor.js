@@ -28,6 +28,7 @@ module.exports = mongoose.model(
     //     hdid: { type: String }
     //   }
     // ],
+    qrcode: String, // 二维码图片地址
     created: { type: Date, default: Date.now },
     updated: { type: Date, default: Date.now },
     locked_count: Number,

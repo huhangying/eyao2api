@@ -185,7 +185,6 @@ module.exports = {
         })
             .then((result) => res.json(result))
             .catch(err => next(err));
-
     },
 
     UpdateById: (req, res, next) => {
@@ -200,24 +199,10 @@ module.exports = {
         const { link_id } = req.params; // WeChat ID
         const user = req.body;
 
-        User.findOneAndUpdate({ link_id: link_id, hid: user.hid }, { ...req.body }, { new: true })
+        User.findOneAndUpdate({ link_id: link_id, hid: user.hid }, user, { new: true })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
-
-        //     if (user.role || user.role == 0)
-        //         item.role = user.role;
-        //     if (user.sin)
-        //         item.sin = user.sin;
-        //     if (user.admissionNumber)
-        //         item.admissionNumber = user.admissionNumber;
-        //     if (user.icon)
-        //         item.icon = user.icon || '';
-        //     if (user.apply || user.apply === false)
-        //         item.apply = user.apply;
-        //     if (user.visitedDepartments) {
-        //         item.visitedDepartments = user.visitedDepartments;
-        //     }
     },
 
     // for test

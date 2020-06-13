@@ -751,7 +751,7 @@ router.route('/admin/userdata/:id')
 
 ///////////////////////////////////////////////////////////////////////////////////
 const wechat = require('../wechat/auth.service');
-const SignatureStore = require('../wechat/signature.controller');
+const SignatureStore = require('../wechat/signature.controller'); // could remove?
 
 router.route('/wechat/auth')
     .get(wechat.authTest)
@@ -766,6 +766,9 @@ router.route('/wechat/authWeixinToken')
 router.route('/wechat/authRefreshWeixinToken')
     .get(wechat.refreshWeixinToken);
 
+
+router.route('/wechat/get-doctor-qrcode/:did')
+    .get(wechat.getDoctorQrcode);
 
 router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
     .get(wechat.generateApiToken)

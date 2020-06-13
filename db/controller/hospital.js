@@ -9,10 +9,10 @@ module.exports = {
   // ONLY one don't need HID
   GetAll: (req, res, next) => {
     Hospital.find({ hid: req.token.hid })
-        .select('-__v')
-        .lean()
-        .then((result) => res.json(result))
-        .catch(err => next(err));
+      .select('-__v')
+      .lean()
+      .then((result) => res.json(result))
+      .catch(err => next(err));
   },
 
   // 根据ID获取详细信息
@@ -35,7 +35,7 @@ module.exports = {
 
   getWechatSecretByHid: (req, res, next) => {
     const { hid } = req.params;
-    return Hospital.findOne({hid: hid, apply: true})
+    return Hospital.findOne({ hid: hid, apply: true })
       .select('appid secret')
       .then((result) => res.json(result))
       .catch(err => next(err));
@@ -84,8 +84,13 @@ module.exports = {
   /////////////////////////////////////////////////////
   // Functions belows
   findHidByHost(host) {
-    return Hospital.findOne({ipList: host, apply: true})
+    return Hospital.findOne({ ipList: host, apply: true })
       .select('hid');
   },
+
+  getSecretByHid(hid) {
+    return Hospital.findOne({ hid: hid, apply: true })
+      .select('appid secret');
+  }
 
 }

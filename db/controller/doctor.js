@@ -12,7 +12,7 @@ module.exports = {
         number = +number || 999; // set default return numbers
 
         Doctor.find({ role: { $lt: 2 }, apply: true, hid: req.token.hid })
-            .select('-hid -password -__v -created')
+            .select('-hid -password -qrcode -__v -created')
             .sort({ order: 1, updated: -1 })
             .limit(number)
             .lean()
@@ -69,7 +69,7 @@ module.exports = {
                     hid: req.token.hid
                 };
                 Doctor.find(query)
-                    .select('-hid -password -__v')
+                    .select('-hid -password -qrcode -__v')
                     .sort({ order: 1, updated: -1 })
                     .lean()
                     .then((result) => res.json(result))
@@ -99,7 +99,7 @@ module.exports = {
             hid: req.token.hid
         };
         Doctor.find(query)
-            .select('-hid -password -__v')
+            .select('-hid -password -qrcode -__v')
             .sort({ order: 1, updated: -1 })
             .skip(skip)
             .limit(number)
@@ -127,7 +127,7 @@ module.exports = {
             hid: req.token.hid
         };
         Doctor.findOne(query)
-            .select('-hid -password -__v')
+            .select('-hid -password -qrcode -__v')
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -138,7 +138,7 @@ module.exports = {
     GetByUserId: (req, res, next) => {
         const { userid } = req.params;
         Doctor.findOne({ user_id: userid, apply: true, hid: req.token.hid })
-            .select('-hid -password -__v')
+            .select('-hid -password -qrcode -__v')
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -148,7 +148,7 @@ module.exports = {
     GetByDepartmentId: (req, res, next) => {
         const { departmentid } = req.params;
         Doctor.find({ department: departmentid, hid: req.token.hid, role: { $lt: 2 }, apply: true })
-            .select('-hid -password -__v')
+            .select('-hid -password -qrcode -__v')
             .lean()
             .sort({ order: 1, updated: -1 })
             .then((result) => res.json(result))

@@ -102,6 +102,11 @@ module.exports = {
         let str = keys.sort().join('');
         str = this.genSHA1(str);
         return str === query.signature;
+    },
+    getXMLNodeValue: (node_name, xml) => {
+        const tmp = xml.split("<" + node_name + ">");
+        const _tmp = tmp[1].split("</" + node_name + ">");
+        return _tmp[0];
     }
 
 }

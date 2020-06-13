@@ -24,18 +24,41 @@ const self = module.exports = {
 
 	// save signature
 	receiveAuth: (req, res) => {
-		const { signature, timestamp, nonce, openid } = req.query;
+		let _data;
+    req.on("data",function(data){
+			/*微信服务器传过来的是xml格式的，是buffer类型，因为js本身只有字符串数据类型，所以需要通过toString把xml转换为字符串*/
+			_data = data.toString("utf-8");
+
+	});
+	req.on("end",function(){
+			//console.log("end");
+			var ToUserName = util.getXMLNodeValue('ToUserName',_data);
+			var FromUserName = util.getXMLNodeValue('FromUserName',_data);
+			var CreateTime = util.getXMLNodeValue('CreateTime',_data);
+			var MsgType = util.getXMLNodeValue('MsgType',_data);
+			var Content = util.getXMLNodeValue('Content',_data);
+			var MsgId = util.getXMLNodeValue('MsgId',_data);
+			console.log(ToUserName);
+			console.log(FromUserName);
+			console.log(CreateTime);
+			console.log(MsgType);
+			console.log(Content);
+			console.log(MsgId);
+			var xml = '<xml><ToUserName>'+FromUserName+'</ToUserName><FromUserName>'+ToUserName+'</FromUserName><CreateTime>'+CreateTime+'</CreateTime><MsgType>'+MsgType+'</MsgType><Content>'+Content+'</Content></xml>';
+			res.send(xml);
+	});
+		// const { signature, timestamp, nonce, openid } = req.query;
 
 		// check if openid registered
 
 		
-		SignatureStore.UpsertSignature({
-			signature: signature,
-			timestamp: timestamp,
-			nonce: nonce,
-			openid: openid
-		}).exec();
-		res.sendStatus(200);
+		// SignatureStore.UpsertSignature({
+		// 	signature: signature,
+		// 	timestamp: timestamp,
+		// 	nonce: nonce,
+		// 	openid: openid
+		// }).exec();
+		// res.sendStatus(200);
 	},
 
 	//todo: remove

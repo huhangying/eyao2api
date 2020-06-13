@@ -38,34 +38,55 @@ module.exports = {
                 resolve(builder.buildObject(data));
                 break;
               default:
+                resolve('');
                 break;
             }
             break;
+
           case 'event':
-            if (result.Event === 'subscribe') {
-              // 关注
-              data = Object.assign({
-                MsgType: 'news',
-                ArticleCount: 1,
-                Articles: {
-                  item: {
-                    Title: '淘淘乐',
-                    Description: '丸子带你买，店内领取各种淘宝天猫优惠券',
-                    PicUrl: 'http://weixin.tangsj.com/dataoke/wx.jpg',
-                    Url: 'http://weixin.tangsj.com/dataoke/',
+            switch (result.Event.toLowerCase()) {
+              case 'scan':
+                // 扫药师二维码加入
+                data = Object.assign({
+                  MsgType: 'news',
+                  ArticleCount: 1,
+                  Articles: {
+                    item: {
+                      Title: '淘淘乐',
+                      Description: '丸子带你买，店内领取各种淘宝天猫优惠券',
+                      PicUrl: 'http://weixin.tangsj.com/dataoke/wx.jpg',
+                      Url: 'http://weixin.tangsj.com/dataoke/',
+                    },
                   },
-                },
-              }, baseData);
+                }, baseData);
+                break;
 
-              resolve(builder.buildObject(data));
-            } else if (result.Event === 'unsubscribe') {
-              // 取消关注
-              data = Object.assign({
-                MsgType: 'text',
-                Content: '在下没能满足客官的需求，实在抱歉~~',
-              }, baseData);
+              case 'subscribe':
+                // 关注
+                data = Object.assign({
+                  MsgType: 'news',
+                  ArticleCount: 1,
+                  Articles: {
+                    item: {
+                      Title: '淘淘乐',
+                      Description: '丸子带你买，店内领取各种淘宝天猫优惠券',
+                      PicUrl: 'http://weixin.tangsj.com/dataoke/wx.jpg',
+                      Url: 'http://weixin.tangsj.com/dataoke/',
+                    },
+                  },
+                }, baseData);
 
-              resolve(builder.buildObject(data));
+                resolve(builder.buildObject(data));
+                break;
+              case 'unsubscribe':
+                // 取消关注
+                data = Object.assign({
+                  MsgType: 'text',
+                  Content: '在下没能满足客官的需求，实在抱歉~~',
+                }, baseData);
+
+                resolve(builder.buildObject(data));
+                break;
             }
             resolve('');
             break;

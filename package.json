@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
-    "debug": "nodemon --legacy-watch --watch ./dist --inspect=0.0.0.0:9229 --nolazy ./index.js",
+    "debug": "nodemon --legacy-watch --watch ./dist --inspect=192.168.87.250:9229 --nolazy ./index.js",
     "lint": "eslint ./"
   },
   "dependencies": {

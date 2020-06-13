@@ -13,18 +13,21 @@ const wxConfig = {
 const self = module.exports = {
 	// wechat sign test
 	authTest: (req, res) => {
-		res.send(req.query.echostr);
-		// if (util.verifySignature(req.query)) {
-		// 	res.send(req.query.echostr);
-		// 	return;
-		// }
-		// res.send("error");
+//		res.send(req.query.echostr);
+		if (util.verifySignature(req.query)) {
+			res.send(req.query.echostr);
+			return;
+		}
+		res.send("error");
 
 	},
 
 	// save signature
 	receiveAuth: (req, res) => {
 		const { signature, timestamp, nonce, openid } = req.query;
+
+		// check if openid registered
+
 		
 		SignatureStore.UpsertSignature({
 			signature: signature,

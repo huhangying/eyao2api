@@ -1,7 +1,6 @@
 const axios = require('axios').default;
 const util = require('../util/util');
 const Wechat = require('wechat-jssdk');
-const Hospital = require('../db/controller/hospital');
 const { Buffer } = require('buffer');
 const SignatureStore = require('./signature.controller');
 const wxConfig = {
@@ -9,10 +8,12 @@ const wxConfig = {
 	"appSecret": 'a6cdf7e9c01039d03f3255cf5826a189',
 }
 const messageHandler = require('./message-handler');
+// const wxUtil = require('./wx-util');
+const wxUtil = require('./wx-util');
 
 
 
-const self = module.exports = {
+module.exports = {
 	// wechat sign test
 	authTest: (req, res) => {
 		//		res.send(req.query.echostr);
@@ -28,8 +29,7 @@ const self = module.exports = {
 	receiveAuth: (req, res) => {
 		const buffer = [];
 		req.on("data", function (data) {
-			/*微信服务器传过来的是xml格式的，是buffer类型，因为js本身只有字符串数据类型，所以需要通过toString把xml转换为字符串*/
-			// _data = data.toString("utf-8");
+			// 微信服务器传过来的是xml格式的，是buffer类型，因为js本身只有字符串数据类型，所以需要通过toString把xml转换为字符串
 			buffer.push(data);
 		});
 		req.on('end', async function () {
@@ -43,27 +43,6 @@ const self = module.exports = {
         res.send('error');
       }
     });
-
-
-		// req.on("end", function () {
-		// 	//console.log("end");
-		// 	var ToUserName = util.getXMLNodeValue('ToUserName', _data);
-		// 	var FromUserName = util.getXMLNodeValue('FromUserName', _data);
-		// 	var CreateTime = util.getXMLNodeValue('CreateTime', _data);
-		// 	var MsgType = util.getXMLNodeValue('MsgType', _data);
-		// 	var Content = util.getXMLNodeValue('Content', _data);
-		// 	var MsgId = util.getXMLNodeValue('MsgId', _data);
-		// 	console.log(ToUserName);
-		// 	console.log(FromUserName);
-		// 	console.log(CreateTime);
-		// 	console.log(MsgType);
-		// 	console.log(Content);
-		// 	console.log(MsgId);
-		// 	var xml = '<xml><ToUserName>' + FromUserName + '</ToUserName><FromUserName>' + ToUserName + '</FromUserName><CreateTime>' + CreateTime + '</CreateTime><MsgType>' + MsgType + '</MsgType><Content>' + Content + '</Content></xml>';
-		// 	res.send(xml);
-		// });
-
-		// check if openid registered
 
 
 		// SignatureStore.UpsertSignature({
@@ -115,7 +94,7 @@ const self = module.exports = {
 
 	getDoctorQrcode: async (req, res, next) => {
 		const { did } = req.params;
-		const token = await self.getWechatToken(req.token.hid);
+		const access_token = await wxUtil.getAccessTokenByHid(req.token.hid);
 		const data = {
 			action_name: 'QR_LIMIT_STR_SCENE',
 			action_info: {
@@ -124,11 +103,11 @@ const self = module.exports = {
 				}
 			}
 		};
-		axios.post('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' + token.data.access_token,
+		axios.post('https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' + access_token,
 			data,
 			{
 				params: {
-					access_token: token.data.access_token,
+					access_token: access_token,
 				}
 			}
 		).then((result) => {
@@ -151,23 +130,6 @@ const self = module.exports = {
 			role: 0
 		}));
 	},
-
-	//////////////////////////////////////////////////////////////
-	// Functions belows
-
-	getWechatToken: async (hid) => {
-		// 1. get secret
-		const secret = await Hospital.getSecretByHid(hid);
-
-		// 2. get access_token
-		return axios.get('https://api.weixin.qq.com/cgi-bin/token', {
-			params: {
-				appid: secret.appid,
-				secret: secret.secret,
-				grant_type: 'client_credential'
-			}
-		});
-	}
 
 
 }

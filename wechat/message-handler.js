@@ -123,7 +123,7 @@ const register = async (openid, did) => {
     // link to the doctor
     if (user && user._id) {
       await Relationship.findOneAndUpdate({ user: user._id, doctor: did },
-        { user: user._id, doctor: did, apply: true },
+        { user: user._id, doctor: did, hid: doctor.hid, apply: true },
         { upsert: true }
       );
     }

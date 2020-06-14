@@ -6,5 +6,7 @@ module.exports = mongoose.model(
         hid: Number,
         access_token: String,
         expires_time: Number,
+    }, {
+        timestamps: true
     })
 );

@@ -1,5 +1,6 @@
 const User = require('../db/model/user');
 const Doctor = require('../db/model/doctor');
+const wxUtil = require('./wx-util');
 
 const { Parser } = require('xml2js');
 const { Builder } = require('xml2js');
@@ -51,7 +52,7 @@ const msgHandler = (msgbufer) => {
             case 'scan':
               // 扫药师二维码加入
               register(result.FromUserName, result.EventKey);
-              
+
               data = Object.assign({
                 MsgType: 'news',
                 ArticleCount: 1,
@@ -105,14 +106,17 @@ const msgHandler = (msgbufer) => {
   });
 }
 
-const getUserInfo = (openid, hid) => {
-
+const getUserInfo = async (openid, hid) => {
+  const access_token = await wxUtil.getAccessTokenByHid(hid);
+  return wxUtil.getUserInfo(openid, access_token);
 } 
 
 const register = async (openid, did) => {
   const doctor = await Doctor.findById(did);
   if (doctor && doctor) {
-    getUserInfo(openid, doctor.hid);
+    const userInfo = await getUserInfo(openid, doctor.hid);
+    console.log(userInfo);
+    
     await User.findOneAndUpdate({link_id: openid, hid: doctor.hid}, {}, {upsert: true, new: true})
   }
 
@@ -124,4 +128,5 @@ const linkDoctor = (uid, did) => {
 
 module.exports = {
   msgHandler,
+  register,
 }

@@ -18,11 +18,10 @@ const getWechatAccessToken = async (hid) => {
 
 // 根据hid获取 access_token
 const getAccessTokenByHid = async (hid) => {
-  const token = AccessToken.findOne({ hid: hid })
-    .select('access_token');
+  const token = await AccessToken.findOne({ hid: hid });
 
   if (!token || token.expires_time < new Date().getTime()) {
-    const newToken = await this.RefreshAccessToken(hid);
+    const newToken = await refreshAccessToken(hid);
     return newToken.access_token;
   } else {
     return token.access_token;
@@ -30,7 +29,7 @@ const getAccessTokenByHid = async (hid) => {
 }
 
 const refreshAccessToken = async (hid) => {
-  const token = await this.getWechatAccessToken(hid);
+  const token = await getWechatAccessToken(hid);
   return AccessToken.findOneAndUpdate(
     { hid: hid },
     {

@@ -8,7 +8,7 @@ const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: fals
 const builder = new Builder({ headless: true, cdata: true, explicitRoot: false, rootName: 'xml' });
 
 const msgHandler = (msgbufer) => {
-  let data, baseData, helpTxt;
+  let data, baseData, helpTxt, userInfo;
   
   return new Promise((resolve, reject) => {
     parser.parseString(msgbufer.toString(), async (err, result) => {
@@ -51,14 +51,14 @@ const msgHandler = (msgbufer) => {
           switch (result.Event.toLowerCase()) {
             case 'scan':
               // 扫药师二维码加入
-              register(result.FromUserName, result.EventKey);
+              userInfo = await register(result.FromUserName, result.EventKey);
 
               data = Object.assign({
                 MsgType: 'news',
                 ArticleCount: 1,
                 Articles: {
                   item: {
-                    Title: '淘淘乐',
+                    Title: userInfo.name,
                     Description: '丸子带你买，店内领取各种淘宝天猫优惠券',
                     PicUrl: 'http://weixin.tangsj.com/dataoke/wx.jpg',
                     Url: 'http://weixin.tangsj.com/dataoke/',

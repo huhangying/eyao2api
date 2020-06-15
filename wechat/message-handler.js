@@ -46,6 +46,7 @@ const msgHandler = (msgbufer) => {
           switch (result.Event.toLowerCase()) {
             case 'scan':
               // 扫药师二维码加入
+              console.log(result);
               msg = await scan(baseData, result.EventKey, result.Ticket);
               resolve(msg);
               break;

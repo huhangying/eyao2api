@@ -10,7 +10,8 @@ const getHidByWxid = async (wxid) => {
 
 const getWechatAccessToken = async (hid) => {
   // 1. get secret
-  const secret = await Hospital.getSecretByHid(hid);
+  const secret = await Hospital.findOne({ hid: hid, apply: true })
+      .select('appid secret');
 
   // 2. get access_token
   return axios.get('https://api.weixin.qq.com/cgi-bin/token', {

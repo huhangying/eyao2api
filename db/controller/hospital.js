@@ -88,9 +88,4 @@ module.exports = {
       .select('hid');
   },
 
-  getSecretByHid(hid) {
-    return Hospital.findOne({ hid: hid, apply: true })
-      .select('appid secret');
-  }
-
 }

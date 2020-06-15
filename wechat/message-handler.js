@@ -138,7 +138,7 @@ const unsubscribe = async (baseData) => {
   // disable user in user and relationship tables
   const user = await User.findOneAndUpdate({link_id: openid, hid: hid}, {apply: false});
   if (user && user._id) {
-    await Relationship.findOneAndUpdate({user: user._id, hid: hid}, {apply: false});
+    await Relationship.updateMany({user: user._id, hid: hid}, {apply: false});
   }
   return messageBuilder.textMessage(
     baseData,

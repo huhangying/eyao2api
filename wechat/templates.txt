@@ -1,0 +1,21 @@
+{	
+  "template_list": [{
+   "template_id": "iPk5sOIt5X_flOVKn5GrTFpncEYTojx6ddbt8WYoV5s",
+   "title": "预约挂号成功通知",
+   "primary_industry": "IT科技",
+   "deputy_industry": "互联网|电子商务",
+   "content": "{{header.DATA}}\n\n药师:{{doctor.DATA}}\n科室:    {{department.DATA}}\n时间:{{datetime.DATA}}\n地点:  {{address.DATA}}\n就诊号:  {{bookingid.DATA}}\n{{footer.DATA}}",
+   "example": "您已提交领奖申请\n\n领奖金额：xxxx元\n领奖时间：2013-10-10 12:22:22\n银行信息：xx银行(尾号xxxx)\n到账时间：预计xxxxxxx\n\n预计将于xxxx到达您的银行卡"
+}]
+}
+
+预约挂号通知
+
+{{header.DATA}}
+药师:     {{doctor.DATA}}
+科室:     {{department.DATA}}
+时间:     {{datetime.DATA}}
+地点:     {{address.DATA}}
+就诊号: {{bookingid.DATA}}
+
+{{footer.DATA}}

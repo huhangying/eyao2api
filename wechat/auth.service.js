@@ -118,6 +118,29 @@ module.exports = {
 			.catch(err => next(err));
 	},
 
+	sendBookingTemplateMessage: async (req, res, next) => {
+		const {openid, hid, data} = req.body;
+
+		const access_token = await wxUtil.getAccessTokenByHid(hid);
+		const template_id = await wxUtil.getBookingTemplateIdByHid(hid);
+		axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send',
+			{
+				touser: openid,
+				template_id: template_id,
+				url: 'http://timebox.i234.me/wechat/my-reservation?openid=' + openid + '&state=' + hid,
+				data: data
+			},
+			{
+				params: {
+					access_token: access_token
+				}
+			})
+			.then((result) => {
+				return res.json(result.data)
+			})
+			.catch(err => next(err));
+	},
+
 	///
 	// api
 	///

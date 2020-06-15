@@ -8,6 +8,12 @@ const getHidByWxid = async (wxid) => {
   return hospital.hid;
 }
 
+const getBookingTemplateIdByHid = async (hid) => {
+  const hospital = await Hospital.findOne({ hid: hid, apply: true })
+  .select('booking_template');
+  return hospital.booking_template;
+}
+
 const getWechatAccessToken = async (hid) => {
   // 1. get secret
   const secret = await Hospital.findOne({ hid: hid, apply: true })
@@ -61,6 +67,7 @@ const getUserInfo = (openid, access_token) => {
 
 module.exports = {
   getHidByWxid,
+  getBookingTemplateIdByHid,
   getAccessTokenByHid,
   getWechatAccessToken,
   refreshAccessToken,

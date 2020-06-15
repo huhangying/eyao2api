@@ -11,6 +11,8 @@ module.exports = mongoose.model(
     assetFolder: { type: String },
     //created: {type : Date, default: Date.now},
     //updated: {type : Date, default: Date.now},
+    address: String,
+    direction: String,
     apply: { type: Boolean, default: true }
   })
 );

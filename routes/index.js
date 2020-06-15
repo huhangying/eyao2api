@@ -68,8 +68,6 @@ router.route('/doctor/userid/:userid')
 router.route('/doctor/:id')
     .get(Doctor.GetById)
     .delete(Doctor.DeleteById);
-router.route('/doctor/with-department/:id') // for wechat side
-    .get(Doctor.GetWithDepartmentPopulatedById)
 
 router.route('/doctor')
     .post(urlencodedParser, Doctor.Add)
@@ -88,9 +86,9 @@ router.route('/doctor/shortcuts/:did')
     .get(Doctor.GetShortcuts)
     .patch(urlencodedParser, Doctor.UpdateShortcuts);
 
-// 药师的基本信息: ?? no one used ??
+// 药师的基本信息 
 router.route('/doctor/brief/:id')
-    .get(Doctor.GetBriefInfo);//
+    .get(Doctor.GetBriefInfo);
 
 //---------------- 医患关系组
 var Group = require('../db/controller/group');

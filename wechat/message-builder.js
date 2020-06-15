@@ -27,7 +27,29 @@ const newsMessage = (title, description, picUrl, url, baseData) => {
   );
 }
 
+const subscribeMessage = (baseData) => {
+  return builder.buildObject(
+    Object.assign({
+      MsgType: 'event',
+      Event: 'subscribe'
+    }, baseData)
+  );
+}
+
+const subscribeMessageWithDoctor = (did, ticket, baseData) => {
+  return builder.buildObject(
+    Object.assign({
+      MsgType: 'event',
+      Event: 'subscribe',
+      EventKey: 'qrscene_' + did,
+      Ticket: ticket
+    }, baseData)
+  );
+}
+
 module.exports = {
   textMessage,
-  newsMessage
+  newsMessage,
+  subscribeMessage,
+  subscribeMessageWithDoctor,
 }

@@ -7,7 +7,7 @@ const { Parser } = require('xml2js');
 const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
 
 const msgHandler = (msgbufer) => {
-  let baseData, helpTxt, user;
+  let baseData, helpTxt, user, msg;
 
   return new Promise((resolve, reject) => {
     parser.parseString(msgbufer.toString(), async (err, result) => {
@@ -45,21 +45,9 @@ const msgHandler = (msgbufer) => {
           switch (result.Event.toLowerCase()) {
             case 'scan':
               // 扫药师二维码加入
-              user = await register(result.FromUserName, result.EventKey);
-              if (user && user._id) {
-                // success
-                resolve(messageBuilder.textMessage(
-                  '欢迎关注！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。',
-                  baseData
-                ));
-              } else {
-                // failed
-                reject({
-                  code: -1,
-                  msg: 'error',
-                  data: err,
-                });
-              }
+              msg = await register(result.FromUserName, result.EventKey, result.Ticket);
+              // success
+              resolve(msg);
               break;
 
             case 'subscribe':
@@ -93,7 +81,7 @@ const getUserInfo = async (openid, hid) => {
   return wxUtil.getUserInfo(openid, access_token);
 }
 
-const register = async (openid, did) => {
+const register = async (openid, did, ticket, baseData) => {
   let user;
   const doctor = await Doctor.findById(did);
   if (doctor && doctor.hid) {
@@ -101,7 +89,7 @@ const register = async (openid, did) => {
     if (!user || !user._id) {
       const userInfo = await getUserInfo(openid, doctor.hid);
       // console.log(userInfo);
-      if (userInfo.data) {
+      if (userInfo.data && userInfo.data.subscribe) {
         const gender = userInfo.data.sex === 1 ? 'M' :
           (userInfo.data.sex === 2 ? 'F' : '');
         user = await User.findOneAndUpdate(
@@ -127,8 +115,16 @@ const register = async (openid, did) => {
         { upsert: true }
       );
     }
+  } else {
+    // no doctor
+    return messageBuilder.subscribeMessage(baseData);
   }
-  return user;
+  if (user && user._id) {
+    return messageBuilder.textMessage('欢迎关注公众号和药师！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。', baseData);
+  } else {
+    // 还未关注公众号
+    return messageBuilder.subscribeMessageWithDoctor(doctor._id, ticket, baseData);
+  }
 }
 
 module.exports = {

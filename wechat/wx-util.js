@@ -1,5 +1,5 @@
 const axios = require('axios').default;
-const Hospital = require('../db/controller/hospital');
+const Hospital = require('../db/model/hospital');
 const AccessToken = require('./access-token.model');
 
 const getHidByWxid = async (wxid) => {

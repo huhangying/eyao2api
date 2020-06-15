@@ -2,6 +2,12 @@ const axios = require('axios').default;
 const Hospital = require('../db/controller/hospital');
 const AccessToken = require('./access-token.model');
 
+const getHidByWxid = async (wxid) => {
+  const hospital = await Hospital.findOne({ wxid: wxid, apply: true })
+    .select('hid');
+  return hospital.hid;
+}
+
 const getWechatAccessToken = async (hid) => {
   // 1. get secret
   const secret = await Hospital.getSecretByHid(hid);
@@ -53,6 +59,7 @@ const getUserInfo = (openid, access_token) => {
 }
 
 module.exports = {
+  getHidByWxid,
   getAccessTokenByHid,
   getWechatAccessToken,
   refreshAccessToken,

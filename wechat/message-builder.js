@@ -1,7 +1,7 @@
 const { Builder } = require('xml2js');
 const builder = new Builder({ headless: true, cdata: true, explicitRoot: false, rootName: 'xml' });
 
-const textMessage = (text, baseData) => {
+const textMessage = (baseData, text) => {
   return builder.buildObject(
     Object.assign({
       MsgType: 'text',
@@ -10,7 +10,7 @@ const textMessage = (text, baseData) => {
   );
 }
 
-const newsMessage = (title, description, picUrl, url, baseData) => {
+const newsMessage = (baseData, title, description, picUrl, url) => {
   return builder.buildObject(
     Object.assign({
       MsgType: 'news',
@@ -36,12 +36,12 @@ const subscribeMessage = (baseData) => {
   );
 }
 
-const subscribeMessageWithDoctor = (did, ticket, baseData) => {
+const subscribeMessageWithDoctor = (baseData, did, ticket) => {
   return builder.buildObject(
     Object.assign({
       MsgType: 'event',
       Event: 'subscribe',
-      EventKey: 'qrscene_' + did,
+      EventKey: did,
       Ticket: ticket
     }, baseData)
   );

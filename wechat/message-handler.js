@@ -1,5 +1,4 @@
 const User = require('../db/model/user');
-const Doctor = require('../db/model/doctor');
 const Relationship = require('../db/model/relationship');
 const wxUtil = require('./wx-util');
 const messageBuilder = require('./message-builder');
@@ -7,7 +6,7 @@ const { Parser } = require('xml2js');
 const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
 
 const msgHandler = (msgbufer) => {
-  let baseData, helpTxt, user, msg;
+  let baseData, helpTxt, msg;
 
   return new Promise((resolve, reject) => {
     parser.parseString(msgbufer.toString(), async (err, result) => {
@@ -28,12 +27,14 @@ const msgHandler = (msgbufer) => {
         case 'text':
           switch (result.Content.toLowerCase()) {
             case 'help':
+            case '?':
+            case '帮助':
               // 返回帮助内容
               helpTxt = [
                 '1. 在公众号对话框中输入任意商品名称，点击返回的链接即可筛选购买.',
                 '2. 输入关键字『入口』可以得到网站的入口链接.'
               ]
-              resolve(messageBuilder.textMessage(helpTxt.join('\n'), baseData));
+              resolve(messageBuilder.textMessage(baseData, helpTxt.join('\n')));
               break;
             default:
               resolve('');
@@ -45,25 +46,23 @@ const msgHandler = (msgbufer) => {
           switch (result.Event.toLowerCase()) {
             case 'scan':
               // 扫药师二维码加入
-              msg = await register(result.FromUserName, result.EventKey, result.Ticket);
-              // success
+              msg = await scan(baseData, result.EventKey, result.Ticket);
               resolve(msg);
               break;
 
             case 'subscribe':
               // 关注
               console.log(result);
-              
-              resolve(messageBuilder.textMessage(
-                '欢迎关注！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。',
-                baseData
-              ));
+              msg = await subscribe(baseData, result.EventKey);
+              resolve(msg);
               break;
+
             case 'unsubscribe':
               // 取消关注
+              //todo: disable user
               resolve(messageBuilder.textMessage(
-                '很遗憾您取消关注。欢迎重新关注我们。',
-                baseData
+                baseData,
+                '很遗憾您取消关注。欢迎重新关注我们。'
               ));
               break;
           }
@@ -83,53 +82,56 @@ const getUserInfo = async (openid, hid) => {
   return wxUtil.getUserInfo(openid, access_token);
 }
 
-const register = async (openid, did, ticket, baseData) => {
-  let user;
-  const doctor = await Doctor.findById(did);
-  if (doctor && doctor.hid) {
-    user = await User.findOne({ link_id: openid, hid: doctor.hid, apply: true });
-    if (!user || !user._id) {
-      const userInfo = await getUserInfo(openid, doctor.hid);
-      // console.log(userInfo);
-      if (userInfo.data && userInfo.data.subscribe) {
-        const gender = userInfo.data.sex === 1 ? 'M' :
-          (userInfo.data.sex === 2 ? 'F' : '');
-        user = await User.findOneAndUpdate(
-          { link_id: openid, hid: doctor.hid },
-          {
-            link_id: openid,
-            hid: doctor.hid,
-            name: userInfo.data.nickname,
-            gender: gender,
-            icon: userInfo.data.headimgurl,
-            apply: true,
-            created: new Date(),
-            updated: new Date()
-          },
-          { upsert: true, new: true }
-        );
-      }
-    }
+const scan = async (baseData, did, ticket) => {
+  const openid = baseData.FromUserName;
+  const hid = await wxUtil.getHidByWxid(baseData.ToUserName);
+  const user = await User.findOne({ link_id: openid, hid: hid, apply: true });
+  if (!user || !user._id) {
+    return did ?
+      messageBuilder.subscribeMessageWithDoctor(baseData, did, ticket) :
+      messageBuilder.subscribeMessage(baseData);
+  } else {
+    return messageBuilder.textMessage(baseData, user.name + ', 欢迎回来！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。');
+  }
+}
+
+const subscribe = async (baseData, did) => {
+  const openid = baseData.FromUserName;
+  const hid = await wxUtil.getHidByWxid(baseData.ToUserName);
+  const userInfo = await getUserInfo(openid, hid);
+  // console.log(userInfo);
+  if (userInfo.data && userInfo.data.subscribe) {
+    const gender = userInfo.data.sex === 1 ? 'M' : (userInfo.data.sex === 2 ? 'F' : '');
+    const user = await User.findOneAndUpdate(
+      { link_id: openid, hid: hid },
+      {
+        link_id: openid,
+        hid: hid,
+        name: userInfo.data.nickname,
+        gender: gender,
+        icon: userInfo.data.headimgurl,
+        apply: true,
+        created: new Date(),
+        updated: new Date()
+      },
+      { upsert: true, new: true }
+    );
+
     // link to the doctor
-    if (user && user._id) {
-      await Relationship.findOneAndUpdate({ user: user._id, doctor: did },
-        { user: user._id, doctor: did, hid: doctor.hid, apply: true },
+    if (did && user._id) {
+      await Relationship.findOneAndUpdate(
+        { user: user._id, doctor: did },
+        { user: user._id, doctor: did, hid: hid, apply: true },
         { upsert: true }
       );
     }
+    return messageBuilder.textMessage(baseData, '欢迎关注！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。');
   } else {
-    // no doctor
-    return messageBuilder.subscribeMessage(baseData);
-  }
-  if (user && user._id) {
-    return messageBuilder.textMessage('欢迎关注公众号和药师！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。', baseData);
-  } else {
-    // 还未关注公众号
-    return messageBuilder.subscribeMessageWithDoctor(doctor._id, ticket, baseData);
+    // error ! it should not happen
+    return messageBuilder.textMessage(baseData, 'Error');
   }
 }
 
 module.exports = {
   msgHandler,
-  register,
 }

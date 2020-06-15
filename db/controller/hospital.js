@@ -83,7 +83,7 @@ module.exports = {
 
   /////////////////////////////////////////////////////
   // Functions belows
-  findHidByHost(host) {
+  getHidByHost(host) {
     return Hospital.findOne({ ipList: host, apply: true })
       .select('hid');
   },

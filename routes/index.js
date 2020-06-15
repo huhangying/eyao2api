@@ -68,6 +68,8 @@ router.route('/doctor/userid/:userid')
 router.route('/doctor/:id')
     .get(Doctor.GetById)
     .delete(Doctor.DeleteById);
+router.route('/doctor/with-department/:id') // for wechat side
+    .get(Doctor.GetWithDepartmentPopulatedById)
 
 router.route('/doctor')
     .post(urlencodedParser, Doctor.Add)

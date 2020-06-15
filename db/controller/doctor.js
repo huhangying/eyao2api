@@ -118,6 +118,17 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据药师ID获取用户信息
+    GetWithDepartmentPopulatedById: (req, res, next) => {
+        const { id } = req.params;
+        Doctor.findOne({ _id: id, apply: true })
+            .select('-hid -password -__v')
+            .populate('department', '_id name')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据手机号码获取药师用户信息
     GetByCell: (req, res, next) => {
         const { cell } = req.params;

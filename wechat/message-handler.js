@@ -98,6 +98,7 @@ const scan = async (baseData, did, ticket) => {
 }
 
 const subscribe = async (baseData, did) => {
+  did = did.replace('qrscene_', '');
   const openid = baseData.ToUserName;
   const hid = await wxUtil.getHidByWxid(baseData.FromUserName);
   const userInfo = await getUserInfo(openid, hid);

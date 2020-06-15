@@ -83,8 +83,8 @@ const getUserInfo = async (openid, hid) => {
 }
 
 const scan = async (baseData, did, ticket) => {
-  const openid = baseData.FromUserName;
-  const hid = await wxUtil.getHidByWxid(baseData.ToUserName);
+  const openid = baseData.ToUserName;
+  const hid = await wxUtil.getHidByWxid(baseData.FromUserName);
   const user = await User.findOne({ link_id: openid, hid: hid, apply: true });
   if (!user || !user._id) {
     return did ?
@@ -96,8 +96,8 @@ const scan = async (baseData, did, ticket) => {
 }
 
 const subscribe = async (baseData, did) => {
-  const openid = baseData.FromUserName;
-  const hid = await wxUtil.getHidByWxid(baseData.ToUserName);
+  const openid = baseData.ToUserName;
+  const hid = await wxUtil.getHidByWxid(baseData.FromUserName);
   const userInfo = await getUserInfo(openid, hid);
   // console.log(userInfo);
   if (userInfo.data && userInfo.data.subscribe) {

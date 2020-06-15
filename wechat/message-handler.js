@@ -52,6 +52,8 @@ const msgHandler = (msgbufer) => {
 
             case 'subscribe':
               // 关注
+              console.log(result);
+              
               resolve(messageBuilder.textMessage(
                 '欢迎关注！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。',
                 baseData

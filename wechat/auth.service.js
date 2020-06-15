@@ -8,7 +8,6 @@ const wxConfig = {
 	"appSecret": 'a6cdf7e9c01039d03f3255cf5826a189',
 }
 const messageHandler = require('./message-handler');
-// const wxUtil = require('./wx-util');
 const wxUtil = require('./wx-util');
 
 

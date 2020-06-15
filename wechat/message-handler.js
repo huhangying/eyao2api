@@ -60,11 +60,8 @@ const msgHandler = (msgbufer) => {
 
             case 'unsubscribe':
               // 取消关注
-              //todo: disable user
-              resolve(messageBuilder.textMessage(
-                baseData,
-                '很遗憾您取消关注。欢迎重新关注我们。'
-              ));
+              msg = await unsubscribe(baseData);
+              resolve(msg);
               break;
           }
           resolve('');
@@ -133,6 +130,20 @@ const subscribe = async (baseData, did) => {
     // error ! it should not happen
     return messageBuilder.textMessage(baseData, 'Error');
   }
+}
+
+const unsubscribe = async (baseData) => {
+  const openid = baseData.ToUserName;
+  const hid = await wxUtil.getHidByWxid(baseData.FromUserName);
+  // disable user in user and relationship tables
+  const user = await User.findOneAndUpdate({link_id: openid, hid: hid}, {apply: false});
+  if (user && user._id) {
+    await Relationship.findOneAndUpdate({user: user._id, hid: hid}, {apply: false});
+  }
+  return messageBuilder.textMessage(
+    baseData,
+    '很遗憾您取消关注。欢迎重新关注我们。'
+  )
 }
 
 module.exports = {

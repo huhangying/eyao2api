@@ -42,7 +42,7 @@ const subscribeMessageWithDoctor = (baseData, did, ticket) => {
       MsgType: 'event',
       Event: 'subscribe',
       EventKey: did,
-      // Ticket: ticket
+      Ticket: ticket
     }, baseData)
   );
 }

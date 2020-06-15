@@ -84,6 +84,7 @@ const getUserInfo = async (openid, hid) => {
 }
 
 const scan = async (baseData, did, ticket) => {
+  did = did.replace('qrscene_', '');
   const openid = baseData.ToUserName;
   const hid = await wxUtil.getHidByWxid(baseData.FromUserName);
   const user = await User.findOne({ link_id: openid, hid: hid, apply: true });

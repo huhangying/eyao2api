@@ -120,7 +120,7 @@ module.exports = {
                 select: '_id name department title bulletin expertise gender honor hours icon status',
             })
             .lean()
-            .then(async (results) => {
+            .then((results) => {
                 const promises = results.map(rel => {
                     return Schedule.checkDoctorHasSchedules(rel.doctor, req.token.hid)
                         .then(_ => {

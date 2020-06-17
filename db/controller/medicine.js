@@ -63,7 +63,7 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    DeleteById: async (req, res, next) => {
+    DeleteById: (req, res, next) => {
         const { id } = req.params;
         Medicine.findByIdAndDelete(id)
             .select('-hid -__v')

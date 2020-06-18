@@ -728,15 +728,29 @@ router.route('/surveyStatusLog/:key')
     .get(SurveyStatusLog.GetByKey);
 
 //===================== 图片上传
-var Uploader = require('../db/controller/upload');
+var Uploader = require('../upload/upload');
 
 // router.route('/upload/:dir')
-router.route('/upload')
-    .post(urlencodedParser, Uploader.receiveFile);
+// router.route('/upload')
+//     .post(urlencodedParser, Uploader.receiveFile);
+
+router.route('/upload/doctor/:prefix')
+    .post(urlencodedParser, Uploader.uploadDoctorFile);
+
+router.route('/upload/medicine')
+    .post(urlencodedParser, Uploader.uploadMedicineFile);
+
+router.route('/upload/user/:prefix')
+    .post(urlencodedParser, Uploader.uploadUserFile);
+
+router.route('/upload/template/:prefix')
+    .post(urlencodedParser, Uploader.uploadTemplateFile);
+
+router.route('/upload/init-folders')
+    .post(urlencodedParser, Uploader.initFolders);
 
 router.route('/upload/list/:dir')
     .get(Uploader.getFolderImageList);
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////

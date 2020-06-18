@@ -5,8 +5,82 @@ const formidable = require('formidable');
 const util = require('util');
 const fs = require('fs');
 
-module.exports = {
 
+const upload = (req, res, next, targetDir, filePrefix) => {
+    const form = formidable({
+        multiples: false,
+        encoding: 'utf-8',
+        keepFilenames: true,
+        keepExtensions: true,
+    });
+
+    form.parse(req, (err, fields, files) => {
+        if (err) next(err);
+
+        const path = `public/upload/${targetDir}${filePrefix + files.file.name}`;
+        fs.rename(files.file.path, path,
+            (err) => {
+                if (err) next(err);
+                res.json({ path });
+            });
+    });
+}
+
+const uploadDoctorFile = (req, res, next) => {
+    const targetDir = req.body.hid + '/doctor/';
+    upload(req, res, next, targetDir, req.params.prefix);
+}
+
+const uploadUserFile = (req, res, next) => {
+    const targetDir = req.body.hid + '/user/';
+    upload(req, res, next, targetDir, req.params.prefix);
+}
+
+const uploadMedicineFile = (req, res, next) => {
+    const targetDir = req.body.hid + '/medicine/';
+    upload(req, res, next, targetDir, req.params.prefix);
+}
+
+const uploadTemplateFile = (req, res, next) => {
+    const targetDir = req.body.hid + '/template/';
+    upload(req, res, next, targetDir, req.params.prefix);
+}
+
+const initFolders = (req, res, next) => {
+    const { hid } = req.body;
+    let dir = 'public/upload/' + hid + '/doctor';
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, (err) => {
+            if (err) next(err);
+        });
+    }
+    dir = 'public/upload/' + hid + '/user';
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, (err) => {
+            if (err) next(err);
+        });
+    }
+    dir = 'public/upload/' + hid + '/medicine';
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, (err) => {
+            if (err) next(err);
+        });
+    }
+    dir = 'public/upload/' + hid + '/template';
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, (err) => {
+            if (err) next(err);
+        });
+    }
+    res.end('done');
+}
+
+module.exports = {
+    initFolders,
+    uploadDoctorFile,
+    uploadUserFile,
+    uploadMedicineFile,
+    uploadTemplateFile,
     receiveFile: function (req, res) {
         // parse a file upload
         const form = new formidable({ multiples: true, encoding: 'utf-8', keepExtensions: true });

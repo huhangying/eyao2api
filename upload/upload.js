@@ -18,7 +18,7 @@ const upload = (req, res, next, targetDir, filePrefix) => {
         if (err) next(err);
 
         const path = `${targetDir}${filePrefix + files.file.name}`;
-        fs.rename(files.file.path, 'public/upload/' + path,
+        fs.copyFile(files.file.path, 'public/upload/' + path,
             (err) => {
                 if (err) next(err);
                 res.json({ path });

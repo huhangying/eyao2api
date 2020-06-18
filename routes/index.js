@@ -737,7 +737,7 @@ var Uploader = require('../upload/upload');
 router.route('/upload/doctor/:prefix')
     .post(urlencodedParser, Uploader.uploadDoctorFile);
 
-router.route('/upload/medicine')
+router.route('/upload/medicine/:prefix')
     .post(urlencodedParser, Uploader.uploadMedicineFile);
 
 router.route('/upload/user/:prefix')

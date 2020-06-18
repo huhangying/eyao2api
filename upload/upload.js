@@ -17,8 +17,8 @@ const upload = (req, res, next, targetDir, filePrefix) => {
     form.parse(req, (err, fields, files) => {
         if (err) next(err);
 
-        const path = `public/upload/${targetDir}${filePrefix + files.file.name}`;
-        fs.rename(files.file.path, path,
+        const path = `${targetDir}${filePrefix + files.file.name}`;
+        fs.rename(files.file.path, 'public/upload/' + path,
             (err) => {
                 if (err) next(err);
                 res.json({ path });

@@ -50,25 +50,25 @@ const initFolders = (req, res, next) => {
     const { hid } = req.body;
     let dir = 'public/upload/' + hid + '/doctor';
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, (err) => {
+        fs.mkdirSync(dir, { recursive: true }, (err) => {
             if (err) next(err);
         });
     }
     dir = 'public/upload/' + hid + '/user';
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, (err) => {
+        fs.mkdirSync(dir, { recursive: true }, (err) => {
             if (err) next(err);
         });
     }
     dir = 'public/upload/' + hid + '/medicine';
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, (err) => {
+        fs.mkdirSync(dir, { recursive: true }, (err) => {
             if (err) next(err);
         });
     }
     dir = 'public/upload/' + hid + '/template';
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, (err) => {
+        fs.mkdirSync(dir, { recursive: true }, (err) => {
             if (err) next(err);
         });
     }

@@ -34,7 +34,8 @@ const verifySignature = (query) => {
     ];
     let str = keys.sort().join('');
     //3.将三个参数字符串拼接成一个字符串进行sha1加密
-    str = CryptoJS.SHA1(str);
+    str = CryptoJS.SHA1(str).toString(CryptoJS.enc.Utf8);
+    str = str.digest('hex');
     // str = SHA1.createHash(str, 'utf8').digest('hex');
     return str === query.signature;
 }

@@ -21,7 +21,6 @@ module.exports = {
 			return;
 		}
 		res.send("error");
-
 	},
 
 	// save signature

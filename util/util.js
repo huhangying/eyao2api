@@ -3,6 +3,7 @@
  */
 // const mongoose = require('mongoose');
 const CryptoJS = require("crypto-js");
+const SHA1 = require("crypto-js/sha1");
 const jwt = require('jsonwebtoken');
 const ENCRYPT_KEY = 'xinhua e yao';
 const SECRET_KEY = "YRRAh";
@@ -12,12 +13,6 @@ const TOKEN = 'harry';
 
 ///////////////////////////////////////////
 // for Wechat belows
-const genHash = (content, algorithm) => {
-    const c = CryptoJS.createHash(algorithm);
-    c.update(content, 'utf8');
-    return c.digest('hex');
-}
-const genSHA1 = content => genHash(content, 'sha1');
 const nonceStr = function () {
     return Math.random()
         .toString(36)
@@ -39,8 +34,7 @@ const verifySignature = (query) => {
     ];
     let str = keys.sort().join('');
     //3.将三个参数字符串拼接成一个字符串进行sha1加密
-    // CryptoJS.SHA1.createHash()
-    str = CryptoJS.SHA1.createHash(str);
+    str = SHA1.createHash(str, 'utf8').digest('hex');
     return str === query.signature;
 }
 const getXMLNodeValue = (node_name, xml) => {

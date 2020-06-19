@@ -13,7 +13,7 @@ const TOKEN = 'harry';
 ///////////////////////////////////////////
 // for Wechat belows
 const genHash = (content, algorithm) => {
-    const c = crypto.createHash(algorithm);
+    const c = CryptoJS.createHash(algorithm);
     c.update(content, 'utf8');
     return c.digest('hex');
 }

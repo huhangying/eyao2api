@@ -34,7 +34,8 @@ const verifySignature = (query) => {
     ];
     let str = keys.sort().join('');
     //3.将三个参数字符串拼接成一个字符串进行sha1加密
-    str = SHA1.createHash(str, 'utf8').digest('hex');
+    str = CryptoJS.SHA1(str);
+    // str = SHA1.createHash(str, 'utf8').digest('hex');
     return str === query.signature;
 }
 const getXMLNodeValue = (node_name, xml) => {

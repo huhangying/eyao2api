@@ -3,7 +3,7 @@
  */
 // const mongoose = require('mongoose');
 const CryptoJS = require("crypto-js");
-// const crypto = require("crypto");
+const crypto = require("crypto");
 const jwt = require('jsonwebtoken');
 const ENCRYPT_KEY = 'xinhua e yao';
 const SECRET_KEY = "YRRAh";
@@ -34,7 +34,7 @@ const verifySignature = (query) => {
     ];
     let str = keys.sort().join('');
     //3.将三个参数字符串拼接成一个字符串进行sha1加密
-    const hashCode = CryptoJS.SHA1.createHash(); //创建加密类型 
+    const hashCode = crypto.createHash('sha1'); //创建加密类型 
     str = hashCode.update(str,'utf8').digest('hex'); //对传入的字符串进行加密
     // str = SHA1.createHash(str, 'utf8').digest('hex');
     return str === query.signature;

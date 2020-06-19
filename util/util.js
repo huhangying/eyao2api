@@ -10,6 +10,44 @@ const SECRET_KEY = "YRRAh";
 const REFRESH_INTERVAL = 1000 * 119 * 60;
 const TOKEN = 'harry';
 
+///////////////////////////////////////////
+// for Wechat belows
+const genHash = (content, algorithm) => {
+    const c = crypto.createHash(algorithm);
+    c.update(content, 'utf8');
+    return c.digest('hex');
+}
+const genSHA1 = content => genHash(content, 'sha1');
+const nonceStr = function () {
+    return Math.random()
+        .toString(36)
+        .substr(2, 15);
+}
+const timestamp = function () {
+    return parseInt(new Date().getTime() / 1000) + '';
+}
+const isExpired = function (modifyDate, interval) {
+    /* istanbul ignore else  */
+    if (interval === undefined) interval = REFRESH_INTERVAL;
+    return Date.now() - new Date(modifyDate).getTime() > interval;
+}
+const verifySignature = (query) => {
+    const keys = [
+        TOKEN,
+        query.timestamp,
+        query.nonce
+    ];
+    let str = keys.sort().join('');
+    str = genSHA1(str);
+    return str === query.signature;
+}
+const getXMLNodeValue = (node_name, xml) => {
+    const tmp = xml.split("<" + node_name + ">");
+    const _tmp = tmp[1].split("</" + node_name + ">");
+    return _tmp[0];
+}
+
+
 module.exports = {
 
     // toObjectId: (id) => {
@@ -71,42 +109,10 @@ module.exports = {
             return res.sendStatus(401);
         }
     },
-    ///////////////////////////////////////////
     // for Wechat belows
-    genHash: (content, algorithm) => {
-        const c = crypto.createHash(algorithm);
-        c.update(content, 'utf8');
-        return c.digest('hex');
-    },
-
-    genSHA1: content => this.genHash(content, 'sha1'),
-    nonceStr: function () {
-        return Math.random()
-            .toString(36)
-            .substr(2, 15);
-    },
-    timestamp: function () {
-        return parseInt(new Date().getTime() / 1000) + '';
-    },
-    isExpired: function (modifyDate, interval) {
-        /* istanbul ignore else  */
-        if (interval === undefined) interval = REFRESH_INTERVAL;
-        return Date.now() - new Date(modifyDate).getTime() > interval;
-    },
-    verifySignature(query) {
-        const keys = [
-            TOKEN,
-            query.timestamp,
-            query.nonce
-        ];
-        let str = keys.sort().join('');
-        str = this.genSHA1(str);
-        return str === query.signature;
-    },
-    getXMLNodeValue: (node_name, xml) => {
-        const tmp = xml.split("<" + node_name + ">");
-        const _tmp = tmp[1].split("</" + node_name + ">");
-        return _tmp[0];
-    }
-
+    nonceStr,
+    timestamp,
+    isExpired,
+    verifySignature,
+    getXMLNodeValue,
 }

@@ -38,7 +38,9 @@ const verifySignature = (query) => {
         query.nonce
     ];
     let str = keys.sort().join('');
-    str = genSHA1(str);
+    //3.将三个参数字符串拼接成一个字符串进行sha1加密
+    // CryptoJS.SHA1.createHash()
+    str = CryptoJS.SHA1.createHash(str);
     return str === query.signature;
 }
 const getXMLNodeValue = (node_name, xml) => {

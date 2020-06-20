@@ -34,10 +34,8 @@ module.exports = {
 			const msgXml = Buffer.concat(buffer).toString('utf-8');
       try {
         const r = await messageHandler.msgHandler(msgXml);
-        console.log('send Data:', r);
         res.send(r);
       } catch (error) {
-        console.log('公众号消息事件Error:', error);
         res.send('error');
       }
     });
@@ -151,6 +149,5 @@ module.exports = {
 			role: 0
 		}));
 	},
-
 
 }

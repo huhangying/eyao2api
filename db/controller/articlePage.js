@@ -58,7 +58,7 @@ module.exports = {
     // 根据 id 显示 article 页面
     RenderById: (req, res, next) => {
         const { id } = req.params;
-        ArticlePage.findOne({ _id: id, hid: req.token.hid })
+        ArticlePage.findOne({ _id: id })
             .populate({ path: 'doctor', select: 'name title' })
             .then((item) => {
                 res.set('Content-Type', 'text/html');

@@ -74,48 +74,30 @@ module.exports = {
     },
 
     // 创建页面
-    Add: function (req, res) {
-
-        // 获取请求数据（json）
-        var item = req.body;
+    Add: (req, res, next) => {
+        const item = req.body;
 
         // doctor
         if (!item.doctor) {
             return Status.returnStatus(res, Status.NO_DOCTOR);
         }
-
         // name
         if (!item.name) {
             return Status.returnStatus(res, Status.NO_NAME);
         }
-
         // category
         if (!item.cat) {
             return Status.returnStatus(res, Status.NO_CAT);
         }
-
         // category
         if (!item.title) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
 
         // 不存在，创建
-        ArticlePage.create({
-            hid: item.hid,
-            doctor: item.doctor,
-            name: item.name,
-            cat: item.cat,
-            title: item.title,
-            title_image: item.title_image,
-            content: item.content
-        }, function (err, raw) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            return res.send(raw);
-        });
-
+        ArticlePage.create(item)
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     UpdateById: function (req, res) {

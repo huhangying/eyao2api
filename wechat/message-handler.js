@@ -38,8 +38,12 @@ const msgHandler = (msgbufer) => {
               break;
 
             case 'news':
-              resolve(messageBuilder.newsMessage(baseData, 
+              resolve(messageBuilder.newsMessage(baseData,
                 '测试图文链接', 'XX药师给您发送了XXXX', 'http://timebox.i234.me:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://timebox.i234.me:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+              break;
+            case 'link':
+              resolve(messageBuilder.linkMessage(baseData,
+                '测试链接', 'XX药师给您发送了XXXX', 'http://timebox.i234.me:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
               break;
 
             default:
@@ -142,9 +146,9 @@ const unsubscribe = async (baseData) => {
   const openid = baseData.ToUserName;
   const hid = await wxUtil.getHidByWxid(baseData.FromUserName);
   // disable user in user and relationship tables
-  const user = await User.findOneAndUpdate({link_id: openid, hid: hid}, {apply: false});
+  const user = await User.findOneAndUpdate({ link_id: openid, hid: hid }, { apply: false });
   if (user && user._id) {
-    await Relationship.updateMany({user: user._id, hid: hid}, {apply: false});
+    await Relationship.updateMany({ user: user._id, hid: hid }, { apply: false });
   }
   return messageBuilder.textMessage(
     baseData,

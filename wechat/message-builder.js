@@ -10,6 +10,17 @@ const textMessage = (baseData, text) => {
   );
 }
 
+const linkMessage = (baseData, title, description, url) => {
+  return builder.buildObject(
+    Object.assign({
+      MsgType: 'link',
+      Title: title,
+      Description: description,
+      Url: url,
+    }, baseData)
+  );
+}
+
 const newsMessage = (baseData, title, description, picUrl, url) => {
   return builder.buildObject(
     Object.assign({
@@ -49,6 +60,7 @@ const subscribeMessageWithDoctor = (baseData, did, ticket) => {
 
 module.exports = {
   textMessage,
+  linkMessage,
   newsMessage,
   subscribeMessage,
   subscribeMessageWithDoctor,

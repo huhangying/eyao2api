@@ -569,7 +569,7 @@ router.route('/page/:id')
     .delete(ArticlePage.DeleteById)
     .patch(urlencodedParser, ArticlePage.UpdateById);
 
-router.get('/article/:id', ArticlePage.RenderById); // 显示页面
+router.get('/auth/article/:id', ArticlePage.RenderById); // 显示页面
 
 //---------------- 微信失败的发送消息 LOG
 var MessageLog = require('../db/controller/messageLog');

@@ -43,7 +43,7 @@ const msgHandler = (msgbufer) => {
               break;
             case 'link':
               resolve(messageBuilder.linkMessage(baseData,
-                '测试链接', 'XX药师给您发送了XXXX', 'http://timebox.i234.me:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+                '测试链接', 'XX药师给您发送了XXXX', 'http://timebox.i234.me/images/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
               break;
 
             default:

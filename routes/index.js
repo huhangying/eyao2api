@@ -785,6 +785,8 @@ router.route('/wechat/get-doctor-qrcode/:did')
     .get(wechat.getDoctorQrcode);
 router.route('/wechat/send-booking-msg')
     .post(urlencodedParser, wechat.sendBookingTemplateMessage);
+router.route('/wechat/send-client-msg/:openid') // 系统/客服消息
+    .post(urlencodedParser, wechat.sendClientMessage);
 
 router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
     .get(wechat.generateApiToken)

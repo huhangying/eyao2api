@@ -32,13 +32,13 @@ module.exports = {
 		});
 		req.on('end', async function () {
 			const msgXml = Buffer.concat(buffer).toString('utf-8');
-      try {
-        const r = await messageHandler.msgHandler(msgXml);
-        res.send(r);
-      } catch (error) {
-        res.send('error');
-      }
-    });
+			try {
+				const r = await messageHandler.msgHandler(msgXml);
+				res.send(r);
+			} catch (error) {
+				res.send('error');
+			}
+		});
 
 
 		// SignatureStore.UpsertSignature({
@@ -116,7 +116,7 @@ module.exports = {
 	},
 
 	sendBookingTemplateMessage: async (req, res, next) => {
-		const {openid, hid, data} = req.body;
+		const { openid, hid, data } = req.body;
 
 		const access_token = await wxUtil.getAccessTokenByHid(hid);
 		const template_id = await wxUtil.getBookingTemplateIdByHid(hid);
@@ -126,6 +126,31 @@ module.exports = {
 				template_id: template_id,
 				url: 'http://timebox.i234.me/wechat/my-reservation?openid=' + openid + '&state=' + hid,
 				data: data
+			},
+			{
+				params: {
+					access_token: access_token
+				}
+			})
+			.then((result) => {
+				return res.json(result.data)
+			})
+			.catch(err => next(err));
+	},
+
+	// System send it out
+	sendClientMessage: async (req, res, next) => {
+		const { openid } = req.params;
+		const { hid, article } = req.body;
+
+		const access_token = await wxUtil.getAccessTokenByHid(hid);
+		axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
+			{
+				touser: openid,
+				msgtype: 'news',
+				news: {
+					articles: [article]
+				}
 			},
 			{
 				params: {

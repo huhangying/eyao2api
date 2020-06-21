@@ -55,7 +55,7 @@ module.exports = {
       .catch(err => next(err));
   },
 
-  UpdateById: function (req, res, next) {
+  UpdateById: (req, res, next) => {
     const { id } = req.params;
     Department.findByIdAndUpdate(id, { ...req.body }, { new: true })
       .select('-hid -__v')

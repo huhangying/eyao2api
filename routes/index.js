@@ -572,9 +572,9 @@ router.route('/page/:id')
 router.route('/auth/page/:id')
     .get(ArticlePage.GetById);
 
-router.get('/auth/article/:id', ArticlePage.RenderById); //todo: remove
 
-//---------------- 微信失败的发送消息 LOG
+    //---------------- 微信失败的发送消息 LOG
+    //todo: replace with wsMsgQueue
 var MessageLog = require('../db/controller/messageLog');
 
 router.route('/messagelogs')

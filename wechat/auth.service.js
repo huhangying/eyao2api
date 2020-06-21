@@ -40,7 +40,7 @@ const sendClientMessage = async (req, res, next) => {
 	const { openid } = req.params;
 	const { hid, article } = req.body;
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
-	_sendClientMessage(openid, hid, article, access_token)
+	await _sendClientMessage(openid, hid, article, access_token)
 		.then((result) => {
 			if (result.data && result.data.errcode) {
 				if (result.data.errcode === 40001) {

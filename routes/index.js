@@ -794,4 +794,7 @@ router.route('/wechat/send-client-msg/:openid') // 系统/客服消息
 router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
     .get(wechat.generateApiToken)
 
+router.route('/wechat/resend-msg/:openid') // 尝试重新发送
+    .get(wechat.resendFailedMsg)
+
 module.exports = router;

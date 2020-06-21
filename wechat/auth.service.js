@@ -39,21 +39,8 @@ const sendBookingTemplateMessage = async (req, res, next) => {
 const sendClientMessage = async (req, res, next) => {
 	const { openid } = req.params;
 	const { hid, article } = req.body;
-
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
-	axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
-		{
-			touser: openid,
-			msgtype: 'news',
-			news: {
-				articles: [article]
-			}
-		},
-		{
-			params: {
-				access_token: access_token
-			}
-		})
+	_sendClientMessage(openid, hid, article, access_token)
 		.then((result) => {
 			if (result.data && result.data.errcode) {
 				// save to message log for later retry
@@ -69,6 +56,23 @@ const sendClientMessage = async (req, res, next) => {
 		})
 		.catch(err => next(err));
 }
+
+const _sendClientMessage = async (openid, article, access_token) => {
+	return axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
+		{
+			touser: openid,
+			msgtype: 'news',
+			news: {
+				articles: [article]
+			}
+		},
+		{
+			params: {
+				access_token: access_token
+			}
+		});
+}
+
 const save2MsgQueue = (data) => {
 	wxMsgQueue.findOneAndUpdate({ openid: data.openid, url: data.url, hid: data.hid }, data, { upsert: true, new: true })
 		.then(async (result) => {
@@ -96,6 +100,37 @@ const removeFromMsgQueue = (openid, url, hid) => {
 				await result.save();
 			}
 		});
+}
+
+// 尝试重新发送失败的消息
+const resendFailedMsg = async (req, res, next) => {
+	const { openid } = req.params;
+	const hid = req.token.hid;
+	// get the list
+	const msgs = await wxMsgQueue.find({ openid: openid, hid: hid, received: false });
+	if (!msgs || msgs.length) {
+		// reset user
+		res.send('not_found');
+		return;
+	}
+	const access_token = await wxUtil.getAccessTokenByHid(hid);
+	msgs.forEach(async msg => {
+		// send one by one
+		await _sendClientMessage(openid, {
+			title: msg.title,
+			description: msg.description,
+			url: msg.url,
+			picurl: msg.picurl
+		}, access_token)
+		.then((result) => {
+			if (result.data && result.data.errcode === 0) {
+				// save to message log for later retry
+				removeFromMsgQueue(openid, result.data.url, result.data.hid);
+			}
+		})
+		.catch(err => next(err));
+	})
+	res.send('resent');
 }
 
 module.exports = {
@@ -203,6 +238,7 @@ module.exports = {
 	sendBookingTemplateMessage,
 	sendClientMessage,
 	removeFromMsgQueue,
+	resendFailedMsg,
 
 	///
 	// api

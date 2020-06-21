@@ -125,13 +125,13 @@ const resendFailedMsg = async (req, res, next) => {
 				if (result.data) {
 					if (result.data.errcode === 0) {
 						// save to message log for later retry
-						removeFromMsgQueue(openid, result.data.url, result.data.hid);
+						removeFromMsgQueue(openid, msg.url, msg.hid);
 					} else {
 						// increase tryCount
 						save2MsgQueue({
 							openid: openid,
-							url: result.data.url,
-							hid: result.data.hid,
+							url: msg.url,
+							hid: msg.hid,
 							tryCount: msg.tryCount++
 						})
 					}

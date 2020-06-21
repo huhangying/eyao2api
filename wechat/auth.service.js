@@ -49,7 +49,8 @@ const sendClientMessage = async (req, res, next) => {
 					type: 2,
 					errcode: result.data.errcode,
 					hid: hid,
-					openid: openid
+					openid: openid,
+					received: false
 				});
 			}
 			return res.json(result.data)

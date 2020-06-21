@@ -43,6 +43,10 @@ const sendClientMessage = async (req, res, next) => {
 	_sendClientMessage(openid, hid, article, access_token)
 		.then((result) => {
 			if (result.data && result.data.errcode) {
+				if (result.data.errcode === 40001) {
+					// 40001:	获取 access_token 时 AppSecret 错误，或者 access_token 无效
+					wxUtil.refreshAccessToken(hid); // 本次失败，不能重试，只能等下次
+				}
 				// save to message log for later retry
 				save2MsgQueue({
 					...article,
@@ -130,6 +134,10 @@ const resendFailedMsg = async (req, res, next) => {
 						// save to message log for later retry
 						removeFromMsgQueue(openid, msg.url, msg.hid);
 					} else {
+						if (result.data.errcode === 40001) {
+							// 40001:	获取 access_token 时 AppSecret 错误，或者 access_token 无效
+							wxUtil.refreshAccessToken(hid); // 本次失败，不能重试，只能等下次
+						}
 						// increase tryCount
 						save2MsgQueue({
 							openid: openid,

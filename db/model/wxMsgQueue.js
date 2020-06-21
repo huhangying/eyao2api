@@ -12,7 +12,8 @@ module.exports = mongoose.model(
         url: { type: String, required: true },
         picurl: { type: String },
         received: { type: Boolean, default: false },
-        tryCount: { type: Number, default: 0 }
+        tryCount: { type: Number, default: 0 },
+        errcode: { type: Number }
     }, {
         timestamps: true
     })

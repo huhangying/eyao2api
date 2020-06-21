@@ -75,7 +75,7 @@ const save2MsgQueue = (data) => {
 			if (result.tryCount < 1) {
 				// mark in user table
 				await User.findOneAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
-					{ $inc: { msgInQueue: 1 } });
+					{ $inc: { msgInQueue: 1 }, updated: new Date() });
 			} else {
 				result.tryCount++;
 				await result.save();
@@ -91,7 +91,7 @@ const removeFromMsgQueue = (openid, url, hid) => {
 			if (result) {
 				// mark in user table
 				await User.findOneAndUpdate({ link_id: openid, hid: hid, apply: true },
-					{ $inc: { msgInQueue: -1 } });
+					{ $inc: { msgInQueue: -1 }, updated: new Date() });
 				result.received = true;
 				await result.save();
 			}

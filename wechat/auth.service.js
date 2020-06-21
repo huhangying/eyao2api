@@ -108,7 +108,7 @@ const resendFailedMsg = async (req, res, next) => {
 	const hid = req.token.hid;
 	// get the list
 	const msgs = await wxMsgQueue.find({ openid: openid, hid: hid, received: false });
-	if (!msgs || msgs.length) {
+	if (!msgs || msgs.length < 1) {
 		// reset user
 		res.send('not_found');
 		return;

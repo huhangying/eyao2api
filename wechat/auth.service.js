@@ -134,12 +134,24 @@ const resendFailedMsg = async (req, res, next) => {
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	msgs.forEach(async msg => {
 		// send one by one
-		await _sendClientMessage(openid, {
-			title: msg.title,
-			description: msg.description,
-			url: msg.url,
-			picurl: msg.picurl
-		}, access_token)
+		axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
+			{
+				touser: openid,
+				msgtype: 'news',
+				news: {
+					articles: [{
+						title: msg.title,
+						description: msg.description,
+						url: msg.url,
+						picurl: msg.picurl
+					}]
+				}
+			},
+			{
+				params: {
+					access_token: access_token
+				}
+			})
 			.then((result) => {
 				if (result.data) {
 					if (result.data.errcode === 0) {

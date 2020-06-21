@@ -16,8 +16,12 @@ global.urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
-io.set( 'origins', '*' ); // for test
+const io = require('socket.io')(server, {
+  log: false,
+  agent: false,
+  origins: '*:*',
+  transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']
+});
 require('./io/socketio')(io);
 
 //设置跨域访问

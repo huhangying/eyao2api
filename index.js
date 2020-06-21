@@ -16,7 +16,16 @@ global.urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const app = express();
 //设置跨域访问
-app.use(cors());
+app.use(cors({ origin: '*' }));
+const server = require('http').Server(app);
+const io = require('socket.io')(server, {
+  log: false,
+  agent: false,
+  origins: '*:*',
+  transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']
+});
+require('./io/socketio')(io);
+
 app.all('*', function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE, PATCH");
@@ -26,15 +35,6 @@ app.all('*', function (req, res, next) {
   res.header("Content-Type", "application/json;charset=utf-8");
   next();
 });
-
-const server = require('http').Server(app);
-const io = require('socket.io')(server, {
-  log: false,
-  agent: false,
-  origins: '*:*',
-  transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']
-});
-require('./io/socketio')(io);
 
 // view engine setup
 app.set('views', path.join(path.resolve(), 'views'));

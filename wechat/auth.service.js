@@ -82,8 +82,10 @@ const save2MsgQueue = (data) => {
 				await User.findOneAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
 					{ $inc: { msgInQueue: 1 }, updated: new Date() });
 				result.tryCount = 1;
-				await result.save();
+			} else {
+				result.tryCount++;
 			}
+			await result.save();
 		});
 }
 
@@ -133,7 +135,6 @@ const resendFailedMsg = async (req, res, next) => {
 							openid: openid,
 							url: msg.url,
 							hid: msg.hid,
-							tryCount: msg.tryCount++
 						})
 					}
 

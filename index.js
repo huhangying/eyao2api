@@ -15,15 +15,6 @@ global.Status = require('./util/status.js');
 global.urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const app = express();
-const server = require('http').Server(app);
-const io = require('socket.io')(server, {
-  log: false,
-  agent: false,
-  origins: '*:*',
-  transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']
-});
-require('./io/socketio')(io);
-
 //设置跨域访问
 app.use(cors());
 app.all('*', function (req, res, next) {
@@ -35,6 +26,15 @@ app.all('*', function (req, res, next) {
   res.header("Content-Type", "application/json;charset=utf-8");
   next();
 });
+
+const server = require('http').Server(app);
+const io = require('socket.io')(server, {
+  log: false,
+  agent: false,
+  origins: '*:*',
+  transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']
+});
+require('./io/socketio')(io);
 
 // view engine setup
 app.set('views', path.join(path.resolve(), 'views'));

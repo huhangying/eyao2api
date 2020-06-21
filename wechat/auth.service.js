@@ -9,8 +9,94 @@ const wxConfig = {
 }
 const messageHandler = require('./message-handler');
 const wxUtil = require('./wx-util');
+const wxMsgQueue = require('../db/model/wxMsgQueue');
+const User = require('../db/model/user');
 
+const sendBookingTemplateMessage = async (req, res, next) => {
+	const { openid, hid, data } = req.body;
 
+	const access_token = await wxUtil.getAccessTokenByHid(hid);
+	const template_id = await wxUtil.getBookingTemplateIdByHid(hid);
+	axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send',
+		{
+			touser: openid,
+			template_id: template_id,
+			url: 'http://timebox.i234.me/wechat/my-reservation?openid=' + openid + '&state=' + hid,
+			data: data
+		},
+		{
+			params: {
+				access_token: access_token
+			}
+		})
+		.then((result) => {
+			return res.json(result.data)
+		})
+		.catch(err => next(err));
+}
+
+// System send it out
+const sendClientMessage = async (req, res, next) => {
+	const { openid } = req.params;
+	const { hid, article } = req.body;
+
+	const access_token = await wxUtil.getAccessTokenByHid(hid);
+	axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
+		{
+			touser: openid,
+			msgtype: 'news',
+			news: {
+				articles: [article]
+			}
+		},
+		{
+			params: {
+				access_token: access_token
+			}
+		})
+		.then((result) => {
+			if (result.data && result.data.errcode) {
+				// save to message log for later retry
+				save2MsgQueue({
+					...article,
+					type: 2,
+					errcode: result.data.errcode,
+					hid: hid,
+					openid: openid
+				});
+			}
+			return res.json(result.data)
+		})
+		.catch(err => next(err));
+}
+const save2MsgQueue = (data) => {
+	wxMsgQueue.findOneAndUpdate({ openid: data.openid, url: data.url, hid: data.hid }, data, { upsert: true, new: true })
+		.then(async (result) => {
+			if (result.tryCount < 1) {
+				// mark in user table
+				await User.findByIdAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
+					{ $inc: { msgInQueue: 1 } });
+			} else {
+				result.tryCount++;
+				await result.save();
+			}
+		});
+}
+
+// 消息重新发送成功
+const removeFromMsgQueue = (openid, url, hid) => {
+	// 
+	wxMsgQueue.findOneAndDelete({ openid: openid, url: url, hid: hid })
+		.then(async (result) => {
+			if (result) {
+				// mark in user table
+				await User.findByIdAndUpdate({ link_id: openid, hid: hid, apply: true },
+					{ $inc: { msgInQueue: -1 } });
+				result.received = true;
+				await result.save();
+			}
+		});
+}
 
 module.exports = {
 	// wechat sign test
@@ -114,54 +200,9 @@ module.exports = {
 		})
 			.catch(err => next(err));
 	},
-
-	sendBookingTemplateMessage: async (req, res, next) => {
-		const { openid, hid, data } = req.body;
-
-		const access_token = await wxUtil.getAccessTokenByHid(hid);
-		const template_id = await wxUtil.getBookingTemplateIdByHid(hid);
-		axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send',
-			{
-				touser: openid,
-				template_id: template_id,
-				url: 'http://timebox.i234.me/wechat/my-reservation?openid=' + openid + '&state=' + hid,
-				data: data
-			},
-			{
-				params: {
-					access_token: access_token
-				}
-			})
-			.then((result) => {
-				return res.json(result.data)
-			})
-			.catch(err => next(err));
-	},
-
-	// System send it out
-	sendClientMessage: async (req, res, next) => {
-		const { openid } = req.params;
-		const { hid, article } = req.body;
-
-		const access_token = await wxUtil.getAccessTokenByHid(hid);
-		axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
-			{
-				touser: openid,
-				msgtype: 'news',
-				news: {
-					articles: [article]
-				}
-			},
-			{
-				params: {
-					access_token: access_token
-				}
-			})
-			.then((result) => {
-				return res.json(result.data)
-			})
-			.catch(err => next(err));
-	},
+	sendBookingTemplateMessage,
+	sendClientMessage,
+	removeFromMsgQueue,
 
 	///
 	// api

@@ -28,6 +28,7 @@ module.exports = mongoose.model(
       { type: mongoose.Schema.Types.ObjectId, ref: 'department' }
     ], //用来判定应该使用初诊问卷还是复诊问卷
     locked_count: Number,
-    apply: { type: Boolean, default: true }
+    apply: { type: Boolean, default: true },
+    msgInQueue: { type: Number, default: 0 }
   })
 );

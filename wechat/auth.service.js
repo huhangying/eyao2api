@@ -74,7 +74,7 @@ const save2MsgQueue = (data) => {
 		.then(async (result) => {
 			if (result.tryCount < 1) {
 				// mark in user table
-				await User.findByIdAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
+				await User.findOneAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
 					{ $inc: { msgInQueue: 1 } });
 			} else {
 				result.tryCount++;
@@ -90,7 +90,7 @@ const removeFromMsgQueue = (openid, url, hid) => {
 		.then(async (result) => {
 			if (result) {
 				// mark in user table
-				await User.findByIdAndUpdate({ link_id: openid, hid: hid, apply: true },
+				await User.findOneAndUpdate({ link_id: openid, hid: hid, apply: true },
 					{ $inc: { msgInQueue: -1 } });
 				result.received = true;
 				await result.save();

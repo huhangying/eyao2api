@@ -112,7 +112,7 @@ const resendFailedMsg = async (req, res, next) => {
 	const msgs = await wxMsgQueue.find({ openid: openid, hid: hid, received: false });
 	if (!msgs || msgs.length < 1) {
 		// reset user
-		res.send('not_found');
+		res.json({return: 'not_found'});
 		return;
 	}
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
@@ -142,7 +142,7 @@ const resendFailedMsg = async (req, res, next) => {
 			})
 			.catch(err => next(err));
 	})
-	res.send('resent');
+	res.json({return: 'resent'});
 }
 
 module.exports = {

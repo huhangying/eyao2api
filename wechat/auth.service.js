@@ -50,7 +50,8 @@ const sendClientMessage = async (req, res, next) => {
 					errcode: result.data.errcode,
 					hid: hid,
 					openid: openid,
-					received: false
+					received: false,
+					tryCount: 1
 				});
 			}
 			return res.json(result.data)
@@ -77,14 +78,11 @@ const _sendClientMessage = async (openid, article, access_token) => {
 const save2MsgQueue = (data) => {
 	wxMsgQueue.findOneAndUpdate({ openid: data.openid, url: data.url, hid: data.hid }, data, { upsert: true, new: true })
 		.then(async (result) => {
-			if (result.tryCount < 1) {
+			if (result.tryCount === 1) { // if first time
 				// mark in user table
 				await User.findOneAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
 					{ $inc: { msgInQueue: 1 }, updated: new Date() });
-			} else {
-				result.tryCount++;
-				await result.save();
-			}
+			} 
 		});
 }
 
@@ -123,13 +121,24 @@ const resendFailedMsg = async (req, res, next) => {
 			url: msg.url,
 			picurl: msg.picurl
 		}, access_token)
-		.then((result) => {
-			if (result.data && result.data.errcode === 0) {
-				// save to message log for later retry
-				removeFromMsgQueue(openid, result.data.url, result.data.hid);
-			}
-		})
-		.catch(err => next(err));
+			.then((result) => {
+				if (result.data) {
+					if (result.data.errcode === 0) {
+						// save to message log for later retry
+						removeFromMsgQueue(openid, result.data.url, result.data.hid);
+					} else {
+						// increase tryCount
+						save2MsgQueue({
+							openid: openid,
+							url: result.data.url,
+							hid: result.data.hid,
+							tryCount: msg.tryCount++
+						})
+					}
+
+				}
+			})
+			.catch(err => next(err));
 	})
 	res.send('resent');
 }

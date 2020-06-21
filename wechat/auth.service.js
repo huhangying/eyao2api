@@ -51,7 +51,6 @@ const sendClientMessage = async (req, res, next) => {
 					hid: hid,
 					openid: openid,
 					received: false,
-					tryCount: 1
 				});
 			}
 			return res.json(result.data)
@@ -78,11 +77,13 @@ const _sendClientMessage = async (openid, article, access_token) => {
 const save2MsgQueue = (data) => {
 	wxMsgQueue.findOneAndUpdate({ openid: data.openid, url: data.url, hid: data.hid }, data, { upsert: true, new: true })
 		.then(async (result) => {
-			if (result.tryCount === 1) { // if first time
+			if (!result.tryCount) { // if first time
 				// mark in user table
 				await User.findOneAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
 					{ $inc: { msgInQueue: 1 }, updated: new Date() });
-			} 
+				result.tryCount = 1;
+				await result.save();
+			}
 		});
 }
 

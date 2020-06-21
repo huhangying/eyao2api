@@ -40,7 +40,19 @@ const sendClientMessage = async (req, res, next) => {
 	const { openid } = req.params;
 	const { hid, article } = req.body;
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
-	await _sendClientMessage(openid, hid, article, access_token)
+	axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
+		{
+			touser: openid,
+			msgtype: 'news',
+			news: {
+				articles: [article]
+			}
+		},
+		{
+			params: {
+				access_token: access_token
+			}
+		})
 		.then((result) => {
 			if (result.data && result.data.errcode) {
 				if (result.data.errcode === 40001) {
@@ -116,7 +128,7 @@ const resendFailedMsg = async (req, res, next) => {
 	const msgs = await wxMsgQueue.find({ openid: openid, hid: hid, received: false });
 	if (!msgs || msgs.length < 1) {
 		// reset user
-		res.json({return: 'not_found'});
+		res.json({ return: 'not_found' });
 		return;
 	}
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
@@ -150,7 +162,7 @@ const resendFailedMsg = async (req, res, next) => {
 			})
 			.catch(err => next(err));
 	})
-	res.json({return: 'resent'});
+	res.json({ return: 'resent' });
 }
 
 module.exports = {

@@ -90,10 +90,10 @@ module.exports = {
                 },
                 {
                     path: 'schedule',
-                    populate: {
-                        path: 'period',
-                        select: 'name -_id'
-                    },
+                    // populate: {
+                    //     path: 'period',
+                    //     select: 'name -_id'
+                    // },
                     select: 'date period',
                 }])
             .select('-hid -__v')

@@ -75,10 +75,10 @@ module.exports = {
 
         Booking.find({
             doctor: did,
-            date: {
-                $gt: moment().startOf('day').toDate(),
-                $lt: moment().endOf('day').toDate()
-            },
+            // date: {
+            //     $gt: moment().startOf('day').toDate(),
+            //     $lt: moment().endOf('day').toDate()
+            // },
             hid: req.token.hid,
             status: 1
         })
@@ -90,10 +90,10 @@ module.exports = {
                 },
                 {
                     path: 'schedule',
-                    // populate: {
-                    //     path: 'period',
-                    //     select: 'name -_id'
-                    // },
+                    populate: {
+                        path: 'period',
+                        select: 'name -_id'
+                    },
                     select: 'date period',
                 })
             .select('-hid -__v')

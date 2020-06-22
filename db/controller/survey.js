@@ -99,30 +99,30 @@ module.exports = {
             .catch(err => next(err));
     },
 
-        // 获取 user 的未完成 survey
-        GetMySurveysStart: (req, res, next) => {
-            const { user, doctor, type, date } = req.params;
-    
-            const searchCriteria = {
-                user: user,
-                doctor: doctor,
-                hid: req.token.hid,
-                type: type,
-                createdAt: {
-                    $gt: moment(date).startOf('day').toDate(),
-                    $lt: moment(date).endOf('day').toDate()
-                  },
-                availableBy: { $gt: new Date() },
-                finished: false
-            };
-    
-            Survey.find(searchCriteria)
-                .populate({ path: 'doctor', select: 'name title department' })
-                .select('-hid -__v')
-                .lean()
-                .then((result) => res.json(result))
-                .catch(err => next(err));
-        },
+    // 获取 user 的未完成 survey
+    GetMySurveysStart: (req, res, next) => {
+        const { user, doctor, type, date } = req.params;
+
+        const searchCriteria = {
+            user: user,
+            doctor: doctor,
+            hid: req.token.hid,
+            type: type,
+            createdAt: {
+                $gt: moment(date).startOf('day').toDate(),
+                $lt: moment(date).endOf('day').toDate()
+            },
+            availableBy: { $gt: new Date() },
+            finished: false
+        };
+
+        Survey.find(searchCriteria)
+            .populate({ path: 'doctor', select: 'name title department' })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
 
     // 根据Department ID获取Survey list
     GetSurveysByDepartmentId: (req, res, next) => {
@@ -135,39 +135,30 @@ module.exports = {
     },
 
     // 关闭所有该药师和该用户相关的surveys（set finished=true for type in [1,2,5]）
-    CloseAllRelativeSurveys: function (req, res) {
+    CloseAllRelativeSurveys: (req, res, next) => {
+        const { doctor, user } = req.params;
 
-        if (req.params && req.params.doctor && req.params.user) {
+        Survey.update(
+            {
+                user: user,
+                doctor: doctor,
+                hid: req.body.hid,
+                finished: false,
+                type: { $in: [1, 2, 5] }
 
-            Survey.update(
-                {
-                    user: req.params.user,
-                    doctor: req.params.doctor,
-                    finished: false,
-                    type: { $in: [1, 2, 5] }
+            },
+            {
+                $set: {
+                    finished: true
+                }
 
-                },
-                {
-                    $set: {
-                        finished: true
-                    }
+            },
+            {
+                multi: true
+            })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
 
-                },
-                {
-                    multi: true
-                })
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
     },
 
     // 创建

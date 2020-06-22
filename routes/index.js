@@ -440,6 +440,8 @@ router.route('/surveys/:doctor/:user/:type/:list/:readonly')
 
 router.route('/mysurveys/:user')
     .get(Survey.GetMySurveys);
+router.route('/mysurveys/:user/:doctor/:type/:date')
+    .get(Survey.GetMySurveysStart);
 router.route('/surveys/department/:did')
     .get(Survey.GetSurveysByDepartmentId);
 
@@ -573,8 +575,8 @@ router.route('/auth/page/:id')
     .get(ArticlePage.GetById);
 
 
-    //---------------- 微信失败的发送消息 LOG
-    //todo: replace with wsMsgQueue
+//---------------- 微信失败的发送消息 LOG
+//todo: replace with wsMsgQueue
 var MessageLog = require('../db/controller/messageLog');
 
 router.route('/messagelogs')

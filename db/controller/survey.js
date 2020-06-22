@@ -3,6 +3,7 @@
  */
 
 var Survey = require('../model/survey.js');
+const moment = require('moment');
 
 module.exports = {
 
@@ -97,6 +98,31 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
+
+        // 获取 user 的未完成 survey
+        GetMySurveysStart: (req, res, next) => {
+            const { user, doctor, type, date } = req.params;
+    
+            const searchCriteria = {
+                user: user,
+                doctor: doctor,
+                hid: req.token.hid,
+                type: type,
+                createdAt: {
+                    $gt: moment(date).startOf('day').toDate(),
+                    $lt: moment(date).endOf('day').toDate()
+                  },
+                availableBy: { $gt: new Date() },
+                finished: false
+            };
+    
+            Survey.find(searchCriteria)
+                .populate({ path: 'doctor', select: 'name title department' })
+                .select('-hid -__v')
+                .lean()
+                .then((result) => res.json(result))
+                .catch(err => next(err));
+        },
 
     // 根据Department ID获取Survey list
     GetSurveysByDepartmentId: (req, res, next) => {

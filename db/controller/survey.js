@@ -138,7 +138,7 @@ module.exports = {
     CloseAllRelativeSurveys: (req, res, next) => {
         const { doctor, user } = req.params;
 
-        Survey.update(
+        Survey.updateMany(
             {
                 user: user,
                 doctor: doctor,
@@ -151,7 +151,6 @@ module.exports = {
                 $set: {
                     finished: true
                 }
-
             },
             {
                 multi: true

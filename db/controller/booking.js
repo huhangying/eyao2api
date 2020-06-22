@@ -82,7 +82,7 @@ module.exports = {
             hid: req.token.hid,
             status: 1
         })
-            .sort({ created: -1 })
+            // .sort({ created: -1 })
             .populate(
                 {
                     path: 'user',
@@ -90,10 +90,10 @@ module.exports = {
                 },
                 {
                     path: 'schedule',
-                    populate: {
-                        path: 'period',
-                        select: 'name -_id'
-                    },
+                    // populate: {
+                    //     path: 'period',
+                    //     select: 'name -_id'
+                    // },
                     select: 'date period',
                 })
             .select('-hid -__v')

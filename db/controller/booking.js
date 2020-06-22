@@ -60,7 +60,7 @@ module.exports = {
                 },
                 {
                     path: 'user',
-                    select: '_id name user_id cell gender birthdate visitedDepartments'
+                    select: '_id name link_id cell gender birthdate visitedDepartments'
                 }
             ])
             .select('-hid -__v')
@@ -82,7 +82,7 @@ module.exports = {
             .populate(
                 {
                     path: 'user',
-                    select: '_id name user_id cell gender birthdate visitedDepartments'
+                    select: '_id name link_id cell gender birthdate visitedDepartments'
                 },
                 {
                     path: 'schedule',

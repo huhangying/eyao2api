@@ -70,14 +70,18 @@ module.exports = {
     },
 
     // 根据药师ID和日期 获取相关的预约
-    GetTodaysByDoctorId: function (req, res) {
+    GetTodaysByDoctorId: (req, res, next) => {
         const { did } = req.params;
 
-        // var today = moment().startOf('day').format();
-        // var tomorrow = moment(today).add(1, 'days').format();
-        var today = moment().format('YYYY-MM-DD');
-        // Booking.find({ doctor: did })
-        Booking.find({ doctor: did, status: 1 }) //, date: {$gte: today, $lt: tomorrow}
+        Booking.find({
+            doctor: did,
+            date: {
+                $gt: moment().startOf('day').toDate(),
+                $lt: moment().endOf('day').toDate()
+            },
+            hid: req.token.hid,
+            status: 1
+        })
             .sort({ created: -1 })
             .populate(
                 {
@@ -92,23 +96,27 @@ module.exports = {
                         select: 'name -_id'
                     }
                 })
-            .exec(function (err, items) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+        // .exec(function (err, items) {
+        //     if (err) {
+        //         return Status.returnStatus(res, Status.ERROR, err);
+        //     }
 
-                // if (!items || items.length < 1) {
-                //     return Status.returnStatus(res, Status.NULL);
-                // }
+        //     // if (!items || items.length < 1) {
+        //     //     return Status.returnStatus(res, Status.NULL);
+        //     // }
 
-                items = items.filter(function (item) {
-                    if (item.schedule && item.schedule._doc && item.schedule._doc.date) {
-                        return moment(item.schedule._doc.date).format('YYYY-MM-DD') == today;
-                    }
-                });
+        //     items = items.filter(function (item) {
+        //         if (item.schedule && item.schedule._doc && item.schedule._doc.date) {
+        //             return moment(item.schedule._doc.date).format('YYYY-MM-DD') == today;
+        //         }
+        //     });
 
-                res.json(items);
-            });
+        //     res.json(items);
+        // });
     },
 
     // Wechat:

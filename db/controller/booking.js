@@ -75,15 +75,15 @@ module.exports = {
 
         Booking.find({
             doctor: did,
-            // date: {
-            //     $gt: moment().startOf('day').toDate(),
-            //     $lt: moment().endOf('day').toDate()
-            // },
+            date: {
+                $gt: moment().startOf('day').toDate(),
+                $lt: moment().endOf('day').toDate()
+            },
             hid: req.token.hid,
             status: 1
         })
-            // .sort({ created: -1 })
-            .populate(
+            .sort({ created: -1 })
+            .populate([
                 {
                     path: 'user',
                     select: '_id name link_id cell gender birthdate visitedDepartments'
@@ -95,7 +95,7 @@ module.exports = {
                         select: 'name -_id'
                     },
                     select: 'date period',
-                })
+                }])
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))

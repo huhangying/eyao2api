@@ -69,14 +69,14 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 根据药师ID和日期 获取相关的预约
+    // 根据药师ID当日的的预约
     GetTodaysByDoctorId: (req, res, next) => {
         const { did } = req.params;
 
         Booking.find({
             doctor: did,
             date: {
-                $gt: moment().startOf('day').toDate(),
+                $gte: moment().startOf('day').toDate(),
                 $lt: moment().endOf('day').toDate()
             },
             hid: req.token.hid,
@@ -100,23 +100,6 @@ module.exports = {
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
-        // .exec(function (err, items) {
-        //     if (err) {
-        //         return Status.returnStatus(res, Status.ERROR, err);
-        //     }
-
-        //     // if (!items || items.length < 1) {
-        //     //     return Status.returnStatus(res, Status.NULL);
-        //     // }
-
-        //     items = items.filter(function (item) {
-        //         if (item.schedule && item.schedule._doc && item.schedule._doc.date) {
-        //             return moment(item.schedule._doc.date).format('YYYY-MM-DD') == today;
-        //         }
-        //     });
-
-        //     res.json(items);
-        // });
     },
 
     // Wechat:

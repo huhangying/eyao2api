@@ -3,6 +3,7 @@
 var Diagnose = require('../model/diagnose');
 const moment = require('moment');
 const Survey = require('../model/survey');
+const Booking = require('../model/booking');
 
 module.exports = {
 
@@ -114,7 +115,13 @@ module.exports = {
         const { id } = req.params;
         Diagnose.findByIdAndUpdate(id, { ...req.body }, { new: true })
             .select('-hid -__v')
-            .then((result) => res.json(result))
+            .then((result) => {
+                if (result && result.booking && result.status === 3) { // 3: archived
+                    // close booking
+                    Booking.findByIdAndUpdate(result.booking, { status: 5 }).exec(); // 5: finished
+                }
+                res.json(result);
+            })
             .catch(err => next(err));
     },
 

@@ -90,11 +90,11 @@ module.exports = {
                 },
                 {
                     path: 'schedule',
-                    select: 'date period',
                     populate: {
                         path: 'period',
                         select: 'name -_id'
-                    }
+                    },
+                    select: 'date period',
                 })
             .select('-hid -__v')
             .lean()

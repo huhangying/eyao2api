@@ -26,11 +26,22 @@ module.exports = {
     },
 
 
-    // 根据ID获取详细信息
+    // 根据ID获取详细信息 // used by wechat side
     GetById: (req, res, next) => {
         const { id } = req.params;
         Booking.findOne({ _id: id })
-            .populate('schedule')
+            .populate({
+                path: 'schedule',
+                populate: [
+                    {
+                        path: 'doctor',
+                        populate: 'department',
+                        select: '_id name department address'
+                    },
+                    { path: 'period', select: '_id name' },
+                ],
+                select: 'date period created doctor'
+            })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -113,7 +124,7 @@ module.exports = {
                     {
                         path: 'doctor',
                         populate: 'department',
-                        select: '_id name department'
+                        select: '_id name department address'
                     },
                     { path: 'period', select: '_id name' },
                 ],

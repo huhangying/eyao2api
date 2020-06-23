@@ -21,7 +21,7 @@ const sendBookingTemplateMessage = async (req, res, next) => {
 		{
 			touser: openid,
 			template_id: template_id,
-			url: 'http://timebox.i234.me/wechat/my-reservation?openid=' + openid + '&state=' + hid + '&id=' + bookingid,
+			url: 'http://timebox.i234.me/wechat/reservation?openid=' + openid + '&state=' + hid + '&id=' + bookingid,
 			data: data
 		},
 		{

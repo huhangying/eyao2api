@@ -11,6 +11,14 @@ module.exports = {
     GetById: (req, res, next) => {
         const { id } = req.params;
         Diagnose.findOne({ _id: id })
+            .populate({
+                path: 'doctor',
+                select: 'name title department',
+                populate: {
+                    path: 'department',
+                    select: 'name -_id'
+                }
+            })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));

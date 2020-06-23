@@ -76,7 +76,7 @@ module.exports = {
         Booking.find({
             doctor: did,
             date: {
-                $gt: moment().startOf('day').toDate(),
+                $gte: moment().startOf('day').toDate(),
                 $lt: moment().endOf('day').toDate()
             },
             hid: req.token.hid,

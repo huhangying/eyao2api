@@ -13,7 +13,7 @@ const wxMsgQueue = require('../db/model/wxMsgQueue');
 const User = require('../db/model/user');
 
 const sendBookingTemplateMessage = async (req, res, next) => {
-	const { openid, hid, data } = req.body;
+	const { openid, hid, bookingid, data } = req.body;
 
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	const template_id = await wxUtil.getBookingTemplateIdByHid(hid);
@@ -21,7 +21,7 @@ const sendBookingTemplateMessage = async (req, res, next) => {
 		{
 			touser: openid,
 			template_id: template_id,
-			url: 'http://timebox.i234.me/wechat/my-reservation?openid=' + openid + '&state=' + hid,
+			url: 'http://timebox.i234.me/wechat/my-reservation?openid=' + openid + '&state=' + hid + '&id=' + bookingid,
 			data: data
 		},
 		{

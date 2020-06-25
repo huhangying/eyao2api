@@ -24,7 +24,7 @@ router.route('/users/role/:role')
 
 router.route('/user/:id')
     .get(User.GetById)
-    .patch(User.UpdateById)
+    .patch(urlencodedParser, User.UpdateById)
     .delete(User.DeleteById); // for test
 
 router.route('/user/cell/:cell')

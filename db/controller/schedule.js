@@ -184,15 +184,15 @@ module.exports = {
             })
         });
 
-        schedules = async (schedules) => {
-            Promise.all(
-                schedules.filter(async _ => {
-                    const schedule = { ..._ };
-                    delete schedule.limit
-                    return !(await Schedule.exists(schedule));
-                })
-            );
-        };
+        schedules = await Promise.all(
+            schedules.map(async _ => {
+                const schedule = { ..._ };
+                delete schedule.limit;
+                const existed = await Schedule.exists(schedule);
+                return existed ? null : _;
+            })
+        );
+        schedules = schedules.filter(_ => !!_);
 
         Schedule.insertMany(schedules)
             .then((result) => res.json(result))

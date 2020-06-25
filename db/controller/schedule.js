@@ -110,7 +110,7 @@ module.exports = {
         const date = new Date(req.params.date);
         Schedule.find({
             doctor: did,
-            date: { $gte: new Date(date), $lt: (new Date(date.setHours(0, 0, 0, 0) + 7* 24 * 60 * 60 * 1000)) },
+            date: { $gte: new Date(date), $lt: (new Date(date.setHours(0, 0, 0, 0) + 7 * 24 * 60 * 60 * 1000)) },
             hid: req.token.hid,
             apply: true
         })
@@ -175,8 +175,8 @@ module.exports = {
             batch.periods.map(async period => {
                 const existed = await Schedule.exists({
                     doctor: batch.doctor,
-                    date: date, 
-                    period: period, 
+                    date: date,
+                    period: period,
                     hid: batch.hid,
                     apply: true
                 });
@@ -200,7 +200,12 @@ module.exports = {
 
     BatDelete: (req, res, next) => {
         const batch = req.body;
-        Schedule.deleteMany({ doctor: batch.doctor, hid: batch.hid, date: { $in: batch.dates }, period: { $in: batch.periods } })
+        Schedule.deleteMany({
+            doctor: batch.doctor,
+            hid: batch.hid,
+            date: { $in: batch.dates },
+            period: { $in: batch.periods }
+        })
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

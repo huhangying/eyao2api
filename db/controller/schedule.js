@@ -172,15 +172,24 @@ module.exports = {
         // const convertedList: Schedule[];
         const schedules = [];
         batch.dates.map(date => {
-            batch.periods.map(period => {
-                schedules.push({
-                    hid: batch.hid,
+            batch.periods.map(async period => {
+                const existed = await Schedule.exists({
                     doctor: batch.doctor,
-                    period: period,
-                    date: date,
-                    limit: batch.limit,
+                    date: date, 
+                    period: period, 
+                    hid: batch.hid,
                     apply: true
                 });
+                if (!existed) {
+                    schedules.push({
+                        hid: batch.hid,
+                        doctor: batch.doctor,
+                        period: period,
+                        date: date,
+                        limit: batch.limit,
+                        apply: true
+                    });
+                }
             })
         });
 

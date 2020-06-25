@@ -170,28 +170,26 @@ module.exports = {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
         // const convertedList: Schedule[];
-        const schedules = [];
-        await batch.dates.map(async date => {
-            await batch.periods.map(async period => {
-                const existed = await Schedule.exists({
-                    doctor: batch.doctor,
-                    date: date,
-                    period: period,
+        let schedules = [];
+        Promise.all()
+        batch.dates.map(date => {
+            batch.periods.map(period => {
+                schedules.push({
                     hid: batch.hid,
+                    doctor: batch.doctor,
+                    period: period,
+                    date: date,
+                    limit: batch.limit,
                     apply: true
                 });
-                if (!existed) {
-                    schedules.push({
-                        hid: batch.hid,
-                        doctor: batch.doctor,
-                        period: period,
-                        date: date,
-                        limit: batch.limit,
-                        apply: true
-                    });
-                }
             })
         });
+
+        schedules = schedules.filter(async _ => {
+            const schedule = { ..._ };
+            delete schedule.limit
+            return !(await Schedule.exists(schedule));
+        })
 
         Schedule.insertMany(schedules)
             .then((result) => res.json(result))

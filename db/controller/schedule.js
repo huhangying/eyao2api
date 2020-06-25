@@ -164,15 +164,15 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    BatAdd: (req, res, next) => {
+    BatAdd: async (req, res, next) => {
         const batch = req.body;
         if (batch.periods.length < 1 || batch.dates.length < 1) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
         // const convertedList: Schedule[];
         const schedules = [];
-        batch.dates.map(date => {
-            batch.periods.map(async period => {
+        await batch.dates.map(async date => {
+            await batch.periods.map(async period => {
                 const existed = await Schedule.exists({
                     doctor: batch.doctor,
                     date: date,

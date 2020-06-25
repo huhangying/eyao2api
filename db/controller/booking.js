@@ -123,8 +123,8 @@ module.exports = {
                 populate: [
                     {
                         path: 'doctor',
-                        populate: 'department',
-                        select: '_id name department address'
+                        populate: { path: 'department', select: '_id name title address' },
+                        select: '_id name department'
                     },
                     { path: 'period', select: '_id name' },
                 ],

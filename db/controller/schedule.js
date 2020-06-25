@@ -189,9 +189,10 @@ module.exports = {
             schedules.map(async _ => {
                 const schedule = { ..._ };
                 delete schedule.limit;
-                return (await Schedule.exists(schedule)) ? null : _;
+                return await Schedule.exists(schedule) ? null : _;
             })
-        ).filter(_ => !!_);
+        );
+        schedules = schedules.filter(_ => !!_);
 
         Schedule.insertMany(schedules)
             .then((result) => res.json(result))

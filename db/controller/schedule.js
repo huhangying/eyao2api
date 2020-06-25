@@ -171,7 +171,6 @@ module.exports = {
         }
         // const convertedList: Schedule[];
         let schedules = [];
-        Promise.all()
         batch.dates.map(date => {
             batch.periods.map(period => {
                 schedules.push({

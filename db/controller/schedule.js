@@ -187,7 +187,8 @@ module.exports = {
         schedules = schedules.filter(async _ => {
             const schedule = { ..._ };
             delete schedule.limit
-            return !(await Schedule.exists(schedule));
+            const existed = await Schedule.exists(schedule);
+            return !existed;
         })
 
         Schedule.insertMany(schedules)

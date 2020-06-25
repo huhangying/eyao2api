@@ -184,15 +184,14 @@ module.exports = {
             })
         });
 
+        // check if existed to avoid double schedule
         schedules = await Promise.all(
             schedules.map(async _ => {
                 const schedule = { ..._ };
                 delete schedule.limit;
-                const existed = await Schedule.exists(schedule);
-                return existed ? null : _;
+                return await Schedule.exists(schedule) ? null : _;
             })
-        );
-        schedules = schedules.filter(_ => !!_);
+        ).filter(_ => !!_);
 
         Schedule.insertMany(schedules)
             .then((result) => res.json(result))

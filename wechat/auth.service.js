@@ -74,22 +74,6 @@ const sendClientMessage = async (req, res, next) => {
 		.catch(err => next(err));
 }
 
-const _sendClientMessage = async (openid, article, access_token) => {
-	return axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
-		{
-			touser: openid,
-			msgtype: 'news',
-			news: {
-				articles: [article]
-			}
-		},
-		{
-			params: {
-				access_token: access_token
-			}
-		});
-}
-
 const save2MsgQueue = (data) => {
 	wxMsgQueue.findOneAndUpdate({ openid: data.openid, url: data.url, hid: data.hid }, data, { upsert: true, new: true })
 		.then(async (result) => {

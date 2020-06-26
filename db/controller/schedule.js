@@ -115,7 +115,8 @@ module.exports = {
             apply: true
         })
             .select('-hid -__v')
-            .populate('period', '_id name')
+            .populate('period', '_id name order')
+            .sort( {})
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));

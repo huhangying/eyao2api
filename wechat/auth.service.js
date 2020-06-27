@@ -30,6 +30,7 @@ const sendBookingTemplateMessage = async (req, res, next) => {
 			}
 		})
 		.then((result) => {
+			checkWxResponse(openid, hid, result.data);
 			return res.json(result.data)
 		})
 		.catch(err => next(err));
@@ -54,24 +55,38 @@ const sendClientMessage = async (req, res, next) => {
 			}
 		})
 		.then((result) => {
-			if (result.data && result.data.errcode) {
-				if (result.data.errcode === 40001) {
-					// 40001:	获取 access_token 时 AppSecret 错误，或者 access_token 无效
-					wxUtil.refreshAccessToken(hid); // 本次失败，不能重试，只能等下次
-				}
-				// save to message log for later retry
-				save2MsgQueue({
-					...article,
-					type: 2,
-					errcode: result.data.errcode,
-					hid: hid,
-					openid: openid,
-					received: false,
-				});
-			}
+			checkWxResponse(openid, hid, result.data, article);
+
 			return res.json(result.data)
 		})
 		.catch(err => next(err));
+}
+
+const checkWxResponse = (openid, hid, rspData, sendBody) => {
+	if (rspData && rspData.errcode) {
+		if (rspData.errcode === 40001) {
+			// 40001:	获取 access_token 时 AppSecret 错误，或者 access_token 无效
+			wxUtil.refreshAccessToken(hid); // 本次失败，不能重试，只能等下次
+		}
+		if (!sendBody) return;
+		// save to message log for later retry
+		const msg = !sendBody.url ?
+			{
+				openid: openid,
+				url: sendBody, // sendBody 自己是 url
+				hid: hid,
+			} :
+			{
+				...sendBody, // sendBody 是 article object
+				type: 2,
+				errcode: rspData.errcode,
+				hid: hid,
+				openid: openid,
+				received: false,
+			};
+
+		save2MsgQueue(msg);
+	}
 }
 
 const save2MsgQueue = (data) => {
@@ -142,18 +157,8 @@ const resendFailedMsg = async (req, res, next) => {
 						// save to message log for later retry
 						removeFromMsgQueue(openid, msg.url, msg.hid);
 					} else {
-						if (result.data.errcode === 40001) {
-							// 40001:	获取 access_token 时 AppSecret 错误，或者 access_token 无效
-							wxUtil.refreshAccessToken(hid); // 本次失败，不能重试，只能等下次
-						}
-						// increase tryCount
-						save2MsgQueue({
-							openid: openid,
-							url: msg.url,
-							hid: msg.hid,
-						})
+						checkWxResponse(openid, hid, result.data, msg.url);
 					}
-
 				}
 			})
 			.catch(err => next(err));

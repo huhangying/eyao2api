@@ -11,7 +11,8 @@ module.exports = mongoose.model(
         how: { type: String }, // 如何用药, available only type==2
         startDate: { type: Date, default: Date.now },
         endDate: { type: Date },
-        notes: { type: String },
+        notes: { type: String }, // to remove
+        upload: { type: String },
         status: { type: Number, default: 0 } // 0: after user sent; 1. after doctor read; 2: 药师回复
     }, {
         timestamps: true

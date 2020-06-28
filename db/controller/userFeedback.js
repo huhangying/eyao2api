@@ -99,15 +99,13 @@ module.exports = {
     GetUnreadCountByDoctorId: (req, res, next) => {
         const { did, type } = req.params;
         UserFeedback.count({ doctor: did, type: type, hid: req.token.hid, status: 0 }) // 0 is unread.
-        .then((count) => res.json({count: count}))
-        .catch(err => next(err));
+            .then((count) => res.json({ count: count }))
+            .catch(err => next(err));
     },
 
     // 创建Feedback
-    Add: function (req, res) {
-
-        // 获取请求数据（json）
-        var feedback = req.body;
+    Add: (req, res, next) => {
+        const feedback = req.body;
 
         // doctor, user, schedule
         if (!feedback.doctor) {
@@ -123,63 +121,24 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_NAME);
         }
 
-        // 不存在，创建
-        UserFeedback.create({
-            hid: feedback.hid,
-            doctor: feedback.doctor,
-            user: feedback.user,
-            type: feedback.type,
-            name: feedback.name,
-            how: feedback.how,
-            startDate: feedback.startDate,
-            endDate: feedback.endDate,
-            notes: feedback.notes,
-            status: feedback.status || 0 // 0: 创建
-        }, function (err, raw) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            return res.send(raw);
-        });
+        UserFeedback.create(feedback)
+            .then((result) => res.json(result))
+            .catch(err => next(err));
 
     },
 
     // 更新Feedback Status ONLY!
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is feedback ID
-            var id = req.params.id;
-
-            // 获取数据（json）,只能更新status and score
-            var feedback = req.body;
-
-            UserFeedback.findById(id)
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    if (feedback.status) {
-                        item.status = feedback.status;
-                    }
-
-                    item.save(function (err, raw) {
-                        if (err) {
-                            return Status.returnStatus(res, Status.ERROR, err);
-                        }
-
-                        res.json(raw);
-                    });
-
-                });
-        }
+    UpdateById: (req, res, next) => {
+        const { id } = req.params;
+        const feedback = req.body;
+        // 理论上只能更新status and score
+        UserFeedback.findIdAndUpdate(id, feedback, { new: true })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    DeleteById:  (req, res, next) => {
+    DeleteById: (req, res, next) => {
         const { id } = req.params;
         UserFeedback.findByIdAndDelete(id)
             .select('-hid -__v')

@@ -82,12 +82,14 @@ const removeFile = (req, res, next) => {
         fs.unlinkSync(fullPath, (err) => {
             if (err) next(err);
         });
+        res.end('deleted');
     }
-    res.end('deleted');
+    res.end('not_existed');
 }
 
 module.exports = {
     initFolders,
+    removeFile,
     uploadDoctorFile,
     uploadUserFile,
     uploadMedicineFile,

@@ -72,7 +72,7 @@ const initFolders = (req, res, next) => {
             if (err) next(err);
         });
     }
-    res.end('done');
+    res.json({ return: 'done' });
 }
 
 const removeFile = (req, res, next) => {
@@ -82,9 +82,9 @@ const removeFile = (req, res, next) => {
         fs.unlinkSync(fullPath, (err) => {
             if (err) next(err);
         });
-        res.end('deleted');
+        res.json({ return: 'deleted' });
     }
-    res.end('not_existed');
+    res.json({ return: 'not_existed' });
 }
 
 module.exports = {

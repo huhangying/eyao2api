@@ -754,6 +754,9 @@ router.route('/upload/template/:prefix')
 router.route('/upload/init-folders')
     .post(urlencodedParser, Uploader.initFolders);
 
+router.route('/upload/remove')
+    .post(urlencodedParser, Uploader.removeFile);
+
 router.route('/upload/list/:dir')
     .get(Uploader.getFolderImageList);
 

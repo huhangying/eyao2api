@@ -75,6 +75,17 @@ const initFolders = (req, res, next) => {
     res.end('done');
 }
 
+const removeFile = (req, res, next) => {
+    const { path } = req.body;
+    let fullPath = 'public/upload/' + path;
+    if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath, (err) => {
+            if (err) next(err);
+        });
+    }
+    res.end('deleted');
+}
+
 module.exports = {
     initFolders,
     uploadDoctorFile,

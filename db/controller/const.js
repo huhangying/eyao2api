@@ -24,7 +24,7 @@ module.exports = {
   getByGroup: (req, res, next) => {
     const { group } = req.params;
     Const.find({ group: group, hid: req.token.hid })
-      .select('name type value')
+      .select('-hid -__v')
       .then((result) => res.json(result))
       .catch(err => next(err));
   },

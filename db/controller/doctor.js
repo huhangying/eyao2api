@@ -288,7 +288,7 @@ module.exports = {
             apply: true
         };
         Doctor.findOne(query)
-            .select('_id user_id hid password name icon title department role token shortcuts')
+            .select('_id user_id hid password name icon title department role token shortcuts status')
             .then((result) => {
                 if (!result) {
                     return Status.returnStatus(res, Status.NOT_REGISTERED);

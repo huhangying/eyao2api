@@ -43,12 +43,13 @@ module.exports = {
 
     GetByUserIdDoctorId: (req, res, next) => {
         const { uid, did, type } = req.params;
-        UserFeedback.find({ user: uid, did, type: type, hid: req.token.hid })
+        UserFeedback.find({ user: uid, doctor: did, type: type, hid: req.token.hid })
             .populate({
                 path: 'doctor',
                 select: 'name title'
             })
             .sort({ created: -1 })
+            .limit(100)
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))

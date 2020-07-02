@@ -37,7 +37,7 @@ module.exports = (io) => {
 
         socket.on('feedback', (room, feedback) => {
             console.log('feedback: ', feedback);
-            socket.to(room).emit('chat', feedback);
+            socket.to(room).emit('feedback', feedback);
 
             socket.to(room).emit('notification', {
                //todo: 

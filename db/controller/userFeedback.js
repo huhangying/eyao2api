@@ -73,7 +73,7 @@ module.exports = {
         const { did } = req.params;
         UserFeedback.find({ doctor: did, hid: req.token.hid, status: 0 }) // only 1 and 0 for now.
             .sort({ created: -1 })
-            .populate('user', 'name icon')
+            // .populate('user', 'name icon')
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))

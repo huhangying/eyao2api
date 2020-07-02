@@ -626,7 +626,7 @@ router.route('/feedbacks/user/:type/:uid/:did')
 
 router.route('/feedbacks/doctor/:type/:did')
     .get(UserFeedback.GetByDoctorId);
-router.route('/feedbacks/unread/:type/:did')
+router.route('/feedbacks/unread/doctor/:did')
     .get(UserFeedback.GetUnreadByDoctorId);
 router.route('/feedback/unreadcount/:type/:did')
     .get(UserFeedback.GetUnreadCountByDoctorId);

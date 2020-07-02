@@ -70,8 +70,8 @@ module.exports = {
 
     // 根据药师 ID, 类型 获取相关类型的反馈
     GetUnreadByDoctorId: (req, res, next) => {
-        const { did, type } = req.params;
-        UserFeedback.find({ doctor: did, type: type, hid: req.token.hid, status: 0 }) // only 1 and 0 for now.
+        const { did } = req.params;
+        UserFeedback.find({ doctor: did, hid: req.token.hid, status: 0 }) // only 1 and 0 for now.
             .sort({ created: -1 })
             .populate('user', 'name icon')
             .select('-hid -__v')

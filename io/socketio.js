@@ -17,21 +17,25 @@ module.exports = (io) => {
             socket.to(room).emit('chat', chat);
 
             socket.to(room).emit('notification', {
-               //todo: 
-            })
-            
+                patientId: chat.sender,
+                type: 0,
+                name: chat.senderName || '',
+                count: 1,
+                created: chat.created
+            });
+
             // console.log('chat message: ', room, msg);
         });
 
         socket.on('joinRoom', (room) => {
             socket.join(room);
             console.log('joined to room ' + room);
-        })
+        });
 
         socket.on('leaveRoom', (room) => {
             socket.leave(room);
             console.log('left room ' + room);
-        })
+        });
 
         // Feedback
 
@@ -41,8 +45,12 @@ module.exports = (io) => {
             socket.to(room).emit('feedback', feedback);
 
             socket.to(room).emit('notification', {
-               //todo: 
-            })
+                patientId: feedback.user,
+                type: feedback.type,
+                name: feedback.senderName || '',
+                count: 1,
+                created: feedback.createdAt
+            });
         });
 
     });

@@ -31,7 +31,7 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 根据医生ID 获取相关的关系组
+    // 根据医生ID 获取相关的病患
     GetByDoctorId: (req, res, next) => {
         const { id } = req.params; // id is doctor id
         Relationship.find({ doctor: id, hid: req.token.hid, apply: true })
@@ -39,6 +39,14 @@ module.exports = {
             .populate('user', 'name _id cell gender birthdate icon')
             .lean()
             .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // 根据医生ID 获取病患数
+    GetCountByDoctorId: (req, res, next) => {
+        const { id } = req.params; // id is doctor id
+        Relationship.count({ doctor: id, hid: req.token.hid, apply: true })
+            .then((count) => res.json({total: count}))
             .catch(err => next(err));
     },
 

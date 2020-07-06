@@ -119,6 +119,8 @@ router.route('/relationships')
 router.route('/relationships/doctor/:id')
     .get(Relationship.GetByDoctorId)
     .delete(Relationship.DeleteByDoctorId);
+router.route('/relationships/count/doctor/:id')
+    .get(Relationship.GetCountByDoctorId)
 
 router.route('/relationships/user/:id')
     .get(Relationship.GetByUserId)

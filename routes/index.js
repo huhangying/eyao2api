@@ -355,6 +355,8 @@ router.route('/bookings/doctor/:did')
     .get(Booking.GetByDoctorId);
 router.route('/bookings/today/doctor/:did')
     .get(Booking.GetTodaysByDoctorId);
+router.route('/bookings/counts/doctor/:did') // used in dashboard
+    .get(Booking.GetCountsByDoctorId);
 
 router.route('/bookings/schedule/:sid')
     .get(Booking.GetByScheduleId);

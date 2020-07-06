@@ -80,6 +80,16 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据药师ID 获取相关的预约统计
+    GetCountsByDoctorId: (req, res, next) => {
+        const { did } = req.params;
+        Booking.find({ doctor: did, hid: req.token.hid })
+            .select('date status')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据药师ID当日的的预约
     GetTodaysByDoctorId: (req, res, next) => {
         const { did } = req.params;

@@ -158,13 +158,9 @@ module.exports = {
             .catch(err => next(err));
     },
 
-
-
     // 创建预约
     Add: function (req, res) {
-
-        // 获取请求数据（json）
-        var booking = req.body;
+        const booking = req.body;
 
         // doctor, user, schedule
         if (!booking.doctor) {
@@ -176,8 +172,6 @@ module.exports = {
         if (!booking.schedule) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
-
-
 
         // 不存在，创建
         Booking.create({
@@ -206,57 +200,54 @@ module.exports = {
 
     // 更新booking
     UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is booking ID
-            var id = req.params.id;
+        const { id } = req.params;
+        // 获取数据（json）,只能更新status and score
+        const booking = req.body;
 
-            // 获取数据（json）,只能更新status and score
-            var booking = req.body;
+        Booking.findById(id)
+            .exec(function (err, item) {
+                if (err) {
+                    return Status.returnStatus(res, Status.ERROR, err);
+                }
 
-            Booking.findById(id)
-                .exec(function (err, item) {
+                if (!item) {
+                    return Status.returnStatus(res, Status.NULL);
+                }
+
+                if (booking.date) {
+                    item.date = booking.date;
+                }
+
+                var original_status = item.status;
+                if (booking.status) {
+                    item.status = booking.status;
+                }
+
+                if (booking.score)
+                    item.score = booking.score;
+
+                //console.log(JSON.stringify(item));
+
+                //
+                item.save(function (err, raw) {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
 
-                    if (!item) {
-                        return Status.returnStatus(res, Status.NULL);
+                    // if status changed from 1 to 2, or 1 to 3, limit++ in schedule table
+                    if (original_status === 1 && (item.status === 2 || item.status === 3)) {
+                        // limit++ in schedule
+                        Schedule.findById(item.schedule)
+                            .exec(function (err, schedule) {
+                                schedule.limit++;
+                                schedule.save();
+                            });
                     }
 
-                    if (booking.date) {
-                        item.date = booking.date;
-                    }
-
-                    var original_status = item.status;
-                    if (booking.status) {
-                        item.status = booking.status;
-                    }
-
-                    if (booking.score)
-                        item.score = booking.score;
-
-                    //console.log(JSON.stringify(item));
-
-                    //
-                    item.save(function (err, raw) {
-                        if (err) {
-                            return Status.returnStatus(res, Status.ERROR, err);
-                        }
-
-                        // if status changed from 1 to 2, or 1 to 3, limit++ in schedule table
-                        if (original_status === 1 && (item.status === 2 || item.status === 3)) {
-                            // limit++ in schedule
-                            Schedule.findById(item.schedule)
-                                .exec(function (err, schedule) {
-                                    schedule.limit++;
-                                    schedule.save();
-                                });
-                        }
-
-                        res.json(raw);
-                    });
-
+                    res.json(raw);
                 });
-        }
+
+            });
     },
 
     DeleteById: (req, res, next) => {

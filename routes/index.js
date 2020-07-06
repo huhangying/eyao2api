@@ -651,8 +651,10 @@ var Diagnose = require('../db/controller/diagnose');
 router.route('/diagnose/:doctor/:user')
     .get(Diagnose.GetByUserAndDoctor);
 
-router.route('/diagnoses/currentmonth/:doctor')
+router.route('/diagnoses/currentmonth/:doctor') // to remove
     .get(Diagnose.GetCurrentMonthFinishedByDoctor);
+router.route('/diagnoses/counts/:doctor')
+    .get(Diagnose.GetCountsByDoctor);
 
 router.route('/diagnoses/history/:user')
     .get(Diagnose.GetUserHistoryList);

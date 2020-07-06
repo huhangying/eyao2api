@@ -57,6 +57,16 @@ module.exports = {
                 });
         }
     },
+    // 获取药师当月门诊完成数
+    GetCountsByDoctor: (req, res, next) => {
+        const { doctor } = req.params;
+
+        Diagnose.find({ doctor: doctor, hid: req.token.hid })
+            .select('createdAt status')
+            .lean()
+            .then(results => res.json(results))
+            .catch(err => next(err));
+    },
 
     // 获取用户的门诊历史记录
     GetUserHistoryList: (req, res, next) => {

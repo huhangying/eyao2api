@@ -29,6 +29,8 @@ module.exports = mongoose.model(
     ], //用来判定应该使用初诊问卷还是复诊问卷
     locked_count: Number,
     apply: { type: Boolean, default: true },
-    msgInQueue: { type: Number, default: 0 }
+    msgInQueue: { type: Number, default: 0 },
+    diagnoses: String, // 疾病诊断
+    notes: String, // 诊断提醒
   })
 );

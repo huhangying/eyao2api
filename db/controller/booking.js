@@ -1,6 +1,6 @@
 
-var Booking = require('../model/booking.js');
-var Schedule = require('../model/schedule.js');
+const Booking = require('../model/booking.js');
+const Schedule = require('../model/schedule.js');
 const moment = require('moment');
 
 module.exports = {

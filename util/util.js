@@ -91,7 +91,7 @@ module.exports = {
                         if (!req.body) {
                             return res.sendStatus(400);
                         } else {
-                            req.body.hid = data.hid;
+                            req.body.hid = +data.hid; // convert string to number
                         }
                     } else {
                         // DELETE and GET 现在不能放入req.params，所以用req.token

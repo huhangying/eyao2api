@@ -195,11 +195,17 @@ module.exports = {
             .select('-hid -__v')
             .then((result) => {
                 const original_status = result.status;
-                result = {
-                    ...result,
-                    ...booking
-                };
+                if (booking.status) {
+                    result.status = booking.status;
+                }
+                if (booking.notes) {
+                    result.notes = booking.notes
+                }
+                if (booking.score) { // not allow to enter score=0
+                    result.score = booking.score;
+                }
                 result.save();
+
                 // if status changed from 1 to 2, or 1 to 3, limit++ in schedule table
                 if (original_status === 1 && (result.status === 2 || result.status === 3)) {
                     // limit++ in schedule

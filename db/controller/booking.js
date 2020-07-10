@@ -191,10 +191,15 @@ module.exports = {
         const { id } = req.params;
         // 获取数据（json）,只用於更新status, notes and score
         const booking = req.body;
-        const original_status = booking.status;
-        Booking.findByIdAndUpdate(id, booking, { new: true })
+        Booking.findById(id)
             .select('-hid -__v')
             .then((result) => {
+                const original_status = result.status;
+                result = {
+                    ...result,
+                    ...booking
+                };
+                result.save();
                 // if status changed from 1 to 2, or 1 to 3, limit++ in schedule table
                 if (original_status === 1 && (result.status === 2 || result.status === 3)) {
                     // limit++ in schedule

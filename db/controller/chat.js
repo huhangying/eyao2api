@@ -75,9 +75,25 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    //todo: reverse the last one
+    // set read by doctor and user
+    setReadByDoctorAndPatient: (req, res, next) => {
+        const { did, uid } = req.params;
 
-    //todo: read++
+        Chat.updateMany({ to: did, sender: uid, hid: req.token.hid, read: 0 },
+            { read: 1 })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // set read by user and doctor
+    setReadByPatientAndDoctor: (req, res, next) => {
+        const { uid, did } = req.params;
+
+        Chat.updateMany({ to: uid, sender: did, hid: req.token.hid, read: 0 },
+            { read: 1 })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
 
 
     GetById: (req, res, next) => {

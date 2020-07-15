@@ -255,10 +255,15 @@ router.route('/chats/history/:sender/:to')
     .get(Chat.getChatHistoryBySenderAndTo);
 
 // unread list
-router.route('/chats/unread/doctor/:did') // remove
+router.route('/chats/unread/doctor/:did')
     .get(Chat.getUnreadByDoctor);
-router.route('/chats/unread/user/:uid')  // remove
+router.route('/chats/unread/user/:uid')
     .get(Chat.getUnreadByPatient);
+
+router.route('/chats/read/doctor/:did/:uid') // clear unread count
+    .get(Chat.setReadByDoctorAndPatient);
+router.route('/chats/read/user/:uid/:did')  // clear unread count
+    .get(Chat.setReadByPatientAndDoctor);
 
 router.route('/chat/:id')
     .get(Chat.GetById)
@@ -285,17 +290,17 @@ router.route('/chat/send')
 //     .get(Chat.LoadMsg);
 
 //---------------- Notification
-const Notification = require('../db/controller/notification');
+// const Notification = require('../db/controller/notification');
 
-router.route('/notis/doctor/:did')
-    .get(Notification.getNotisByDoctor);
-router.route('/notis/user/:uid')
-    .get(Notification.getNotisByUser);
+// router.route('/notis/doctor/:did')
+//     .get(Notification.getNotisByDoctor);
+// router.route('/notis/user/:uid')
+//     .get(Notification.getNotisByUser);
 
-router.route('/noti/update')
-    .patch(urlencodedParser, Notification.UpdateNoti);
-router.route('/noti/clear')
-    .patch(urlencodedParser, Notification.ClearNoti);
+// router.route('/noti/update')
+//     .patch(urlencodedParser, Notification.UpdateNoti);
+// router.route('/noti/clear')
+//     .patch(urlencodedParser, Notification.ClearNoti);
 
 //---------------- 门诊
 var Schedule = require('../db/controller/schedule');

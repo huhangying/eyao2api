@@ -255,9 +255,9 @@ router.route('/chats/history/:sender/:to')
     .get(Chat.getChatHistoryBySenderAndTo);
 
 // unread list
-router.route('/chats/unread/doctor/:did')
+router.route('/chats/unread/doctor/:did') // remove
     .get(Chat.getUnreadByDoctor);
-router.route('/chats/unread/user/:uid')
+router.route('/chats/unread/user/:uid')  // remove
     .get(Chat.getUnreadByPatient);
 
 router.route('/chat/:id')
@@ -284,7 +284,18 @@ router.route('/chat/send')
 // router.route('/chats/load/:chatroom')
 //     .get(Chat.LoadMsg);
 
+//---------------- Notification
+const Notification = require('../db/controller/notification');
 
+router.route('/notis/doctor/:did')
+    .get(Notification.getNotisByDoctor);
+router.route('/notis/user/:uid')
+    .get(Notification.getNotisByUser);
+
+router.route('/noti/update')
+    .patch(urlencodedParser, Notification.UpdateNoti);
+router.route('/noti/clear')
+    .patch(urlencodedParser, Notification.ClearNoti);
 
 //---------------- 门诊
 var Schedule = require('../db/controller/schedule');

@@ -1,5 +1,6 @@
 const axios = require('axios').default;
 const Hospital = require('../db/model/hospital');
+const Const = require('../db/model/const');
 const AccessToken = require('./access-token.model');
 
 const getHidByWxid = async (wxid) => {
@@ -9,15 +10,14 @@ const getHidByWxid = async (wxid) => {
 }
 
 const getBookingTemplateIdByHid = async (hid) => {
-  const hospital = await Hospital.findOne({ hid: hid, apply: true })
-  .select('booking_template');
-  return hospital.booking_template;
+  const _const = await Const.findOne({ group: 2, hid: hid, name: 'booking_template' });
+  return _const ? _const.value : '';
 }
 
 const getWechatAccessToken = async (hid) => {
   // 1. get secret
   const secret = await Hospital.findOne({ hid: hid, apply: true })
-      .select('appid secret');
+    .select('appid secret');
 
   // 2. get access_token
   return axios.get('https://api.weixin.qq.com/cgi-bin/token', {
@@ -71,6 +71,6 @@ module.exports = {
   getAccessTokenByHid,
   getWechatAccessToken,
   refreshAccessToken,
-  
+
   getUserInfo,
 }

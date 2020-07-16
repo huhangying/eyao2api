@@ -260,9 +260,9 @@ router.route('/chats/unread/doctor/:did')
 router.route('/chats/unread/user/:uid')
     .get(Chat.getUnreadByPatient);
 
-router.route('/chats/read/doctor/:did/:uid') // clear unread count
+router.route('/chats/read/doctor/:did/:uid') // web-side: clear unread count
     .get(Chat.setReadByDoctorAndPatient);
-router.route('/chats/read/user/:uid/:did')  // clear unread count
+router.route('/chats/read/user/:uid/:did')  // wechat: clear unread count
     .get(Chat.setReadByPatientAndDoctor);
 
 router.route('/chat/:id')
@@ -653,6 +653,11 @@ router.route('/feedback/unreadcount/:type/:did')
 
 router.route('/feedbacks/unread/:type/:did/:uid')
     .get(UserFeedback.GetUnreadByDoctorIdUserId);
+
+router.route('/feedbacks/read/doctor/:type/:did/:uid') // web-side: clear unread count
+    .get(UserFeedback.setReadByDoctorPatientAndType);
+router.route('/feedbacks/read/user/:type/:uid/:did')  // wechat: clear unread count
+    .get(UserFeedback.setReadByPatientDoctorAndType);
 
 router.route('/feedback')
     .post(urlencodedParser, UserFeedback.Add);

@@ -14,7 +14,7 @@ module.exports = mongoose.model(
         endDate: { type: Date },
         notes: { type: String }, // to remove
         upload: { type: String },
-        status: { type: Number, default: 0 } // 0: after user sent; 1. after doctor read; 2: 药师回复
+        status: { type: Number, default: 0, min: 0, max: 3 } // 0: after user sent; 1. after doctor read; 2: 药师回复； 3：user read；
     }, {
         timestamps: true
     })

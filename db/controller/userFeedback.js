@@ -104,6 +104,28 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // set read by doctor and user
+    // 用於藥師web端標識已讀
+    setReadByDoctorPatientAndType: (req, res, next) => {
+        const { did, uid, type } = req.params;
+
+        UserFeedback.updateMany({ doctor: did, user: uid, type: type, hid: req.token.hid, status: 0 },
+            { status: 1 })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // set read by doctor and user
+    // 用於微信端標識已讀
+    setReadByPatientDoctorAndType: (req, res, next) => {
+        const { did, uid, type } = req.params;
+
+        UserFeedback.updateMany({ doctor: did, user: uid, type: type, hid: req.token.hid, status: 2 },
+            { status: 3 })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 创建Feedback
     Add: (req, res, next) => {
         const feedback = req.body;

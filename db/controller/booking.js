@@ -172,16 +172,26 @@ module.exports = {
         if (!booking.schedule) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
-
-        Booking.create(booking)
-            .then((result) => {
-                // limit-- in schedule
-                Schedule.findById(booking.schedule)
-                    .exec(function (err, schedule) {
-                        schedule.limit--;
-                        schedule.save();
-                    });
-                return res.json(result);
+        
+        // check double booking (schedule不能有两个booking)
+        Booking.findOne({ doctor: booking.doctor, user: booking.user, schedule: booking.Schedule })
+            .then(_result => {
+                if (_result && _result._id) {
+                    // double booking
+                    return Status.returnStatus(res, Status.DOUBLE_BOOKING);
+                } else {
+                    Booking.create(booking)
+                        .then((result) => {
+                            // limit-- in schedule
+                            Schedule.findById(booking.schedule)
+                                .exec(function (err, schedule) {
+                                    schedule.limit--;
+                                    schedule.save();
+                                });
+                            return res.json(result);
+                        })
+                        .catch(err => next(err));
+                }
             })
             .catch(err => next(err));
     },

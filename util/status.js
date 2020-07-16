@@ -30,6 +30,7 @@ module.exports = {
     NOT_REGISTERED: 'not_registered',
     WRONG_PASSWORD: 'wrong_password',
     PASS: 'PASS',
+    DOUBLE_BOOKING: 'double_booking',
 
     CHATROOM_ERROR: 'chatroom_error',
     NO_MESSAGE: 'no_message',

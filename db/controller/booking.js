@@ -172,9 +172,9 @@ module.exports = {
         if (!booking.schedule) {
             return Status.returnStatus(res, Status.MISSING_PARAM);
         }
-        
+
         // check double booking (schedule不能有两个booking)
-        Booking.findOne({ doctor: booking.doctor, user: booking.user, schedule: booking.Schedule })
+        Booking.findOne({ doctor: booking.doctor, user: booking.user, schedule: booking.schedule })
             .then(_result => {
                 if (_result && _result._id) {
                     // double booking

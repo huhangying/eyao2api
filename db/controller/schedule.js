@@ -59,12 +59,13 @@ module.exports = {
     },
 
     // for CMS
-    // 根据药师ID 获取相关的门诊, 没有时间限制
+    // 根据药师ID 获取相关的门诊, (XX没有时间限制XX), 没有过期的，包括当天的门诊
     GetAllByDoctorId: (req, res, next) => {
         const { did } = req.params;
         const query = {
             doctor: did,
             hid: req.token.hid,
+            date: { $gte: (+new Date(new Date().setHours(0, 0, 0, 0))) }
         }
         Schedule.find(query)
             .select('-hid -__v')
@@ -213,6 +214,7 @@ module.exports = {
     },
 
 
+    //no used! ???
     //todo: enhance the performance later
     FindScheduleDoctorsByDepartmentId: function (req, res) {
         if (req.params && req.params.departmentid) {

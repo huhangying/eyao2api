@@ -18,6 +18,7 @@ module.exports = mongoose.model(
       }
     ],
     order: { type: Number },
+    apply: { type: Boolean, default: true }
   }, {
     timestamps: true
   })

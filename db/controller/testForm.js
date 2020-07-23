@@ -22,10 +22,8 @@ module.exports = {
     // 根据 type 获取 list
     GetTestFormTemplatesByType: (req, res, next) => {
         const { type } = req.params;
-        TestForm.find({
-            type: type,
-            hid: req.token.hid
-        })
+        
+        TestForm.find({ type: type, hid: req.token.hid })
             .sort({ order: 1 })
             .select('-hid -__v')
             .lean()

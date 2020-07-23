@@ -1,11 +1,11 @@
-const Period = require('../model/period.js');
+const TestForm = require('../model/testForm');
 
 module.exports = {
 
     GetAll: (req, res, next) => {
-        Period.find({ hid: req.token.hid })
-            .select('-hid -__v')
+        TestForm.find({ hid: req.token.hid })
             .sort({ order: 1 })
+            .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -14,7 +14,19 @@ module.exports = {
     // 根据ID获取详细信息
     GetById: (req, res, next) => {
         const { id } = req.params;
-        Period.findById(id)
+        TestForm.findById(id)
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // 根据 type 获取 list
+    GetTestFormTemplatesByType: (req, res, next) => {
+        const { type } = req.params;
+        TestForm.find({
+            type: type,
+            hid: req.token.hid
+        })
+            .sort({ order: 1 })
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))
@@ -23,35 +35,31 @@ module.exports = {
 
     // 创建
     Add: (req, res, next) => {
-        const period = req.body;
+        const item = req.body;
         // name
-        if (!period.name) {
+        if (!item.name) {
             return Status.returnStatus(res, Status.NO_NAME);
         }
-        // from
-        if (!period.from) {
-            return Status.returnStatus(res, Status.MISSING_PARAM);
-        }
 
-        // 不存在，创建
-        Period.create(period)
+        // 创建 with no conditions
+        TestForm.create(item)
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
 
     UpdateById: (req, res, next) => {
         const { id } = req.params;
-        const period = req.body;
-        Period.findByIdAndUpdate(id, period, { new: true })
+        TestForm.findByIdAndUpdate(id, req.body, { new: true })
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
 
     DeleteById: (req, res, next) => {
         const { id } = req.params;
-        Period.findByIdAndDelete(id)
+        TestForm.findByIdAndDelete(id)
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
-    }
+    },
+
 }

@@ -62,7 +62,7 @@ module.exports = {
         }
     },
 
-    // 创建关系组
+    // 创建
     Add: function (req, res) {
 
         // 获取请求数据（json）

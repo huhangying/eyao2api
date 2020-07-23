@@ -719,7 +719,7 @@ router.route('/keywordsearch/:id')
 router.route('/keywordsearchs/keyword/:keyword')
     .get(ArticleSearch.GetSerachResults);
 
-//---------------- 实验室化验结果
+//---------------- 实验室化验结果 //todo: to remove
 var LabResult = require('../db/controller/labResult');
 
 router.route('/labresults')
@@ -734,6 +734,24 @@ router.route('/labresult/:id')
     .get(LabResult.GetById)
     .delete(LabResult.DeleteById)
     .patch(urlencodedParser, LabResult.UpdateById);
+
+//---------------- 化验单模板
+const TestForm = require('../db/controller/testForm');
+
+router.route('/testforms')
+    .get(TestForm.GetAll);
+router.route('/testforms/type/:type')
+    .get(TestForm.GetTestFormTemplatesByType);
+
+router.route('/testform')
+    .post(urlencodedParser, TestForm.Add);
+
+router.route('/testform/:id')
+    .get(TestForm.GetById)
+    .delete(TestForm.DeleteById)
+    .patch(urlencodedParser, TestForm.UpdateById);
+
+//---------------- 化验单
 
 //---------------- FAQ
 var Faq = require('../db/controller/faq');

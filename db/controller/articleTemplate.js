@@ -60,7 +60,7 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 创建关系组
+    // 创建
     Add: (req, res, next) => {
         const item = req.body;
         // name

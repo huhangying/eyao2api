@@ -7,7 +7,7 @@ module.exports = mongoose.model(
     name: { type: String, required: true, trim: true },
     type: { type: Number },
 
-    list: [
+    items: [
       {
         item: { type: String, required: true, trim: true },
         code: { type: String },

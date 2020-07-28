@@ -190,6 +190,8 @@ module.exports = {
         // password
         if (!doctor.password) {
             return Status.returnStatus(res, Status.NO_PASSWORD);
+        } else {
+            doctor.password = util.encrypt(doctor.password);
         }
         // department
         if (!doctor.department) {

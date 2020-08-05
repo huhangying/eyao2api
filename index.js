@@ -5,7 +5,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // mongoose.connect('mongodb://192.168.87.250/eyao', {
-mongoose.connect('mongodb://116.62.29.222/eyao', {
+mongoose.connect('mongodb://10.27.232.202/eyao', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,

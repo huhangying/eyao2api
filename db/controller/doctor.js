@@ -11,7 +11,7 @@ module.exports = {
         let { number } = req.params;
         number = +number || 999; // set default return numbers
 
-        Doctor.find({ role: { $lt: 2 }, apply: true, hid: req.token.hid })
+        Doctor.find({ role: { $lt: 3 }, apply: true, hid: req.token.hid })
             .select('-hid -password -qrcode -__v -created')
             .sort({ order: 1, updated: -1 })
             .limit(number)
@@ -38,7 +38,7 @@ module.exports = {
     // getFocusDoctors: function (userId) {
     //     var deferred = Q.defer();
 
-    //     Relationship.find({ user: userId, hid: req.token.hid, role: { $lt: 2 },  apply: true })
+    //     Relationship.find({ user: userId, hid: req.token.hid, role: { $lt: 3 },  apply: true })
     //         .sort({ order: 1, updated: -1 })
     //         .exec(function (err, items) {
     //             if (err) {
@@ -64,7 +64,7 @@ module.exports = {
             .then(doctors => {
                 const query = {
                     _id: { "$nin": doctors },
-                    role: { $lt: 2 },
+                    role: { $lt: 3 },
                     apply: true,
                     hid: req.token.hid
                 };
@@ -94,7 +94,7 @@ module.exports = {
         //console.log('number: ' + number + ', skip: ' + skip);
 
         var query = {
-            role: { $lt: 2 },
+            role: { $lt: 3 },
             apply: true,
             hid: req.token.hid
         };
@@ -147,7 +147,7 @@ module.exports = {
     // 根据药师ID获取用户信息
     GetByDepartmentId: (req, res, next) => {
         const { departmentid } = req.params;
-        Doctor.find({ department: departmentid, hid: req.token.hid, role: { $lt: 2 }, apply: true })
+        Doctor.find({ department: departmentid, hid: req.token.hid, role: { $lt: 3 }, apply: true })
             .select('-hid -password -qrcode -__v')
             .lean()
             .sort({ order: 1, updated: -1 })

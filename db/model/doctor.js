@@ -9,7 +9,7 @@ module.exports = mongoose.model(
     user_id: { type: String, required: true },
     password: { type: String, required: true },
     name: { type: String, required: true },
-    role: { type: Number, required: true, default: 0 },
+    role: { type: Number, required: true, default: 0, min: 0, max: 4 }, // 4 is superuser
     department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
     title: String,
     tel: String,

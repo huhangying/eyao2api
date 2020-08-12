@@ -1,296 +1,64 @@
-/**
- * Created by hhu on 2016/5/9.
- */
+const Disease = require('../model/disease');
 
-var Disease = require('../model/disease.js');
-var Symptom = require('../model/symptom');
-var Q = require('q');
+module.exports = {
 
-var self = module.exports = {
-
-
-    //todo: order by
-    GetAll:  (req, res, next) => {
+    GetAll: (req, res, next) => {
         Disease.find({ hid: req.token.hid })
-            .sort({order: 1})
+            .sort({ order: 1 })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
 
     // 获得科室下的疾病类别
-    GetByDepartmentId: function(req, res){
-
-        if (req.params && req.params.did) {
-            Disease.find({apply: true, department: req.params.did})
-                .sort({order: 1})
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    res.json(items);
-                });
-        }
+    GetByDepartmentId: (req, res, next) => {
+        const { did } = req.params;
+        Disease.find({ department: did, hid: req.token.hid })
+            .sort({ order: 1 })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 根据ID获取详细信息
-    GetById: function (req, res) {
+    GetById: (req, res, next) => {
 
-        if (req.params && req.params.id) {
-
-            Disease.findOne({_id: req.params.id})
-                .sort({order: 1})
-                .populate('department')
-                .populate('symptoms')
-                .exec(function (err, items) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!items || items.length < 1) {
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    console.log(JSON.stringify(items));
-                    res.json(items);
-                });
-        }
+        Disease.findOne({ _id: req.params.id })
+            .sort({ order: 1 })
+            // .populate('department')
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
 
     // 创建疾病类别
-    Add: function (req, res) {
-
-        // 获取department请求数据（json）
-        // Note: symptom的格式
-        //          symptom 名称1|symptom 名称2
-        var disease = req.body;
-
-        //console.log(JSON.stringify(disease));
-        if (!disease) return res.sendStatus(400);
+    Add: (req, res, next) => {
+        const disease = req.body;
 
         // name
         if (!disease.name) {
             return Status.returnStatus(res, Status.NO_NAME);
         }
 
-        var item = {};
-
-        if (disease.department)
-            item.department = disease.department;
-        if (disease.name)
-            item.name = disease.name;
-        if (disease.desc)
-            item.desc = disease.desc;
-        if (disease.order)
-            item.order = disease.order;
-        item.apply = disease.apply || true;
-
-        item.symptoms = [];
-        item.symptoms.length = 0;
-
-        // console.log(JSON.stringify(item));
-
-        self.CheckSymptomsForUpdate(item, disease.symptoms)
-            .then(function (_item){
-                //console.log(JSON.stringify(_item));
-
-                //_item.save();
-                Disease.create({
-                    hid: _item.hid,
-                    symptoms: _item.symptoms,
-                    name: _item.name,
-                    desc: _item.desc,
-                    order: _item.order,
-                    department: _item.department,
-                    apply: _item.apply
-                },
-                    function (err, raw) {
-                        console.log(JSON.stringify(raw));
-                        if (err) {
-                            return Status.returnStatus(res, Status.ERROR, err);
-                        }
-                        res.send(raw);
-                    });
-
-            });
-
-
+        Disease.create(disease)
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    //todo:
-    UpdateById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is disease ID
-            var id = req.params.id;
-            // 获取request数据（json）
-            var disease = req.body;
-
-            Disease.findById(id)
-                .populate('symptom')
-                //.distinct('')
-                .exec(function (err, item) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    if (!item){
-                        return Status.returnStatus(res, Status.NULL);
-                    }
-
-                    if (disease.department)
-                        item.department = disease.department;
-                    if (disease.name)
-                        item.name = disease.name;
-                    if (disease.desc)
-                        item.desc = disease.desc;
-                    if (disease.order)
-                        item.order = disease.order;
-                    if (disease.apply || disease.apply === false)
-                        item.apply = disease.apply;
-
-                    item.symptoms.length = 0;
-
-                    console.log(JSON.stringify(item));
-
-                    self.CheckSymptomsForUpdate(item, disease.symptoms)
-                        .then(function (_item){
-                            console.log(JSON.stringify(_item));
-
-                            //_item.save();
-                            Disease.update(
-                                {_id: _item._id},
-                                {$set: {symptoms: _item.symptoms,
-                                    department: _item.department,
-                                    name: _item.name,
-                                    desc: _item.desc,
-                                    order: _item.order,
-                                    apply: _item.apply}
-                                },
-                                {upsert: true},
-                                function (err, raw) {
-                                    console.log(JSON.stringify(raw));
-                                    if (err) {
-                                        return Status.returnStatus(res, Status.ERROR, err);
-                                    }
-                                    res.send(raw);
-                                });
-                                // should add .exec() ??
-
-                        });
-
-                });
-        }
+    UpdateById: (req, res, next) => {
+        const { id } = req.params;
+        Disease.findByIdAndUpdate(id, req.body, { new: true })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
-    DeleteById: function (req, res) {
-        if (req.params && req.params.id) { // params.id is disease ID
-            var id = req.params.id;
-
-            Disease.findById(id, function (err, item) {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
-                if (!item){
-                    return Status.returnStatus(res, Status.NULL);
-                }
-
-                //
-                item.remove(function (err, raw) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
-
-                    res.send(raw);
-                });
-
-            });
-        }
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;
+        Disease.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
-
-    CheckSymptomsForUpdate: function (item, symptomsStr){
-        var _deferred = Q.defer();
-        var promises = [];
-
-        if (symptomsStr && symptomsStr.length > 0){ // symptomsStr is a string containing symptoms.
-
-            var symptoms = symptomsStr.split('|');
-
-            symptoms.forEach(function(symptom){
-                var deferred = Q.defer();
-
-                self.FindAndUpdateSymptomByName(symptom)//;     // sym is symptom object
-                    .then(function(sym){
-                        if (sym){
-                            //console.log(JSON.stringify(sym));
-                            item.symptoms.push(sym._id);
-                            deferred.resolve(sym);
-                        }
-                    });
-
-                promises.push(deferred.promise);
-            });
-
-        }
-
-        Q.all(promises).then(
-            // success
-            // results: an array of data objects from each deferred.resolve(data) call
-            function(results) {
-
-                _deferred.resolve(item);
-            },
-            // error
-            function(response) {
-                _deferred.resolve(item);
-            }
-        );
-
-        return _deferred.promise;
-    },
-
-    //
-    FindAndUpdateSymptomByName: function(sym_name) {
-        var deferred = Q.defer();
-
-        // 先check这个symptom是不是存在，如果存在，直接使用，如果不存在，创建一个新的，然后使用。
-        Symptom.findOne({name: sym_name}, function(err, sym){
-            if (err){
-                deferred.reject(err);
-            }
-
-            // no record, create one
-            if (!sym) {
-                sym = self.CreateSymptom(sym_name, sym.hid);
-                //console.log('create: ' + JSON.stringify(sym));
-            }
-
-            deferred.resolve(sym);
-        });
-
-        return deferred.promise;
-    },
-
-    CreateSymptom: function (symptom_name, hid){
-        var deferred = Q.defer();
-
-        Symptom.create({
-            hid: hid,
-            name: symptom_name
-        }, function(err, symptom){
-            if (err){
-                deferred.reject(err);
-            }
-
-            deferred.resolve(symptom);
-        });
-
-        return deferred.promise;
-    }
-
 }

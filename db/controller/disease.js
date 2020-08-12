@@ -10,22 +10,12 @@ var self = module.exports = {
 
 
     //todo: order by
-    GetAll: function (req, res) {
-
-        //Disease.find({apply: true}, function (err, items) {
-        Disease.find()
+    GetAll:  (req, res, next) => {
+        Disease.find({ hid: req.token.hid })
             .sort({order: 1})
-            .exec( function (err, items) {
-            if (err) {
-                return Status.returnStatus(res, Status.ERROR, err);
-            }
-
-            if (!items || items.length < 1) {
-                return Status.returnStatus(res, Status.NULL);
-            }
-
-            res.json(items);
-        });
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 获得科室下的疾病类别

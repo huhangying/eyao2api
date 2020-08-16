@@ -5,7 +5,7 @@ module.exports = mongoose.model(
   mongoose.Schema({
     hid: Number,
     name: { type: String, required: true, trim: true },
-    type: { type: Number },
+    type: { type: String },
 
     items: [
       {

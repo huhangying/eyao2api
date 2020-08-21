@@ -13,7 +13,7 @@ const msgHandler = (msgbufer) => {
       if (err) {
         reject({
           code: -1,
-          msg: 'error',
+          msg: JSON.stringify(err), // 'error'
           data: err,
         });
       }
@@ -31,8 +31,8 @@ const msgHandler = (msgbufer) => {
             case '帮助':
               // 返回帮助内容
               helpTxt = [
-                '1. 在公众号对话框中输入任意商品名称，点击返回的链接即可筛选购买.',
-                '2. 输入关键字『入口』可以得到网站的入口链接.'
+                '1. 在公众号对话框中输入...',
+                '2. 输入关键字『todo』可以得到网站的入口链接.'
               ]
               resolve(messageBuilder.textMessage(baseData, helpTxt.join('\n')));
               break;

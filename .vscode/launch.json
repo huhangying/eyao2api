@@ -4,18 +4,30 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    {
-        "type": "node",
-        "request": "attach",
-        "name": "Attach to Remote",
-        "address": "192.168.87.250",
-        "port": 5858,
-        "localRoot": "${workspaceFolder}",
-        "remoteRoot": "/eyao2api",
-        "skipFiles": [
-            "<node_internals>/**"
-        ]
-    },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Remote",
+            "address": "192.168.87.250",
+            "port": 5858,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/eyao2api",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "远程 zhaoyaoshi885.cn",
+            "address": "163.53.170.122",
+            "port": 5858,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/home/eyao2api",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
         {
             "type": "node",
             "request": "launch",

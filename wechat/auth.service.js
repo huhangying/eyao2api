@@ -190,7 +190,7 @@ module.exports = {
 				const r = await messageHandler.msgHandler(msgXml);
 				res.send(r);
 			} catch (error) {
-				res.send('error');
+				res.send(JSON.stringify(error));
 			}
 		});
 

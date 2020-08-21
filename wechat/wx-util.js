@@ -33,7 +33,7 @@ const getWechatAccessToken = async (hid) => {
 const getAccessTokenByHid = async (hid) => {
   const token = await AccessToken.findOne({ hid: hid });
 
-  if (!token || !token.access_token || token.expires_time < new Date().getTime()) {
+  if (!token || token.expires_time < new Date().getTime()) {
     const newToken = await refreshAccessToken(hid);
     return newToken.access_token;
   } else {

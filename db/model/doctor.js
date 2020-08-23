@@ -33,6 +33,7 @@ module.exports = mongoose.model(
     updated: { type: Date, default: Date.now },
     locked_count: Number,
     apply: { type: Boolean, default: true },
-    order: { type: Number, default: 0 }
+    order: { type: Number, default: 0 },
+    hispitalName: String // only for doctor login response
   })
 );

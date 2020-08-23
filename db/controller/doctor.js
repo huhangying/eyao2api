@@ -306,6 +306,7 @@ module.exports = {
                     id: result.id,
                     role: result.role
                 });
+                result.hospitalName = hosptial.name;
                 return res.json(result);
             })
             .catch(err => next(err));

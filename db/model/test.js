@@ -13,7 +13,7 @@ module.exports = mongoose.model(
         item: { type: String, required: true, trim: true },
         code: { type: String },
         unit: { type: String },
-        reference: { type: String },
+        reference: { type: String }, // risk value = 0
         
         result: { type: String, trim: true }, 
         riskValue: {

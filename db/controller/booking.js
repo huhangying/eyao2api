@@ -174,7 +174,7 @@ module.exports = {
         }
 
         // check double booking (schedule不能有两个booking)
-        Booking.findOne({ doctor: booking.doctor, user: booking.user, schedule: booking.schedule })
+        Booking.findOne({ doctor: booking.doctor, user: booking.user, schedule: booking.schedule, status: 1 }) // status=1 预约完成
             .then(_result => {
                 if (_result && _result._id) {
                     // double booking

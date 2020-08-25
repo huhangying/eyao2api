@@ -13,10 +13,10 @@ const wxMsgQueue = require('../db/model/wxMsgQueue');
 const User = require('../db/model/user');
 
 const sendWechatTemplateMessage = async (req, res, next) => {
-	const { openid, hid, bookingid, data, templateId } = req.body;
+	const { openid, hid, bookingid, data, templateid } = req.body;
 
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
-	const template_id = await wxUtil.getWechatTemplateIdByHid(hid, templateId);
+	const template_id = await wxUtil.getWechatTemplateIdByHid(hid, templateid);
 	axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send',
 		{
 			touser: openid,

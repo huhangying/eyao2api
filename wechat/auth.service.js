@@ -12,11 +12,11 @@ const wxUtil = require('./wx-util');
 const wxMsgQueue = require('../db/model/wxMsgQueue');
 const User = require('../db/model/user');
 
-const sendBookingTemplateMessage = async (req, res, next) => {
-	const { openid, hid, bookingid, data } = req.body;
+const sendWechatTemplateMessage = async (req, res, next) => {
+	const { openid, hid, bookingid, data, templateId } = req.body;
 
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
-	const template_id = await wxUtil.getBookingTemplateIdByHid(hid);
+	const template_id = await wxUtil.getWechatTemplateIdByHid(hid, templateId);
 	axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send',
 		{
 			touser: openid,
@@ -268,7 +268,7 @@ module.exports = {
 		})
 			.catch(err => next(err));
 	},
-	sendBookingTemplateMessage,
+	sendWechatTemplateMessage,
 	sendClientMessage,
 	removeFromMsgQueue,
 	resendFailedMsg,

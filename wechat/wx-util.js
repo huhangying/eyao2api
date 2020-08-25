@@ -9,8 +9,8 @@ const getHidByWxid = async (wxid) => {
   return hospital.hid;
 }
 
-const getBookingTemplateIdByHid = async (hid) => {
-  const _const = await Const.findOne({ group: 2, hid: hid, name: 'booking_template' });
+const getWechatTemplateIdByHid = async (hid, templateId) => {
+  const _const = await Const.findOne({ group: 2, hid: hid, name: templateId });
   return _const ? _const.value : '';
 }
 
@@ -67,7 +67,7 @@ const getUserInfo = (openid, access_token) => {
 
 module.exports = {
   getHidByWxid,
-  getBookingTemplateIdByHid,
+  getWechatTemplateIdByHid,
   getAccessTokenByHid,
   getWechatAccessToken,
   refreshAccessToken,

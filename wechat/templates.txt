@@ -19,3 +19,14 @@
 就诊号: {{bookingid.DATA}}
 
 {{footer.DATA}}
+
+=>
+预约挂号成功通知
+
+{{first.DATA}}
+药师：{{keyword1.DATA}}
+科室：{{keyword2.DATA}}
+时间：{{keyword3.DATA}}
+地点：{{keyword4.DATA}}
+就诊号：{{keyword5.DATA}}
+{{remark.DATA}}

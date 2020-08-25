@@ -6,10 +6,24 @@ module.exports = mongoose.model(
   mongoose.Schema({
     hid: Number,
     doctor_id: { type: String, required: true },
-    labels: String, //自定义标签
+    tags: String,  //自定义标签
+    prices: [
+      {
+        type: Number,
+        name: String,
+        amount: Number
+      }
+    ],
+
+    commentCount: { type: Number, default: 0, min: 0 },
     score: { type: Number },
     response_time: { type: Number }, // 平均响应时间
-    tags: String, // preset comments
-    comments: String,
+
+    presetComments: [
+      {
+        preset: { type: String, required: true },
+        count: { type: Number, default: 0, min: 0 }
+      }
+    ],
   })
 );

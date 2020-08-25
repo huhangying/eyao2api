@@ -11,6 +11,8 @@ module.exports = mongoose.model(
         disease_types: [{ type: String }], // 咨询疾病类型
         content: { type: String }, // 问题描述
         upload: { type: String },
+
+        type: { type: Number, min: 0, max: 1 }, // 0: 图文咨询； 1：电话咨询
         status: { type: Number, default: 0, min: 0, max: 3 } // 0: new; 1. 药师 mark done; 2: 药师回复；
     }, {
         timestamps: true

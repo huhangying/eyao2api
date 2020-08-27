@@ -215,7 +215,7 @@ module.exports = {
 
 
     // 相同时间段内可选的同科室药师
-    FindScheduleDoctorsByDepartmentIdDate: (req, res, next) => {
+    FindScheduleDoctorsByDepartmentIdAndDate: (req, res, next) => {
         const { departmentid, date } = req.params;
 
         const date_start = new Date(date).setHours(0, 0, 0, 0);

@@ -327,7 +327,7 @@ router.route('/schedule/:id')
     .delete(Schedule.DeleteById);
 
 router.route('/schedules/find/doctors/:departmentid/:date')
-    .get(Schedule.FindScheduleDoctorsByDepartmentId);
+    .get(Schedule.FindScheduleDoctorsByDepartmentIdAndDate);
 router.route('/schedule/find/:did/:period/:date')
     .get(Schedule.GetByDoctorPeriodDate);
 

@@ -228,7 +228,7 @@ module.exports = {
                     select: '_id name title'
                 }
             )
-            .then((result) => res.json(result))
+            .then((result) => res.json(result.map(_ => _.doctor).filter(_ => _)))
             .catch(err => next(err));
         // .exec(function (err, schedules) {
         //     if (err) {

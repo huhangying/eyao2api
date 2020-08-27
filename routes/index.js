@@ -326,7 +326,7 @@ router.route('/schedule/:id')
     .patch(urlencodedParser, Schedule.UpdateById)
     .delete(Schedule.DeleteById);
 
-router.route('/schedules/find/doctors/:departmentid')
+router.route('/schedules/find/doctors/:departmentid/:date')
     .get(Schedule.FindScheduleDoctorsByDepartmentId);
 router.route('/schedule/find/:did/:period/:date')
     .get(Schedule.GetByDoctorPeriodDate);
@@ -825,7 +825,7 @@ router.route('/wechat/auth')
     .post(wechat.receiveAuth);
 router.route('/wechat/authSignature/:openid')
     .get(SignatureStore.GetByOpenId);
-router.route('/wechat/auth-signature/:url')
+router.route('/wechat/auth-signature/:url') //todo: remove
     .get(wechat.getSignatureByUrl);
 
 router.route('/wechat/authWeixinToken')

@@ -117,7 +117,7 @@ module.exports = {
         })
             .select('-hid -__v')
             .populate('period', '_id name order')
-            .sort( {})
+            .sort({})
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -214,46 +214,47 @@ module.exports = {
     },
 
 
-    //no used! ???
-    //todo: enhance the performance later
-    FindScheduleDoctorsByDepartmentId: function (req, res) {
-        if (req.params && req.params.departmentid) {
+    // 相同时间段内可选的同科室药师
+    FindScheduleDoctorsByDepartmentIdDate: (req, res, next) => {
+        const { departmentid, date } = req.params;
 
-            var date_end = new Date();
-            date_end.setDate(date_end.getDate() + 7);
-            Schedule.find({ date: { $lte: date_end, $gt: new Date() }, limit: { $gt: 0 } })
-                .populate(
-                    {
-                        path: 'doctor',
-                        match: { department: req.params.departmentid },
-                        select: '_id user_id name'
-                    }
-                )
-                .exec(function (err, schedules) {
-                    if (err) {
-                        return Status.returnStatus(res, Status.ERROR, err);
-                    }
+        const date_start = new Date(date).setHours(0, 0, 0, 0);
+        Schedule.find({ date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000), $gt: date_start }, limit: { $gt: 0 } })
+            .select('doctor')
+            .populate(
+                {
+                    path: 'doctor',
+                    match: { department: departmentid },
+                    select: '_id name title'
+                }
+            )
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+        // .exec(function (err, schedules) {
+        //     if (err) {
+        //         return Status.returnStatus(res, Status.ERROR, err);
+        //     }
 
-                    var doctorsPromise = schedules
-                        .map(function (schedule) {
-                            return schedule.doctor; // get only doctor field
-                        })
-                        .filter(function (doctor) {
-                            return doctor;      // remove  null
-                        });
+        //     var doctorsPromise = schedules
+        //         .map(function (schedule) {
+        //             return schedule.doctor; // get only doctor field
+        //         })
+        //         .filter(function (doctor) {
+        //             return doctor;      // remove  null
+        //         });
 
-                    $q.all(doctorsPromise)
-                        .then(function (doctors) {
-                            res.json(
-                                doctors
-                                    .filter(function (doctor, pos) {
-                                        return doctors.indexOf(doctor) == pos; // remove duplicate ones
-                                    })
-                            );
-                        });
+        //     $q.all(doctorsPromise)
+        //         .then(function (doctors) {
+        //             res.json(
+        //                 doctors
+        //                     .filter(function (doctor, pos) {
+        //                         return doctors.indexOf(doctor) == pos; // remove duplicate ones
+        //                     })
+        //             );
+        //         });
 
-                });
-        }
+        // });
+
     },
 
     //////////////////////////////////////////////////////

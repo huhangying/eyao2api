@@ -229,9 +229,9 @@ module.exports = {
                 }
             )
             .then((result) => {
-                const doctors = result.map(_ => _.doctor);
+                const doctors = result.map(_ => _.doctor).filter(_ => _); // data map and remove null
                 return res.json(doctors.filter((doc, pos) => {
-                    return doc && doctors.indexOf(doc) == pos; // remove null and duplicate ones
+                    return doctors.indexOf(doc) === pos; // remove duplicate ones
                 }))
             })
             .catch(err => next(err));

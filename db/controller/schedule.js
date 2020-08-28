@@ -228,7 +228,12 @@ module.exports = {
                     select: '_id name title'
                 }
             )
-            .then((result) => res.json(result.map(_ => _.doctor).filter(_ => _)))
+            .then((result) => {
+                const doctors = result.map(_ => _.doctor);
+                return res.json(doctors.filter((doc, pos) => {
+                    return doc && doctors.indexOf(doc) == pos; // remove null and duplicate ones
+                }))
+            })
             .catch(err => next(err));
         // .exec(function (err, schedules) {
         //     if (err) {

@@ -256,6 +256,7 @@ module.exports = {
             hid: req.token.hid,
             apply: true
         })
+            .select('-hid -__v')
             .then((result) => {
                 if (!result) {
                     return Status.returnStatus(res, Status.OPERATION_FAILED);

@@ -216,10 +216,10 @@ module.exports = {
 
     // 相同时间段内可选的同科室药师
     FindScheduleDoctorsByDepartmentIdAndDate: (req, res, next) => {
-        const { departmentid, date } = req.params;
+        const { departmentid, date, period } = req.params;
 
         const date_start = new Date(date).setHours(0, 0, 0, 0);
-        Schedule.find({ date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000), $gt: date_start }, limit: { $gt: 0 } })
+        Schedule.find({ date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000), $gt: date_start }, period: period, limit: { $gt: 0 } })
             .select('doctor')
             .populate(
                 {
@@ -235,31 +235,6 @@ module.exports = {
                 }))
             })
             .catch(err => next(err));
-        // .exec(function (err, schedules) {
-        //     if (err) {
-        //         return Status.returnStatus(res, Status.ERROR, err);
-        //     }
-
-        //     var doctorsPromise = schedules
-        //         .map(function (schedule) {
-        //             return schedule.doctor; // get only doctor field
-        //         })
-        //         .filter(function (doctor) {
-        //             return doctor;      // remove  null
-        //         });
-
-        //     $q.all(doctorsPromise)
-        //         .then(function (doctors) {
-        //             res.json(
-        //                 doctors
-        //                     .filter(function (doctor, pos) {
-        //                         return doctors.indexOf(doctor) == pos; // remove duplicate ones
-        //                     })
-        //             );
-        //         });
-
-        // });
-
     },
 
     //////////////////////////////////////////////////////

@@ -326,7 +326,7 @@ router.route('/schedule/:id')
     .patch(urlencodedParser, Schedule.UpdateById)
     .delete(Schedule.DeleteById);
 
-router.route('/schedules/find/doctors/:departmentid/:date')
+router.route('/schedules/find/doctors/:departmentid/:date/:period')
     .get(Schedule.FindScheduleDoctorsByDepartmentIdAndDate);
 router.route('/schedule/find/:did/:period/:date')
     .get(Schedule.GetByDoctorPeriodDate);

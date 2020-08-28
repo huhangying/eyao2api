@@ -219,7 +219,13 @@ module.exports = {
         const { departmentid, date, period } = req.params;
 
         const date_start = new Date(date).setHours(0, 0, 0, 0);
-        Schedule.find({ date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000), $gt: date_start }, period: period, limit: { $gt: 0 } })
+        Schedule.find({
+            date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000), $gt: date_start },
+            period: period,
+            limit: { $gt: 0 },
+            hid: req.token.hid,
+            apply: true
+        })
             .select('doctor')
             .populate(
                 {
@@ -233,6 +239,30 @@ module.exports = {
                 return res.json(doctors.filter((doc, pos) => {
                     return doctors.indexOf(doc) === pos; // remove duplicate ones
                 }))
+            })
+            .catch(err => next(err));
+    },
+
+    // for booking-forward: 预留一个预约位置
+    ReserveScheduleSpace: (req, res, next) => {
+        const { doctorid, date, period } = req.params;
+
+        const date_start = new Date(date).setHours(0, 0, 0, 0);
+        Schedule.findOne({
+            doctor: doctorid,
+            date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000), $gt: date_start },
+            period: period,
+            limit: { $gt: 0 },
+            hid: req.token.hid,
+            apply: true
+        })
+            .then((result) => {
+                if (!result) {
+                    return Status.returnStatus(res, Status.OPERATION_FAILED);
+                }
+                result.limit--;
+                result.save();
+                res.json(result)
             })
             .catch(err => next(err));
     },

@@ -328,6 +328,8 @@ router.route('/schedule/:id')
 
 router.route('/schedules/find/doctors/:departmentid/:date/:period')
     .get(Schedule.FindScheduleDoctorsByDepartmentIdAndDate);
+router.route('/schedules/reserve-space/:doctorid/:date/:period')
+    .get(Schedule.ReserveScheduleSpace);
 router.route('/schedule/find/:did/:period/:date')
     .get(Schedule.GetByDoctorPeriodDate);
 

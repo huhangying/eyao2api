@@ -38,6 +38,8 @@ module.exports = {
     TOKEN_INVALID: 'token_invalid',
     DELETE_NOT_ALLOWED: 'deleteNotAllowed',
 
+    OPERATION_FAILED: 'operation_failed',
+
 
     returnStatus: function (res, status, err) {
         // let ret = _.extend({ return: status }, err);

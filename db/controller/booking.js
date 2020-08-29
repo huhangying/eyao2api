@@ -182,12 +182,14 @@ module.exports = {
                 } else {
                     Booking.create(booking)
                         .then((result) => {
-                            // limit-- in schedule
-                            Schedule.findById(booking.schedule)
-                                .exec(function (err, schedule) {
-                                    schedule.limit--;
-                                    schedule.save();
-                                });
+                            if (result.status === 1) { // status = 4, don't decrease limit
+                                // limit-- in schedule
+                                Schedule.findById(booking.schedule)
+                                    .exec(function (err, schedule) {
+                                        schedule.limit--;
+                                        schedule.save();
+                                    });
+                            }
                             return res.json(result);
                         })
                         .catch(err => next(err));

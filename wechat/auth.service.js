@@ -20,7 +20,7 @@ const sendWechatTemplateMessage = async (req, res, next) => {
 	const template_id = await wxUtil.getWechatTemplateIdByHid(hid, templateid);
 	const url = !forwardbookingid ?
 		wxurl + 'reservation?openid=' + openid + '&state=' + hid + '&id=' + bookingid :
-		wxurl + 'wechat/booking-forward?openid=' + openid + '&state=' + hid + '&id=' + bookingid + '|' + forwardbookingid;
+		wxurl + 'booking-forward?openid=' + openid + '&state=' + hid + '&id=' + bookingid + '|' + forwardbookingid;
 	axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send',
 		{
 			touser: openid,

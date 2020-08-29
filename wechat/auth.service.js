@@ -13,15 +13,19 @@ const wxMsgQueue = require('../db/model/wxMsgQueue');
 const User = require('../db/model/user');
 
 const sendWechatTemplateMessage = async (req, res, next) => {
-	const { openid, hid, bookingid, data, templateid } = req.body;
+	const { openid, hid, bookingid, data, templateid, forwardbookingid } = req.body;
 
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
+	const { wxurl } = await wxUtil.getHospitalSettingsByHid(hid);
 	const template_id = await wxUtil.getWechatTemplateIdByHid(hid, templateid);
+	const url = !forwardbookingid ?
+		wxurl + 'reservation?openid=' + openid + '&state=' + hid + '&id=' + bookingid :
+		wxurl + 'wechat/booking-forward?openid=' + openid + '&state=' + hid + '&id=' + bookingid + '|' + forwardbookingid;
 	axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send',
 		{
 			touser: openid,
 			template_id: template_id,
-			url: 'http://www.zhaoyaoshi885.cn/wechat/reservation?openid=' + openid + '&state=' + hid + '&id=' + bookingid,
+			url: url,
 			data: data
 		},
 		{

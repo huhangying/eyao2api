@@ -9,6 +9,7 @@ module.exports = mongoose.model(
     desc: String,
     ipList: [{type : String}],
     // parent: {type : String, default: null}, // 用于医院联盟 （下期）
+    wxurl: String,
     wxid: String,
     appid: String,  // wechat
     secret: String, // wechat

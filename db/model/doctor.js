@@ -34,6 +34,7 @@ module.exports = mongoose.model(
     locked_count: Number,
     apply: { type: Boolean, default: true },
     order: { type: Number, default: 0 },
-    hospitalName: String // only for doctor login response
+    hospitalName: String, // only for doctor login response
+    wechatUrl: String     // only for doctor login response
   })
 );

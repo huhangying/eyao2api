@@ -15,7 +15,7 @@ module.exports = mongoose.model(
         unit: { type: String },
         reference: { type: String }, // risk value = 0
         
-        result: { type: String, trim: true }, 
+        result: { type: Number, trim: true }, 
         riskValue: {
           value: { type: Number, min: -3, max: 3 },
           name: { type: String }, // optional
@@ -24,7 +24,6 @@ module.exports = mongoose.model(
         }
       }
     ],
-    // order: { type: Number },
   }, {
     timestamps: true
   })

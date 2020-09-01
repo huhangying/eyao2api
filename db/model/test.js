@@ -7,7 +7,8 @@ module.exports = mongoose.model(
     hid: Number,
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' },
-    
+    date: { type: Date }, //化验日期
+
     name: { type: String, required: true, trim: true },
     type: { type: String },
 

@@ -740,6 +740,8 @@ router.route('/labresult/:id')
 //---------------- 化验单模板
 const TestForm = require('../db/controller/testForm');
 
+router.route('/testforms/cms-all')
+    .get(TestForm.GetCmsAll);
 router.route('/testforms')
     .get(TestForm.GetAll);
 router.route('/testforms/type/:type')

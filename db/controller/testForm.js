@@ -2,8 +2,18 @@ const TestForm = require('../model/testForm');
 
 module.exports = {
 
-    GetAll: (req, res, next) => {
+    // for cms
+    GetCmsAll: (req, res, next) => {
         TestForm.find({ hid: req.token.hid })
+            .sort({ order: 1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    GetAll: (req, res, next) => {
+        TestForm.find({ hid: req.token.hid, apply: true })
             .sort({ order: 1 })
             .select('-hid -__v')
             .lean()

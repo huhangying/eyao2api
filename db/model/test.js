@@ -16,12 +16,12 @@ module.exports = mongoose.model(
         reference: { type: String }, // risk value = 0
         
         result: { type: Number, trim: true }, 
-        riskValue: {
+        riskValues: [{
           value: { type: Number, min: -3, max: 3 },
           name: { type: String }, // optional
           from: { type: Number },
           to: { type: Number },
-        }
+        }]
       }
     ],
   }, {

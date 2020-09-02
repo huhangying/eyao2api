@@ -758,9 +758,9 @@ router.route('/testform/:id')
 //---------------- 化验单
 const Test = require('../db/controller/test');
 
-router.route('/tests/list')
+router.route('/tests/:list')
     .get(Test.GetByList);
-router.route('/testforms/user/:user')
+router.route('/tests/user/:user')
     .get(Test.GetByUserId);
 
 router.route('/test')

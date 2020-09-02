@@ -7,7 +7,7 @@ module.exports = mongoose.model(
     hid: Number,
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' },
-    date: { type: Date }, //化验日期
+    date: { type: Date, default: Date.now }, //化验日期
 
     name: { type: String, required: true, trim: true },
     type: { type: String },
@@ -16,10 +16,10 @@ module.exports = mongoose.model(
       {
         item: { type: String, required: true, trim: true },
         code: { type: String },
-        unit: { type: String },
-        reference: { type: String }, // risk value = 0
-
         result: { type: Number, trim: true },
+        unit: { type: String },
+        
+        reference: { type: String }, // risk value = 0
         riskValues: [{
           value: { type: Number, min: -3, max: 3 },
           name: { type: String }, // optional

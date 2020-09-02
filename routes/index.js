@@ -756,6 +756,20 @@ router.route('/testform/:id')
     .patch(urlencodedParser, TestForm.UpdateById);
 
 //---------------- 化验单
+const Test = require('../db/controller/test');
+
+router.route('/tests/list')
+    .get(Test.GetByList);
+router.route('/testforms/user/:user')
+    .get(Test.GetByUserId);
+
+router.route('/test')
+    .post(urlencodedParser, TestForm.Add);
+
+router.route('/test/:id')
+    .get(Test.GetById)
+    .delete(Test.DeleteById)
+    .patch(urlencodedParser, Test.UpdateById);
 
 //---------------- FAQ
 var Faq = require('../db/controller/faq');

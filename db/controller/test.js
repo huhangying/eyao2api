@@ -42,7 +42,7 @@ module.exports = {
         }
         // user
         if (!item.user) {
-            return Status.returnStatus(res, Status.NO_DOCTOR);
+            return Status.returnStatus(res, Status.NO_USER);
         }
 
         // 创建 with no conditions

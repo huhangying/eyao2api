@@ -764,7 +764,7 @@ router.route('/tests/user/:user')
     .get(Test.GetByUserId);
 
 router.route('/test')
-    .post(urlencodedParser, TestForm.Add);
+    .post(urlencodedParser, Test.Add);
 
 router.route('/test/:id')
     .get(Test.GetById)

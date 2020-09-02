@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // 化验单
 module.exports = mongoose.model(
-  '_test',
+  'test',
   mongoose.Schema({
     hid: Number,
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },

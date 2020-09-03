@@ -147,6 +147,7 @@ module.exports = {
                         icon: user.icon,
                         birthdate: user.birthdate,
                         sin: user.sin,
+                        role: user.role || 0,
                         apply: user.apply || true
                     },
                         function (err, raw) {
@@ -164,6 +165,7 @@ module.exports = {
                     _user.gender = user.gender;
                     _user.icon = user.icon;
                     _user.birthdate = user.birthdate;
+                    _user.role = user.role || 0;
                     _user.apply = true;
 
                     _user.save();

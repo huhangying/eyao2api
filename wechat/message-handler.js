@@ -120,6 +120,7 @@ const subscribe = async (baseData, did) => {
         name: userInfo.data.nickname,
         gender: gender,
         icon: userInfo.data.headimgurl,
+        role: 0,
         apply: true,
         created: new Date(),
         updated: new Date()

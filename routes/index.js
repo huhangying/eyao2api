@@ -90,6 +90,14 @@ router.route('/doctor/shortcuts/:did')
 router.route('/doctor/brief/:id')
     .get(Doctor.GetBriefInfo);
 
+//---------------- 药师consult
+var DoctorConsult = require('../db/controller/doctor-consult');
+
+router.route('/doctor-consult/:doctor')
+    .get(DoctorConsult.GetByDoctorId)
+    .post(urlencodedParser, DoctorConsult.Update)
+    .delete(DoctorConsult.DeleteByDoctorId);
+
 //---------------- 医患关系组
 var Group = require('../db/controller/group');
 

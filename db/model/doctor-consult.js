@@ -6,13 +6,13 @@ module.exports = mongoose.model(
   mongoose.Schema({
     hid: Number,
     doctor_id: { type: String, required: true },
-    
+
     tags: String,  //自定义标签
     prices: [
       {
         type: Number,   // 0: 图文咨询； 1：电话咨询
         amount: Number,
-        condition: String, // /次 或 /20分钟
+        unit_count: Number, // /次 或 /20分钟
       }
     ],
 

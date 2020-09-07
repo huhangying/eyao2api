@@ -103,7 +103,7 @@ const DoctorConsultComment = require('../db/controller/doctor-consult-comment');
 
 router.route('/doctor-consult-comment/:doctor')
     .get(DoctorConsultComment.GetAllByDoctorId);
-router.route('/doctor-consult-comment/:doctor/:from/:total')
+router.route('/doctor-consult-comment/:doctor/:from/:size')
     .get(DoctorConsultComment.GetByDoctorIdAndFromSize);
 
 router.route('/doctor-consult-comment')

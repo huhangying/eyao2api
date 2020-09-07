@@ -5,7 +5,7 @@ module.exports = mongoose.model(
   'doctor_consult',
   mongoose.Schema({
     hid: Number,
-    doctor_id: { type: String, required: true },
+    doctor_id: { type: String, required: true, index: true },
 
     tags: String,  //自定义标签
     prices: [

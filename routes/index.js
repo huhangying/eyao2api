@@ -90,13 +90,26 @@ router.route('/doctor/shortcuts/:did')
 router.route('/doctor/brief/:id')
     .get(Doctor.GetBriefInfo);
 
-//---------------- 药师consult
-var DoctorConsult = require('../db/controller/doctor-consult');
+//---------------- 药师 consult
+const DoctorConsult = require('../db/controller/doctor-consult');
 
 router.route('/doctor-consult/:doctor')
     .get(DoctorConsult.GetByDoctorId)
     .post(urlencodedParser, DoctorConsult.Update)
     .delete(DoctorConsult.DeleteByDoctorId);
+
+//---------------- 药师 consult comment
+const DoctorConsultComment = require('../db/controller/doctor-consult-comment');
+
+router.route('/doctor-consult-comment/:doctor')
+    .get(DoctorConsultComment.GetAllByDoctorId);
+router.route('/doctor-consult-comment/:doctor/:from/:total')
+    .patch(urlencodedParser, DoctorConsultComment.GetByDoctorIdAndFromSize);
+
+router.route('/doctor-consult-comment')
+    .post(urlencodedParser, DoctorConsultComment.Add)
+router.route('/doctor-consult-comment/:id')
+    .delete(DoctorConsultComment.DeleteById);
 
 //---------------- 医患关系组
 var Group = require('../db/controller/group');

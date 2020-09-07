@@ -19,8 +19,8 @@ module.exports = {
         const { doctor, from, size } = req.params;
         DoctorConsultComment.find({ doctor_id: doctor, hid: req.token.hid })
             .sort({ updatedAt: -1 })
-            .skip(from)
-            .limit(size)
+            .skip(+from)
+            .limit(+size)
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))

@@ -104,7 +104,7 @@ const DoctorConsultComment = require('../db/controller/doctor-consult-comment');
 router.route('/doctor-consult-comment/:doctor')
     .get(DoctorConsultComment.GetAllByDoctorId);
 router.route('/doctor-consult-comment/:doctor/:from/:total')
-    .patch(urlencodedParser, DoctorConsultComment.GetByDoctorIdAndFromSize);
+    .get(DoctorConsultComment.GetByDoctorIdAndFromSize);
 
 router.route('/doctor-consult-comment')
     .post(urlencodedParser, DoctorConsultComment.Add)

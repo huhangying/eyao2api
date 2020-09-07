@@ -6,7 +6,7 @@ module.exports = {
     // 根据药师ID获取信息
     GetAllByDoctorId: (req, res, next) => {
         const { doctor } = req.params;
-        DoctorConsultComment.findOne({ doctor_id: doctor, hid: req.token.hid })
+        DoctorConsultComment.find({ doctor_id: doctor, hid: req.token.hid })
             .sort({ updatedAt: -1 })
             .select('-hid -__v')
             .lean()
@@ -17,7 +17,7 @@ module.exports = {
     // 根据药师ID 和 from， total 获取信息
     GetByDoctorIdAndFromSize: (req, res, next) => {
         const { doctor, from, size } = req.params;
-        DoctorConsultComment.findOne({ doctor_id: doctor, hid: req.token.hid })
+        DoctorConsultComment.find({ doctor_id: doctor, hid: req.token.hid })
             .sort({ updatedAt: -1 })
             .skip(from)
             .limit(size)

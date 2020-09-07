@@ -8,6 +8,7 @@ module.exports = mongoose.model(
     doctor_id: { type: String, required: true, index: true },
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true},
     consult: {type: mongoose.Schema.Types.ObjectId, ref: 'consult', required: true},
+    consultType: { type: Number }, // helper
 
     score: Number,  
     presetComments: [

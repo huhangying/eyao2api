@@ -10,9 +10,9 @@ module.exports = mongoose.model(
     tags: String,  //自定义标签
     prices: [
       {
-        type: Number,   // 0: 图文咨询； 1：电话咨询
-        amount: Number,
-        unit_count: Number, // /次 或 /20分钟
+        type: { type: Number, required: true },   // 0: 图文咨询； 1：电话咨询
+        amount: { type: Number, required: true, min: 0 },
+        unit_count: { type: Number }, // /次 或 /20分钟
       }
     ],
 

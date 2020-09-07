@@ -13,7 +13,7 @@ module.exports = mongoose.model(
     score: Number,  
     presetComments: [
       {
-        preset: { type: String, required: true },
+        type: { type: Number, required: true },   // 1 - 4
         checked: { type: Boolean, default: false }
       }
     ],  

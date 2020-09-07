@@ -22,7 +22,7 @@ module.exports = mongoose.model(
 
     presetComments: [
       {
-        preset: { type: String, required: true },
+        type: { type: Number, required: true },
         count: { type: Number, default: 0, min: 0 }
       }
     ],

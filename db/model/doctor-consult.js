@@ -7,7 +7,8 @@ module.exports = mongoose.model(
     hid: Number,
     doctor_id: { type: String, required: true, index: true },
 
-    tags: String,  //自定义标签
+    tags: { type: String },  //自定义标签
+    disease_types: { type: String }, // 咨询疾病类型
     prices: [
       {
         type: { type: Number, required: true },   // 0: 图文咨询； 1：电话咨询

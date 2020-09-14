@@ -34,7 +34,15 @@ module.exports = mongoose.model(
     locked_count: Number,
     apply: { type: Boolean, default: true },
     order: { type: Number, default: 0 },
+
     hospitalName: String, // only for doctor login response
-    wechatUrl: String     // only for doctor login response
+    wechatUrl: String,     // only for doctor login response
+    prices: [
+      {
+        type: { type: Number, required: true },   // 0: 图文咨询； 1：电话咨询
+        amount: { type: Number, required: true, min: 0 },
+        unit_count: { type: Number }, // /次 或 /20分钟
+      }
+    ],
   })
 );

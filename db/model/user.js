@@ -31,6 +31,7 @@ module.exports = mongoose.model(
     apply: { type: Boolean, default: true },
     msgInQueue: { type: Number, default: 0 },
     diagnoses: String, // 疾病诊断
-    notes: String, // 诊断提醒
+    prompt: String, // 诊断提醒
+    notes: String, // 备注
   })
 );

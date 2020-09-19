@@ -6,7 +6,7 @@ module.exports = mongoose.model(
         hid: Number,
         name: { type: String, required: true, trim: true }, // Survey section name
         department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
-        type: { type: Number, required: true, min: 0, max: 6 },
+        type: { type: Number, required: true, min: 0, max: 7 },
         //group: { type: Schema.Types.ObjectId, ref: 'survey_group' },
         questions: [
             {

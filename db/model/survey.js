@@ -10,7 +10,7 @@ module.exports = mongoose.model(
 
         name: { type: String, required: true, trim: true }, // Survey section name
         department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', required: true },
-        type: { type: Number, required: true, min: 0, max: 6 },
+        type: { type: Number, required: true, min: 0, max: 7 },
         questions: [
             {
                 question: { type: String, required: true, trim: true },

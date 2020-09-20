@@ -153,7 +153,7 @@ router.route('/relationships/group/:group')
 router.route('/relationship/:id')
     .get(Relationship.GetById)
     .patch(urlencodedParser, Relationship.UpdateById)
-    .delete(Relationship.DeleteById);
+    .delete(Relationship.DeleteById); // used in web side
 router.route('/relationship/:did/:uid')
     .get(Relationship.CheckIfRelationshipExisted);
 

@@ -46,7 +46,7 @@ module.exports = {
     GetCountByDoctorId: (req, res, next) => {
         const { id } = req.params; // id is doctor id
         Relationship.count({ doctor: id, hid: req.token.hid, apply: true })
-            .then((count) => res.json({total: count}))
+            .then((count) => res.json({ total: count }))
             .catch(err => next(err));
     },
 
@@ -137,7 +137,7 @@ module.exports = {
                         });
                 });
                 Promise.all(promises)
-                .then((results) => res.json(results))
+                    .then((results) => res.json(results))
             })
             .catch(err => next(err));
     },
@@ -154,7 +154,7 @@ module.exports = {
     },
 
     // 创建医患关系
-    // ? This one is weird. The relationship should only be updated but not added.
+    // support one-user to multiple-groups
     FindOrAdd: function (req, res) {
         const relationship = req.body;
 
@@ -174,20 +174,18 @@ module.exports = {
 
                 // 一个患者能被加到多个组中
                 if (items) {
-
-                    var found = false;
-                    for (var i = 0; i < items.length; i++) {
-                        if (items[i].group == relationship.group) {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    // 如果存在，直接返回
+                    const found = items.find(_ => _.group === relationship.group);
                     if (found) {
                         return res.json(items);
                     }
 
+                    // 如果有空的 relationship，加到里面
+                    const foundEmptyOne = items.find(_ => !_.group);
+                    if (foundEmptyOne) {
+                        foundEmptyOne.group = relationship.group;
+                        foundEmptyOne.save();
+                        return res.json(items);
+                    }
                 }
 
                 // 不存在，创建
@@ -210,61 +208,86 @@ module.exports = {
     UpdateById: (req, res, next) => {
         const { id } = req.params;
         const relationship = req.body; // body should only include group
+        
+        if (relationship.group) {
+            Relationship.findByIdAndUpdate(id, relationship, { new: true })
+                .select('-hid -__v')
+                .then((result) => res.json(result))
+                .catch(err => next(err));
+        } else {
+            Relationship.findById(id).then(result => {
+                if (!result) {
+                    return Status.returnStatus(res, Status.NOT_EXISTED);
+                }
+                //
+                Relationship.count({ doctor: result.doctor, user: result.user, group: null, hid: result.hid, apply: true })
+                    .then(numb => {
+                        if (numb > 1) {
+                            // 如果已经有2个空relationship，删除自己
+                            Relationship.findByIdAndDelete(id)
+                                .select('-hid -__v')
+                                .then((result) => res.json(result))
+                                .catch(err => next(err));
 
-        Relationship.findByIdAndUpdate(id, relationship, { new: true })
-            .select('-hid -__v')
-            .then((result) => res.json(result))
-            .catch(err => next(err));
+                        } else {
+                            // 如果< 2 空relationship，do nothing
+                            return res.json(result);
+                        }
+                    })
 
-        // const { id } = req.params;
-        // // 获取数据（json）,只能更新关系组名
-        // const relationship = req.body;
-
-        // Relationship.findById(id, function (err, item) {
-        //     if (err) {
-        //         return Status.returnStatus(res, Status.ERROR, err);
-        //     }
-
-        //     if (!item) {
-        //         return Status.returnStatus(res, Status.NULL);
-        //     }
-
-        //     if (relationship.doctor)
-        //         item.doctor = relationship.doctor;
-        //     if (relationship.group) {
-        //         if (relationship.group == '0000') {
-        //             item.group = null;
-        //         }
-        //         else
-        //             item.group = relationship.group;
-        //     }
-
-        //     if (relationship.user)
-        //         item.user = relationship.user;
-        //     if (relationship.apply || relationship.apply === false)
-        //         item.apply = relationship.apply;
-
-        //     item.save(function (err, raw) {
-        //         if (err) {
-        //             return Status.returnStatus(res, Status.ERROR, err);
-        //         }
-        //         res.json(raw);
-        //     });
-
-        // });
+            })
+                .catch(err => next(err));
+        }
     },
 
 
     DeleteById: (req, res, next) => {
         const { id } = req.params;
-        Relationship.findByIdAndDelete(id)
-            .select('-hid -__v')
-            .then((result) => res.json(result))
+        Relationship.findById(id).then(result => {
+            if (!result) {
+                return Status.returnStatus(res, Status.NOT_EXISTED);
+            }
+            if (result.group) {
+                Relationship.count({ doctor: result.doctor, user: result.user, group: null, hid: result.hid, apply: true })
+                    .then(numb => {
+                        if (numb > 0) {
+                            // 如果已经有空relationship，删除自己
+                            Relationship.findByIdAndDelete(id)
+                                .select('-hid -__v')
+                                .then((result) => res.json(result))
+                                .catch(err => next(err));
+
+                        } else {
+                            // 没有空relationship，把自己变成空relationship
+                            result.group = null;
+                            result.save();
+                            return res.json(result);
+                        }
+                    })
+            } else {
+                //
+                Relationship.count({ doctor: result.doctor, user: result.user, group: null, hid: result.hid, apply: true })
+                    .then(numb => {
+                        if (numb > 1) {
+                            // 如果已经有2个空relationship，删除自己
+                            Relationship.findByIdAndDelete(id)
+                                .select('-hid -__v')
+                                .then((result) => res.json(result))
+                                .catch(err => next(err));
+
+                        } else {
+                            // 如果< 2 空relationship，do nothing
+                            return res.json(result);
+                        }
+                    })
+            }
+        })
             .catch(err => next(err));
     },
+
     RemoveRelationship: (req, res, next) => {
         const { did, uid } = req.params;
-        Relationship.findOneAndDelete({user: uid, doctor: did})
+        Relationship.findManyAndDelete({ user: uid, doctor: did, hid: req.token.hid })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));

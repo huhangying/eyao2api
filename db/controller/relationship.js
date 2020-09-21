@@ -208,7 +208,7 @@ module.exports = {
     UpdateById: (req, res, next) => {
         const { id } = req.params;
         const relationship = req.body; // body should only include group
-        
+
         if (relationship.group) {
             Relationship.findByIdAndUpdate(id, relationship, { new: true })
                 .select('-hid -__v')
@@ -220,17 +220,21 @@ module.exports = {
                     return Status.returnStatus(res, Status.NOT_EXISTED);
                 }
                 //
-                Relationship.count({ doctor: result.doctor, user: result.user, group: null, hid: result.hid, apply: true })
+                Relationship.count({ doctor: result.doctor, user: result.user, hid: result.hid, apply: true })
                     .then(numb => {
                         if (numb > 1) {
-                            // 如果已经有2个空relationship，删除自己
+                            // 如果已经有2个relationship，删除自己
                             Relationship.findByIdAndDelete(id)
                                 .select('-hid -__v')
                                 .then((result) => res.json(result))
                                 .catch(err => next(err));
 
-                        } else {
-                            // 如果< 2 空relationship，do nothing
+                        } else { 
+                            // 如果 == 1(self), do update
+                            Relationship.findByIdAndUpdate(id, relationship, { new: true })
+                            .select('-hid -__v')
+                            .then((result) => res.json(result))
+                            .catch(err => next(err));
                             return res.json(result);
                         }
                     })
@@ -240,7 +244,7 @@ module.exports = {
         }
     },
 
-
+    // ? no-use. following is not working anyway.
     DeleteById: (req, res, next) => {
         const { id } = req.params;
         Relationship.findById(id).then(result => {

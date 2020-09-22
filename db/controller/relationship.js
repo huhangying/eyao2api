@@ -198,8 +198,8 @@ module.exports = {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
-
-                    return res.send(raw);
+                    const { newRelationship } = raw;
+                    return res.send(newRelationship);
                 });
 
             });
@@ -229,12 +229,12 @@ module.exports = {
                                 .then((result) => res.json(result))
                                 .catch(err => next(err));
 
-                        } else { 
+                        } else {
                             // 如果 == 1(self), do update
                             Relationship.findByIdAndUpdate(id, relationship, { new: true })
-                            .select('-hid -__v')
-                            .then((result) => res.json(result))
-                            .catch(err => next(err));
+                                .select('-hid -__v')
+                                .then((result) => res.json(result))
+                                .catch(err => next(err));
                             return res.json(result);
                         }
                     })

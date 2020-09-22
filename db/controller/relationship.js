@@ -291,7 +291,7 @@ module.exports = {
 
     RemoveRelationship: (req, res, next) => {
         const { did, uid } = req.params;
-        Relationship.findManyAndDelete({ user: uid, doctor: did, hid: req.token.hid })
+        Relationship.deleteMany({ user: uid, doctor: did, hid: req.token.hid })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));

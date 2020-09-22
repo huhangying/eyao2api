@@ -167,7 +167,7 @@ module.exports = {
         }
 
         Relationship.find({ doctor: relationship.doctor, user: relationship.user, hid: relationship.hid, apply: true }) // check if existed
-            .exec(function (err, items) {
+            .exec(async (err, items) => {
                 if (err) {
                     return Status.returnStatus(res, Status.ERROR, err);
                 }
@@ -176,15 +176,15 @@ module.exports = {
                 if (items) {
                     const found = items.find(_ => _.group === relationship.group);
                     if (found) {
-                        return res.json(items);
+                        return res.json(found);
                     }
 
                     // 如果有空的 relationship，加到里面
                     const foundEmptyOne = items.find(_ => !_.group);
                     if (foundEmptyOne) {
                         foundEmptyOne.group = relationship.group;
-                        foundEmptyOne.save();
-                        return res.json(items);
+                        const updatedOne = await foundEmptyOne.save();
+                        return res.json(updatedOne);
                     }
                 }
 
@@ -198,8 +198,7 @@ module.exports = {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
-                    const [newRelationship] = raw;
-                    return res.send(newRelationship);
+                    return res.send(raw);
                 });
 
             });

@@ -173,6 +173,7 @@ module.exports = {
             hid: relationship.hid,
             apply: true
         })
+            .select('-hid -__v')
             .lean()
             .then(async items => {
                 // 一个患者能被加到多个组中

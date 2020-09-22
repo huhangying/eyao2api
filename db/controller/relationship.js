@@ -198,7 +198,7 @@ module.exports = {
                     if (err) {
                         return Status.returnStatus(res, Status.ERROR, err);
                     }
-                    const { newRelationship } = raw;
+                    const [newRelationship] = raw;
                     return res.send(newRelationship);
                 });
 

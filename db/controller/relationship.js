@@ -155,7 +155,7 @@ module.exports = {
 
     // 创建医患关系
     // support one-user to multiple-groups
-    FindOrAdd: function (req, res) {
+    FindOrAdd: (req, res, next) => {
         const relationship = req.body;
 
         // check doctor, user
@@ -166,12 +166,15 @@ module.exports = {
             return Status.returnStatus(res, Status.NO_USER);
         }
 
-        Relationship.find({ doctor: relationship.doctor, user: relationship.user, hid: relationship.hid, apply: true }) // check if existed
-            .exec(async (err, items) => {
-                if (err) {
-                    return Status.returnStatus(res, Status.ERROR, err);
-                }
-
+        // check if existed
+        Relationship.find({
+            doctor: relationship.doctor,
+            user: relationship.user,
+            hid: relationship.hid,
+            apply: true
+        })
+            .lean()
+            .then(async items => {
                 // 一个患者能被加到多个组中
                 if (items) {
                     const found = items.find(_ => _.group === relationship.group);
@@ -200,8 +203,8 @@ module.exports = {
                     }
                     return res.send(raw);
                 });
-
-            });
+            })
+            .catch(err => next(err));
     },
 
     UpdateById: (req, res, next) => {

@@ -180,26 +180,25 @@ module.exports = {
                     // double booking
                     return Status.returnStatus(res, Status.DOUBLE_BOOKING);
                 } else {
-                    Booking.create(booking)
-                        .then((result) => {
-                            if (result.status === 1) { // status = 4, don't decrease limit
-                                // limit-- in schedule
-                                Schedule.findById(booking.schedule)
-                                    .exec(function (err, schedule) {
-                                        // 检查可预约数是不是
-                                        if (schedule.limit > 0) {
-                                            schedule.limit--;
-                                            schedule.save();
-                                            
-                                            return res.json(result);
-                                        } else {
-                                            // 没有可以预约的门诊，返回错误
-                                            return Status.returnStatus(res, Status.NO_BOOKING_AVAILABLE);
-                                        }
-                                    });
-                            } else {
-                                return res.json(result);
+                    // 检查可预约数是不是
+                    Schedule.findOne({ _id: booking.schedule, apply: true, hid: booking.hid })
+                        .then(schedule => {
+                            if (!schedule || schedule.limit < 1) {
+                                // 没有可以预约的门诊，返回错误
+                                return Status.returnStatus(res, Status.NO_BOOKING_AVAILABLE);
                             }
+
+                            Booking.create(booking)
+                                .then((result) => {
+                                    if (result.status === 1) { // status = 4, don't decrease limit
+                                        // limit-- in schedule
+                                        schedule.limit--;
+                                        schedule.save();
+                                    }
+                                    return res.json(result);
+                                })
+                                .catch(err => next(err));
+
                         })
                         .catch(err => next(err));
                 }

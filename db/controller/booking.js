@@ -186,11 +186,20 @@ module.exports = {
                                 // limit-- in schedule
                                 Schedule.findById(booking.schedule)
                                     .exec(function (err, schedule) {
-                                        schedule.limit--;
-                                        schedule.save();
+                                        // 检查可预约数是不是
+                                        if (schedule.limit > 0) {
+                                            schedule.limit--;
+                                            schedule.save();
+                                            
+                                            return res.json(result);
+                                        } else {
+                                            // 没有可以预约的门诊，返回错误
+                                            return Status.returnStatus(res, Status.NO_BOOKING_AVAILABLE);
+                                        }
                                     });
+                            } else {
+                                return res.json(result);
                             }
-                            return res.json(result);
                         })
                         .catch(err => next(err));
                 }

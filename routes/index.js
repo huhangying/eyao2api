@@ -347,7 +347,7 @@ router.route('/schedule/:id')
     .patch(urlencodedParser, Schedule.UpdateById)
     .delete(Schedule.DeleteById);
 
-router.route('/schedules/forward-available/:date')
+router.route('/schedules/find/forward-available/:date')
     .get(Schedule.FindForwardAvailable);    // 当日起往后3天的所有有效门诊
 router.route('/schedules/find/doctors/:departmentid/:date/:period')
     .get(Schedule.FindScheduleDoctorsByDepartmentIdAndDate);    // 相同时间段内可选的同科室药师

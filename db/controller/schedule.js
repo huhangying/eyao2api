@@ -213,6 +213,27 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 当日起往后3天的所有有效门诊
+    FindForwardAvailable: (req, res, next) => {
+        const { date } = req.params;
+        const date_start = new Date(date).setHours(0, 0, 0, 0);
+        Schedule.find({
+            date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000 * 3), $gt: date_start },
+            limit: { $gt: 0 },
+            hid: req.token.hid,
+            apply: true
+        })
+            .select('-hid -__v')
+            .lean()
+            .populate(
+                {
+                    path: 'doctor',
+                    select: '_id name title department'
+                }
+            )
+            .then(result => res.json(result))
+            .catch(err => next(err));
+    },
 
     // 相同时间段内可选的同科室药师
     FindScheduleDoctorsByDepartmentIdAndDate: (req, res, next) => {

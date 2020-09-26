@@ -225,12 +225,7 @@ module.exports = {
         })
             .select('-hid -__v')
             .lean()
-            .populate(
-                {
-                    path: 'doctor',
-                    select: '_id name title department'
-                }
-            )
+            .populate('doctor', '_id name title department')
             .then(result => res.json(result))
             .catch(err => next(err));
     },

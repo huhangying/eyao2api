@@ -67,8 +67,8 @@ module.exports = {
         else if (option.admissionNumber) {
             filter_options.admissionNumber = new RegExp(option.admissionNumber, "i");
         }
-        else if (option.sin) {
-            filter_options.sin = new RegExp(option.sin, "i");
+        else if (option.notes) {
+            filter_options.notes = new RegExp(option.notes, "i");
         }
 
         User.find(filter_options)

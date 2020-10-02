@@ -22,8 +22,8 @@ module.exports = mongoose.model(
         reference: { type: String },  // 自由模式参考值
         // 支持格式化的参考值
         unit: { type: String },
-        normalFrom: { type: Number, min: 0 }, // 正常参考值
-        normalTo: { type: Number, min: 0 },
+        referenceFrom: { type: Number, min: 0 }, // 正常参考值
+        referenceTo: { type: Number, min: 0 },
         riskValues: [{
           value: { type: Number, min: -3, max: 3 },
           name: { type: String }, // optional

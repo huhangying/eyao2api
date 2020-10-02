@@ -25,7 +25,9 @@ module.exports = mongoose.model(
             from: { type: Number },
             to: { type: Number },
           }
-        ]
+        ],
+        order: { type: Number },
+        apply: { type: Boolean, default: true }
       }
     ],
     order: { type: Number },

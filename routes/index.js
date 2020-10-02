@@ -330,7 +330,12 @@ router.route('/schedules')
     .get(Schedule.GetAll);
 router.route('/schedules/cms/populated')
     .get(Schedule.GetAllPopulated);
-
+   
+// router.route('/schedules/find/forward-available/:date')// 当日起往后3天的所有有效门诊
+router.route('/schedules/find/forward-available')// 无限制
+.get(Schedule.FindForwardAvailable);    
+router.route('/schedules/find/doctors/:departmentid/:date/:period')
+.get(Schedule.FindScheduleDoctorsByDepartmentIdAndDate);    // 相同时间段内可选的同科室药师
 
 router.route('/schedules/:did')
     .get(Schedule.GetByDoctorId);
@@ -346,12 +351,6 @@ router.route('/schedule/:id')
     .get(Schedule.GetById)
     .patch(urlencodedParser, Schedule.UpdateById)
     .delete(Schedule.DeleteById);
-
-// router.route('/schedules/find/forward-available/:date')// 当日起往后3天的所有有效门诊
-router.route('/schedules/find/forward-available')// 无限制
-    .get(Schedule.FindForwardAvailable);    
-router.route('/schedules/find/doctors/:departmentid/:date/:period')
-    .get(Schedule.FindScheduleDoctorsByDepartmentIdAndDate);    // 相同时间段内可选的同科室药师
 
 router.route('/schedules/reserve-space/:doctorid/:date/:period')
     .get(Schedule.ReserveScheduleSpace);

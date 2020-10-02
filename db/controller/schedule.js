@@ -213,12 +213,13 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 当日起往后3天的所有有效门诊
+    // 当日起往后3天的所有有效门诊(改为无限制)
     FindForwardAvailable: (req, res, next) => {
-        const { date } = req.params;
-        const date_start = new Date(date).setHours(0, 0, 0, 0);
+        // const { date } = req.params;
+        // const date_start = new Date(date).setHours(0, 0, 0, 0);
         Schedule.find({
-            date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000 * 3), $gt: date_start },
+            // date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000 * 3), $gt: date_start },
+            date: { $gt: new Date() },
             limit: { $gt: 0 },
             hid: req.token.hid,
             apply: true

@@ -16,7 +16,7 @@ module.exports = mongoose.model(
       {
         item: { type: String, required: true, trim: true },
         code: { type: String },
-        result: { type: Number, trim: true },
+        result: { type: String, trim: true }, // support both number and string
 
         isFormatted: { type: Boolean }, // false: 自由模式
         reference: { type: String },  // 自由模式参考值

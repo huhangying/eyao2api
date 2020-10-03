@@ -25,7 +25,8 @@ module.exports = {
         const query = {
             department: department,
             type: type,
-            hid: req.token.hid
+            hid: req.token.hid,
+            apply: true,
         };
         SurveyTemplate.find(query)
             .sort({ order: 1 })
@@ -41,7 +42,9 @@ module.exports = {
         if (req.params && req.params.department && req.params.type && req.params.list) {
             var searchCriteria = {
                 department: req.params.department,
-                type: req.params.type
+                type: req.params.type,
+                hid: req.token.hid,
+                apply: true,
             };
 
             SurveyTemplate.find(searchCriteria)
@@ -68,7 +71,7 @@ module.exports = {
     // 根据 Department ID 获取 Survey template list
     GetSurveyTemplatesByDepartmentId: (req, res, next) => {
         const { did } = req.params; // did is department
-        SurveyTemplate.find({ department: did, hid: req.token.hid })
+        SurveyTemplate.find({ department: did, hid: req.token.hid, apply: true })
             .sort({ order: 1 })
             .select('-hid -__v')
             .lean()

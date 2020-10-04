@@ -2,8 +2,7 @@
  * Created by hhu on 2016/5/21.
  */
 
-var Schedule = require('../model/schedule.js');
-var $q = require('q');
+const Schedule = require('../model/schedule.js');
 
 module.exports = {
 

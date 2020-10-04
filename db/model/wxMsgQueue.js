@@ -6,11 +6,17 @@ module.exports = mongoose.model(
     mongoose.Schema({
         hid: Number,
         openid: { type: String, required: true },     // to: 微信的ID
-        type: { type: Number, default: 0 }, // 0: undefined; 1: survey; 2: articlePage; 3: feedback
+        type: { type: Number, default: 0 },  // 1: wechat msg; 2: template message;
+
+        url: { type: String, required: true }, // shared
+        // for wechat msg
         title: { type: String, required: true },
         description: { type: String, trim: true },
-        url: { type: String, required: true },
         picurl: { type: String },
+        // for wechat template msg
+        template_id: { type: String },
+        data: mongoose.Schema.Types.Mixed,
+
         received: { type: Boolean, default: false },
         tryCount: { type: Number, default: 0 },
         errcode: { type: Number },

@@ -16,7 +16,7 @@ const User = require('../db/model/user');
 
 // type=微信模板消息，用于发送门诊预约取消和前转
 const sendWechatTemplateMessage = async (req, res, next) => {
-	const { openid, hid, bookingid, data, templateid, forwardbookingid } = req.body;
+	const { openid, hid, bookingid, data, templateid, forwardbookingid, doctorid, username } = req.body;
 
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	const { wxurl } = await wxUtil.getHospitalSettingsByHid(hid);
@@ -24,20 +24,21 @@ const sendWechatTemplateMessage = async (req, res, next) => {
 	const url = !forwardbookingid ?
 		wxurl + 'reservation?openid=' + openid + '&state=' + hid + '&id=' + bookingid :
 		wxurl + 'booking-forward?openid=' + openid + '&state=' + hid + '&id=' + bookingid + '|' + forwardbookingid;
+	const sendBody = {
+		touser: openid,
+		template_id: template_id,
+		url: url,
+		data: data
+	};
 	axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send',
-		{
-			touser: openid,
-			template_id: template_id,
-			url: url,
-			data: data
-		},
+		sendBody,
 		{
 			params: {
 				access_token: access_token
 			}
 		})
 		.then((result) => {
-			checkWxResponse(openid, hid, result.data);
+			checkWxResponse(openid, hid, result.data, sendBody, doctorid, username);
 			return res.json(result.data)
 		})
 		.catch(err => next(err));
@@ -82,25 +83,18 @@ const checkWxResponse = (openid, hid, rspData, sendBody, doctorid, username) => 
 			wxUtil.refreshAccessToken(hid); // 本次失败，不能重试，只能等下次
 		}
 		if (!sendBody) return;
+
 		// save to message log for later retry
-		const msg = !sendBody.url ?
-			{
-				openid: openid,
-				url: sendBody, // sendBody 自己是 url
-				hid: hid,
-				doctorid,
-				username,
-			} :
-			{
-				...sendBody, // sendBody 是 article object
-				type: 2,
-				errcode: rspData.errcode,
-				hid: hid,
-				openid: openid,
-				received: false,
-				doctorid,
-				username,
-			};
+		const msg = {
+			...sendBody, // sendBody 是 object
+			type: !sendBody.template_id ? 1 : 2, // 1: 微信图文消息; 2: 微信模板消息
+			errcode: rspData.errcode,
+			hid: hid,
+			openid: openid,
+			received: false,
+			doctorid,
+			username,
+		};
 
 		save2MsgQueue(msg);
 	}

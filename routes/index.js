@@ -888,5 +888,10 @@ router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
 
 router.route('/wechat/resend-msg/:openid') // 尝试重新发送
     .get(wechat.resendFailedMsg)
+    
+// 
+const WxMsgQueue = require('../db/controller/wxMsgQueue');
+router.route('/wechat/msg-queue/all')
+    .get(WxMsgQueue.GetAll);
 
 module.exports = router;

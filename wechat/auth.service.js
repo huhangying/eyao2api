@@ -12,6 +12,9 @@ const wxUtil = require('./wx-util');
 const wxMsgQueue = require('../db/model/wxMsgQueue');
 const User = require('../db/model/user');
 
+// 微信消息支持两种：微信模板消息 和 微信文章消息
+
+// type=微信模板消息，用于发送门诊预约取消和前转
 const sendWechatTemplateMessage = async (req, res, next) => {
 	const { openid, hid, bookingid, data, templateid, forwardbookingid } = req.body;
 
@@ -40,17 +43,23 @@ const sendWechatTemplateMessage = async (req, res, next) => {
 		.catch(err => next(err));
 }
 
-// System send it out
+// type=微信文章消息
+// article: {
+// 		title: title,
+// 		description: description,
+// 		url: url,
+// 		picurl: picUrl
+// }
 const sendClientMessage = async (req, res, next) => {
 	const { openid } = req.params;
-	const { hid, article } = req.body;
+	const { hid, article, doctorid, username } = req.body;
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
 		{
 			touser: openid,
 			msgtype: 'news',
 			news: {
-				articles: [article]
+				articles: [article] // 现只支持一篇文章
 			}
 		},
 		{
@@ -59,14 +68,14 @@ const sendClientMessage = async (req, res, next) => {
 			}
 		})
 		.then((result) => {
-			checkWxResponse(openid, hid, result.data, article);
+			checkWxResponse(openid, hid, result.data, article, doctorid, username);
 
 			return res.json(result.data)
 		})
 		.catch(err => next(err));
 }
 
-const checkWxResponse = (openid, hid, rspData, sendBody) => {
+const checkWxResponse = (openid, hid, rspData, sendBody, doctorid, username) => {
 	if (rspData && rspData.errcode) {
 		if (rspData.errcode === 40001) {
 			// 40001:	获取 access_token 时 AppSecret 错误，或者 access_token 无效
@@ -79,6 +88,8 @@ const checkWxResponse = (openid, hid, rspData, sendBody) => {
 				openid: openid,
 				url: sendBody, // sendBody 自己是 url
 				hid: hid,
+				doctorid,
+				username,
 			} :
 			{
 				...sendBody, // sendBody 是 article object
@@ -87,6 +98,8 @@ const checkWxResponse = (openid, hid, rspData, sendBody) => {
 				hid: hid,
 				openid: openid,
 				received: false,
+				doctorid,
+				username,
 			};
 
 		save2MsgQueue(msg);

@@ -878,7 +878,7 @@ router.route('/wechat/authRefreshWeixinToken')
 
 router.route('/wechat/get-doctor-qrcode/:did')
     .get(wechat.getDoctorQrcode);
-router.route('/wechat/send-wechat-msg')
+router.route('/wechat/send-wechat-template-msg')
     .post(urlencodedParser, wechat.sendWechatTemplateMessage);
 router.route('/wechat/send-client-msg/:openid') // 系统/客服消息
     .post(urlencodedParser, wechat.sendClientMessage);

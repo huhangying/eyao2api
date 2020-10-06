@@ -80,6 +80,34 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据药师ID 获取 没有过期的 病患取消预约
+    GetCancelledBookingsByDoctorId: (req, res, next) => {
+        const { did } = req.params;
+        Booking.find({
+            doctor: did,
+            hid: req.token.hid,
+            status: 3, // status 3: 病患取消预约
+            date: {
+                $gte: moment().startOf('day').toDate(),
+            },
+        })
+            .sort({ created: -1 })
+            .populate([
+                {
+                    path: 'schedule',
+                    select: '-__v -hid'
+                },
+                {
+                    path: 'user',
+                    select: '_id name link_id cell gender birthdate visitedDepartments'
+                }
+            ])
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据药师ID 获取相关的预约统计
     GetCountsByDoctorId: (req, res, next) => {
         const { did } = req.params;

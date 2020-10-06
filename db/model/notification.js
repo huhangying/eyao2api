@@ -10,7 +10,8 @@ module.exports = mongoose.model(
         userName: String,
         icon: String,
         direction: { type: Boolean, required: true },  // true: user -> doctor; false: doctor -> user
-        type: { type: Number, required: true }, // 類別： 0：chat   1: 不良反应   2: 联合用药
+        // 類別： 0：chat   1: 不良反应   2: 联合用药   3. 预约取消   4. 付费咨询
+        type: { type: Number, required: true }, 
         count: { type: Number, default: 0 }
     }, {
         timestamps: true

@@ -395,6 +395,8 @@ router.route('/bookings/user/:uid')
 
 router.route('/bookings/doctor/:did')
     .get(Booking.GetByDoctorId);
+router.route('/bookings/cancelled/doctor/:did')
+    .get(Booking.GetCancelledBookingsByDoctorId); // 获取没有过期的病患取消预约
 router.route('/bookings/today/doctor/:did')
     .get(Booking.GetTodaysByDoctorId);
 router.route('/bookings/counts/doctor/:did') // used in dashboard

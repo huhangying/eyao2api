@@ -86,7 +86,7 @@ module.exports = {
         Booking.find({
             doctor: did,
             hid: req.token.hid,
-            status: 3, // status 3: 病患取消预约
+            status: 2, // status 2: 病患取消预约
             date: {
                 $gte: moment().startOf('day').toDate(),
             },

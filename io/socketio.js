@@ -1,3 +1,4 @@
+const moment = require('moment');
 
 module.exports = (io) => {
     io.on('connection', socket => {
@@ -40,7 +41,7 @@ module.exports = (io) => {
         // Feedback
 
         socket.on('feedback', (room, feedback) => {
-            console.log('rooms: ', socket.rooms);
+            // console.log('rooms: ', socket.rooms);
 
             socket.to(room).emit('feedback', feedback);
 
@@ -50,6 +51,20 @@ module.exports = (io) => {
                 name: feedback.senderName || '',
                 count: 1,
                 created: feedback.createdAt
+            });
+        });
+
+        // Booking (cancel for now)
+
+        socket.on('booking', (room, booking) => {
+            // console.log('rooms: ', socket.rooms);
+            // redirect to noti
+            socket.to(room).emit('notification', {
+                patientId: booking.user._id,
+                type: 3,
+                name: `${booking.user.name} 取消了${moment(booking.date).format('LL')}预约`,
+                count: 1,
+                created: booking.created
             });
         });
 

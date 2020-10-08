@@ -53,20 +53,5 @@ module.exports = (io) => {
                 created: feedback.createdAt
             });
         });
-
-        // Booking (cancel for now)
-
-        socket.on('booking', (room, booking) => {
-            // console.log('rooms: ', socket.rooms);
-            // redirect to noti
-            socket.to(room).emit('notification', {
-                patientId: booking.user._id,
-                type: 3,
-                name: `${booking.user.name} 取消了${moment(booking.date).format('LL')}预约`,
-                count: 1,
-                created: booking.created
-            });
-        });
-
     });
 }

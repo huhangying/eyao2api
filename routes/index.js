@@ -895,5 +895,6 @@ router.route('/wechat/resend-msg/:openid') // 尝试重新发送
 const WxMsgQueue = require('../db/controller/wxMsgQueue');
 router.route('/wechat/msg-queue/all')
     .get(WxMsgQueue.GetAll);
-
+router.route('/wechat/msg-queue/:id')
+    .delete(WxMsgQueue.DeleteById);
 module.exports = router;

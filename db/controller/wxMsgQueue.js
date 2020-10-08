@@ -21,4 +21,12 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    DeleteById: (req, res, next) => {
+        const { id } = req.params;
+        WxMsgQueue.findByIdAndDelete(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
 }

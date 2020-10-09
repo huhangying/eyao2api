@@ -57,7 +57,7 @@ module.exports = (io) => {
         // Booking (cancel for now)
 
         socket.on('booking', (room, booking) => {
-            
+            console.log('---> on booking: ', room, booking);
             // redirect to noti
             socket.to(room).emit('notification', {
                 patientId: booking.user._id,

@@ -5,7 +5,7 @@ module.exports = (io) => {
         console.log(`--------> connected to socket: ${socket.id}`);
 
         socket.on('disconnect', () => {
-            console.log('<---------x user disconnected');
+            console.log(`<---------x user disconnected on ${socket.id}`);
         });
 
         socket.on('chat', (room, chat) => {

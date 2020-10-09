@@ -11,6 +11,16 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    GetByDoctorId: (req, res, next) => {
+        const {did} = req.params;
+        WxMsgQueue.find({ doctorid: did, hid: req.token.hid })
+            .sort({ createdAt: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据ID获取详细信息
     GetById: (req, res, next) => {
         const { id } = req.params;

@@ -21,11 +21,7 @@ module.exports = (io) => {
         // Chat
         
         socket.on('chat', (room, chat) => {
-            if (socket.rooms.indexOf(room) == -1) {
-                socket.join(room);
-                console.log('rejoined to room ---' + room);
-            }
-            //todo: save to db
+
             socket.to(room).emit('chat', chat);
 
             socket.to(room).emit('notification', {
@@ -36,7 +32,6 @@ module.exports = (io) => {
                 created: chat.created
             });
 
-            // console.log('chat message: ', room, msg);
         });
 
         // Feedback

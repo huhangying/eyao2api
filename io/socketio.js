@@ -30,7 +30,7 @@ module.exports = (io) => {
 
         socket.on('joinRoom', (room) => {
             socket.join(room);
-            console.log('rooms size--->', socket.rooms.length);
+            console.log('rooms --->', JSON.stringify(socket.rooms));
             console.log('joined to room ' + room);
         });
 

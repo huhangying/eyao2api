@@ -9,11 +9,11 @@ module.exports = (io) => {
         });
 
         socket.on('chat', (room, chat) => {
-            // if (socket.rooms.indexOf(room) == -1) {
-            //     socket.join(room);
-            //     console.log('joined to room ' + room);
+            if (socket.rooms.indexOf(room) == -1) {
+                socket.join(room);
+                console.log('joined to room ---' + room);
 
-            // }
+            }
             //todo: save to db
             socket.to(room).emit('chat', chat);
 
@@ -30,7 +30,6 @@ module.exports = (io) => {
 
         socket.on('joinRoom', (room) => {
             socket.join(room);
-            console.log('rooms --->', JSON.stringify(socket.rooms));
             console.log('joined to room ' + room);
         });
 

@@ -8,11 +8,22 @@ module.exports = (io) => {
             console.log(`<---------x user disconnected on ${socket.id}`);
         });
 
+        socket.on('joinRoom', (room) => {
+            socket.join(room);
+            console.log('joined to room ' + room);
+        });
+
+        socket.on('leaveRoom', (room) => {
+            socket.leave(room);
+            console.log('left room ' + room);
+        });
+
+        // Chat
+        
         socket.on('chat', (room, chat) => {
             if (socket.rooms.indexOf(room) == -1) {
                 socket.join(room);
-                console.log('joined to room ---' + room);
-
+                console.log('rejoined to room ---' + room);
             }
             //todo: save to db
             socket.to(room).emit('chat', chat);
@@ -26,16 +37,6 @@ module.exports = (io) => {
             });
 
             // console.log('chat message: ', room, msg);
-        });
-
-        socket.on('joinRoom', (room) => {
-            socket.join(room);
-            console.log('joined to room ' + room);
-        });
-
-        socket.on('leaveRoom', (room) => {
-            socket.leave(room);
-            console.log('left room ' + room);
         });
 
         // Feedback

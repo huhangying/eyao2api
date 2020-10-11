@@ -95,6 +95,7 @@ const checkWxResponse = (openid, hid, rspData, sendBody, doctorid, username) => 
 }
 
 const save2MsgQueue = (data) => {
+	console.log('failed queue', data);
 	wxMsgQueue.findOneAndUpdate({ openid: data.openid, url: data.url, hid: data.hid }, data, { upsert: true, new: true })
 		.then(async (result) => {
 			if (!result.tryCount) { // if first time

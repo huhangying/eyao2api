@@ -10,7 +10,7 @@ module.exports = mongoose.model(
 
         url: { type: String, required: true }, // shared
         // for wechat msg
-        title: { type: String, required: true },
+        title: { type: String },
         description: { type: String, trim: true },
         picurl: { type: String },
         // for wechat template msg

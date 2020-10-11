@@ -1,12 +1,6 @@
 const axios = require('axios').default;
 const util = require('../util/util');
-const Wechat = require('wechat-jssdk');
 const { Buffer } = require('buffer');
-const SignatureStore = require('./signature.controller');
-const wxConfig = {
-	"appId": 'wxac12d83affdb4dd5',
-	"appSecret": 'a6cdf7e9c01039d03f3255cf5826a189',
-}
 const messageHandler = require('./message-handler');
 const wxUtil = require('./wx-util');
 const wxMsgQueue = require('../db/model/wxMsgQueue');
@@ -204,31 +198,6 @@ module.exports = {
 				res.send(JSON.stringify(error)); // error
 			}
 		});
-
-
-		// SignatureStore.UpsertSignature({
-		// 	signature: signature,
-		// 	timestamp: timestamp,
-		// 	nonce: nonce,
-		// 	openid: openid
-		// }).exec();
-		// res.sendStatus(200);
-	},
-
-	//todo: remove
-	getSignatureByUrl: (req, res, next) => {
-		const { url } = req.params;
-		// // get from signature store
-		// SignatureStore.GetByOpenId(openid);
-		const wx = new Wechat(wxConfig);
-		wx.jssdk.getSignature(url)
-			.then((signatureData) => {
-				return res.json(signatureData)
-			})
-			.catch(err => {
-				console.log(err);
-				next(err);
-			});
 	},
 
 	getWeixinToken: (req, res, next) => {

@@ -869,8 +869,6 @@ router.route('/wechat/auth')
     .post(wechat.receiveAuth);
 router.route('/wechat/authSignature/:openid')
     .get(SignatureStore.GetByOpenId);
-router.route('/wechat/auth-signature/:url') //todo: remove
-    .get(wechat.getSignatureByUrl);
 
 router.route('/wechat/authWeixinToken')
     .get(wechat.getWeixinToken);

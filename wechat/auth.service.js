@@ -71,8 +71,8 @@ const sendClientMessage = async (req, res, next) => {
 }
 
 const checkWxResponse = (openid, hid, rspData, sendBody, doctorid, username) => {
-	// if (rspData && rspData.errcode) {
-	if (rspData) { // test
+	if (rspData && rspData.errcode) {
+	// if (rspData) { // test
 		if (rspData.errcode === 40001) {
 			// 40001:	获取 access_token 时 AppSecret 错误，或者 access_token 无效
 			wxUtil.refreshAccessToken(hid); // 本次失败，不能重试，只能等下次
@@ -96,7 +96,7 @@ const checkWxResponse = (openid, hid, rspData, sendBody, doctorid, username) => 
 }
 
 const save2MsgQueue = (data) => {
-	console.log('failed queue', data);
+	// console.log('failed queue', data);
 	wxMsgQueue.findOneAndUpdate({ openid: data.openid, url: data.url, hid: data.hid }, data, { upsert: true, new: true })
 		.then(async (result) => {
 			if (!result.tryCount) { // if first time

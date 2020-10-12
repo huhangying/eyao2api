@@ -50,8 +50,12 @@ module.exports = {
     const { id } = req.params;
     const { csdoctor } = req.body;
     Hospital.findByIdAndUpdate(id, { csdoctor: csdoctor }, { new: true })
-      .select('csdoctor')
-      // .populate('csdoctor', '_id name title')
+      .select('_id csdoctor')
+      .populate({
+        path: 'csdoctor', 
+        // populate: { path: 'department', select: '_id name' },
+        select: '-hid -__v',        
+      })
       .then((result) => res.json(result))
       .catch(err => next(err));
   },

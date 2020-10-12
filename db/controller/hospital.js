@@ -38,7 +38,7 @@ module.exports = {
       .select('csdoctor')
       .populate({
         path: 'csdoctor', 
-        populate: { path: 'department', select: '_id name' },
+        // populate: { path: 'department', select: '_id name' },
         select: '_id name title user_id department',
         
       })

@@ -40,6 +40,7 @@ module.exports = {
 
         Doctor.find({ hid: req.token.hid, apply: true, name: { $regex: name } })
             .select('-hid -password -__v')
+            .populate({ path: 'department', select: '_id name ' })
             .sort({ order: 1, updated: -1 })
             .lean()
             .then((result) => res.json(result))

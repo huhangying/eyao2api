@@ -181,6 +181,11 @@ var Hospital = require('../db/controller/hospital');
 router.route('/hospitals')
     .get(Hospital.GetAll);
 
+router.route('/hospital/customer-service')
+    .get(Hospital.GetCustomerService);
+router.route('/hospital/customer-service/:id')
+    .patch(urlencodedParser, Hospital.UpdateCustomerService);
+
 router.route('/hospital')
     .post(urlencodedParser, Hospital.Add);
 

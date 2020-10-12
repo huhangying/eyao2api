@@ -13,6 +13,7 @@ module.exports = mongoose.model(
     wxid: String,
     appid: String,  // wechat
     secret: String, // wechat
+    csdoctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' }, // 
     apply: { type: Boolean, default: true }
   }, {
     timestamps: true

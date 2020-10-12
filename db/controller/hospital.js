@@ -33,6 +33,29 @@ module.exports = {
       .catch(err => next(err));
   },
 
+  GetCustomerService: (req, res, next) => {
+    Hospital.find({ hid: req.token.hid, apply: true })
+      .select('csdoctor')
+      .populate({
+        path: 'csdoctor', 
+        populate: { path: 'department', select: '_id name' },
+        select: '_id name title user_id department',
+        
+      })
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
+
+  UpdateCustomerService: (req, res, next) => {
+    const { id } = req.params;
+    const { csdoctor } = req.body;
+    Hospital.findByIdAndUpdate(id, { csdoctor: csdoctor }, { new: true })
+      .select('csdoctor')
+      // .populate('csdoctor', '_id name title')
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
+
   getWechatSecretByHid: (req, res, next) => {
     const { hid } = req.params;
     return Hospital.findOne({ hid: hid, apply: true })

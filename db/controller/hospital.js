@@ -34,7 +34,7 @@ module.exports = {
   },
 
   GetCustomerService: (req, res, next) => {
-    Hospital.find({ hid: req.token.hid, apply: true })
+    Hospital.findOne({ hid: req.token.hid, apply: true })
       .select('_id csdoctor')
       .populate({
         path: 'csdoctor', 

@@ -34,6 +34,18 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 搜索药师名
+    SearchDoctorsByName: (req, res, next) => {
+        const { name } = req.params;
+
+        Doctor.find({ hid: req.token.hid, apply: true, name: { $regex: name } })
+            .select('-hid -password -__v')
+            .sort({ order: 1, updated: -1 })
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 查找关注药师 search by user_id
     // getFocusDoctors: function (userId) {
     //     var deferred = Q.defer();
@@ -170,13 +182,13 @@ module.exports = {
     },
 
     //todo: combine with UpdateByUserId
-    UpdateShortcuts:  (req, res, next) => {
+    UpdateShortcuts: (req, res, next) => {
         const { did } = req.params;   //doctor user id
         const item = req.body;
-        Doctor.findOneAndUpdate({user_id: did, hid: item.hid}, item, { new: true })
-        .select('shortcuts')
-        .then((result) => res.json(result))
-        .catch(err => next(err));
+        Doctor.findOneAndUpdate({ user_id: did, hid: item.hid }, item, { new: true })
+            .select('shortcuts')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // 创建药师用户
@@ -331,11 +343,11 @@ module.exports = {
     GetBriefInfo: (req, res, next) => {
         const { id } = req.params;
         Doctor.findOne({ _id: id, apply: true })
-        .select('-hid -password -__v')
-        .populate('department', '_id name address')
-        .lean()
-        .then((result) => res.json(result))
-        .catch(err => next(err));
+            .select('-hid -password -__v')
+            .populate('department', '_id name address')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     //====================================================== for service

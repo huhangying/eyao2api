@@ -47,6 +47,8 @@ var Doctor = require('../db/controller/doctor');
 
 router.route('/doctors/:number')
     .get(Doctor.GetAllDoctors);//
+router.route('/doctors/search/:name')
+    .get(Doctor.SearchDoctorsByName);//
 router.route('/doctors/:number/all')
     .get(Doctor.GetAll);//
 

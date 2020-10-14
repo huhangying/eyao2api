@@ -14,22 +14,9 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // new
-    GetAllByRoomBySender: (req, res, next) => {
-        const { sender } = req.params;
-        Chat.find({ hid: req.token.hid })
-            .or([{ sender: sender }, { to: sender }]) // either sender or
-            .sort({ created: -1 })
-            .limit(100)
-            .select('-hid -__v')
-            .lean()
-            .then((result) => res.json(result))
-            .catch(err => next(err));
-    },
-
     getChatHistoryBySenderAndTo: (req, res, next) => {
         const { sender, to } = req.params;
-        Chat.find({ hid: req.token.hid })
+        Chat.find({ hid: req.token.hid, cs: {$ne: true}})
             .or([{ sender: sender, to: to }, { sender: to, to: sender }]) // either sender or
             .sort({ created: -1 })
             .limit(100)
@@ -55,7 +42,7 @@ module.exports = {
     getUnreadByDoctor: (req, res, next) => {
         const { did } = req.params;
 
-        Chat.find({ to: did, hid: req.token.hid, read: 0 })
+        Chat.find({ to: did, hid: req.token.hid, read: 0, cs: {$ne: true} })
             .sort({ created: -1 })
             .select('-hid -__v')
             .lean()
@@ -67,7 +54,7 @@ module.exports = {
     getUnreadByPatient: (req, res, next) => {
         const { uid } = req.params;
 
-        Chat.find({ to: uid, hid: req.token.hid, read: 0 })
+        Chat.find({ to: uid, hid: req.token.hid, read: 0, cs: {$ne: true} })
             .sort({ created: -1 })
             .select('-hid -__v')
             .lean()
@@ -79,7 +66,7 @@ module.exports = {
     setReadByDoctorAndPatient: (req, res, next) => {
         const { did, uid } = req.params;
 
-        Chat.updateMany({ to: did, sender: uid, hid: req.token.hid, read: 0 },
+        Chat.updateMany({ to: did, sender: uid, hid: req.token.hid, read: 0, cs: {$ne: true} },
             { read: 1 })
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -89,7 +76,7 @@ module.exports = {
     setReadByPatientAndDoctor: (req, res, next) => {
         const { uid, did } = req.params;
 
-        Chat.updateMany({ to: uid, sender: did, hid: req.token.hid, read: 0 },
+        Chat.updateMany({ to: uid, sender: did, hid: req.token.hid, read: 0, cs: {$ne: true} },
             { read: 1 })
             .then((result) => res.json(result))
             .catch(err => next(err));

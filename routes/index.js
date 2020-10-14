@@ -276,9 +276,6 @@ var Chat = require('../db/controller/chat');
 router.route('/chats/:room')
     .get(Chat.GetAllByRoom);
 
-router.route('/chats/history/:sender') // no one use it?
-    .get(Chat.GetAllByRoomBySender)
-
 router.route('/chats/history/:sender/:to')
     .get(Chat.getChatHistoryBySenderAndTo);
 

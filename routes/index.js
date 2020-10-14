@@ -279,19 +279,23 @@ router.route('/chats/:room')
 router.route('/chats/history/:sender/:to')
     .get(Chat.getChatHistoryBySenderAndTo);
 
-router.route('/chats/cs-history/user/:uid') // 病患客服历史消息
+router.route('/cs-chats/history/user/:uid') // 病患客服历史消息
     .get(Chat.getCsHistoryByUser);
 
 // unread list
-router.route('/chats/unread/doctor/:did')
+router.route('/chats/unread/doctor/:did')   // web-side
     .get(Chat.getUnreadByDoctor);
-router.route('/chats/unread/user/:uid')
+router.route('/chats/unread/user/:uid')     // wechat
     .get(Chat.getUnreadByPatient);
+router.route('/cs-chats/unread/doctor/:did')// web-side
+    .get(Chat.getCsUnreadByDoctor);
 
 router.route('/chats/read/doctor/:did/:uid') // web-side: clear unread count
     .get(Chat.setReadByDoctorAndPatient);
 router.route('/chats/read/user/:uid/:did')  // wechat: clear unread count
     .get(Chat.setReadByPatientAndDoctor);
+router.route('/cs-chats/read/doctor/:did/:uid') // web-side
+    .get(Chat.setCsReadByPatientAndDoctor);
 
 router.route('/chat/:id')
     .get(Chat.GetById)
@@ -337,12 +341,12 @@ router.route('/schedules')
     .get(Schedule.GetAll);
 router.route('/schedules/cms/populated')
     .get(Schedule.GetAllPopulated);
-   
+
 // router.route('/schedules/find/forward-available/:date')// 当日起往后3天的所有有效门诊
 router.route('/schedules/find/forward-available')// 无限制
-.get(Schedule.FindForwardAvailable);    
+    .get(Schedule.FindForwardAvailable);
 router.route('/schedules/find/doctors/:departmentid/:date/:period')
-.get(Schedule.FindScheduleDoctorsByDepartmentIdAndDate);    // 相同时间段内可选的同科室药师
+    .get(Schedule.FindScheduleDoctorsByDepartmentIdAndDate);    // 相同时间段内可选的同科室药师
 
 router.route('/schedules/:did')
     .get(Schedule.GetByDoctorId);
@@ -895,7 +899,7 @@ router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
 
 router.route('/wechat/resend-msg/:openid') // 尝试重新发送
     .get(wechat.resendFailedMsg)
-    
+
 // 
 const WxMsgQueue = require('../db/controller/wxMsgQueue');
 router.route('/wechat/msg-queue/all')

@@ -111,6 +111,26 @@ module.exports = {
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
-    }
+    },
+
+    getCsUnreadByDoctor: (req, res, next) => {
+        const { did } = req.params;
+
+        Chat.find({ to: did, hid: req.token.hid, read: 0, cs: true })
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    setCsReadByPatientAndDoctor: (req, res, next) => {
+        const { uid, did } = req.params;
+
+        Chat.updateMany({ to: uid, sender: did, hid: req.token.hid, read: 0, cs: true },
+            { read: 1 })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
 
 }

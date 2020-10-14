@@ -112,4 +112,18 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    //========================= 客服消息相关
+
+    // 病患客服历史消息
+    getCsHistoryByUser: (req, res, next) => {
+        const { uid } = req.params;
+        Chat.find({ hid: req.token.hid, cs: true })
+            .or([{ sender: uid }, { to: uid }])
+            .sort({ created: -1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    }
+
 }

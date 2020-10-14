@@ -282,6 +282,9 @@ router.route('/chats/history/:sender') // no one use it?
 router.route('/chats/history/:sender/:to')
     .get(Chat.getChatHistoryBySenderAndTo);
 
+router.route('/chats/cs-history/user/:uid') // 病患客服历史消息
+    .get(Chat.getCsHistoryByUser);
+
 // unread list
 router.route('/chats/unread/doctor/:did')
     .get(Chat.getUnreadByDoctor);

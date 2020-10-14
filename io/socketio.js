@@ -19,7 +19,7 @@ module.exports = (io) => {
         });
 
         // Chat
-        
+
         socket.on('chat', (room, chat) => {
 
             socket.to(room).emit('chat', chat);
@@ -27,6 +27,22 @@ module.exports = (io) => {
             socket.to(room).emit('notification', {
                 patientId: chat.sender,
                 type: 0,
+                name: chat.senderName || '',
+                count: 1,
+                created: chat.created
+            });
+
+        });
+
+        // customer service chat
+
+        socket.on('customerService', (room, chat) => {
+
+            socket.to(room).emit('chat', chat); // 还是用原来chat的那一套来传递消息
+
+            socket.to(room).emit('notification', {
+                patientId: chat.sender,
+                type: 4, // 客服chat
                 name: chat.senderName || '',
                 count: 1,
                 created: chat.created
@@ -43,7 +59,7 @@ module.exports = (io) => {
 
             socket.to(room).emit('notification', {
                 patientId: feedback.user,
-                type: feedback.type,
+                type: feedback.type, // 1 不良反应 or 2 联合用药
                 name: feedback.senderName || '',
                 count: 1,
                 created: feedback.createdAt
@@ -57,7 +73,7 @@ module.exports = (io) => {
             // redirect to noti
             socket.to(room).emit('notification', {
                 patientId: booking.user._id,
-                type: 3,
+                type: 3, // 门诊预约
                 name: `${booking.user.name} 取消了${moment(booking.date).format('LL')}预约`,
                 count: 1,
                 created: booking.created

@@ -321,6 +321,7 @@ module.exports = {
                 });
                 result.hospitalName = hosptial.name;
                 result.wechatUrl = hosptial.wxurl;
+                result.cs = hosptial.cs;
                 return res.json(result);
             })
             .catch(err => next(err));

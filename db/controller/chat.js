@@ -117,30 +117,32 @@ module.exports = {
     // 客服病患列表 （当日？）
     getCsPatientList: (req, res, next) => {
         const aggregatorOpts = [
-            // {
-            //     $unwind: "$items"
-            // },
+            { $match: { hid: req.token.hid, cs: true } },
+            { $sort: { create: -1 } },
             {
                 $group: {
-                    _id: "$items.sender",
-                    count: { $sum: 1 }
+                    sender: '$sender',
+                    // count: { $sum: 1 }
                 }
-            }
+            },
+            {
+                $unwind: { path: '$sender' }
+            },
         ];
 
-        Chat.find({ hid: req.token.hid, cs: true })
-            .sort({ create: -1 })
-            .distinct('sender')
-            .then(results => {
-                Doctor.populate(results, {path: 'sender'})
-                .then((result) => res.json(result))
-                .catch(err => next(err));
-            })
-            // .populate('sender', '_id name')
-            // // .aggregate(aggregatorOpts)
-            // // .lean()
-            // .then((result) => res.json(result))
+        Chat.aggregate(aggregatorOpts)
+            .then((result) => res.json(result))
             .catch(err => next(err));
+
+        // Chat.find({ hid: req.token.hid, cs: true })
+        //     .sort({ create: -1 })
+        //     .distinct('sender')
+        //     .then(results => {
+        //         Doctor.populate(results, { path: 'sender' })
+        //             .then((result) => res.json(result))
+        //             .catch(err => next(err));
+        //     })
+        //     .catch(err => next(err));
     },
 
     // web side

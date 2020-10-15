@@ -132,7 +132,12 @@ module.exports = {
         ];
 
         Chat.aggregate(aggregatorOpts)
-            .then((result) => res.json(result))
+            // .then((result) => res.json(result))
+            .then(results => {
+                Doctor.populate(results, { path: '_id' })
+                    .then((result) => res.json(result))
+                    .catch(err => next(err));
+            })
             .catch(err => next(err));
 
         // Chat.find({ hid: req.token.hid, cs: true })

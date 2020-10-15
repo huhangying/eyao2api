@@ -281,6 +281,8 @@ router.route('/chats/history/:sender/:to')
 
 router.route('/cs-chats/history/user/:uid') // 病患客服历史消息
     .get(Chat.getCsHistoryByUser);
+router.route('/cs-chats/patient-list') // 客服病患列表
+    .get(Chat.getCsPatientList);
 
 // unread list
 router.route('/chats/unread/doctor/:did')   // web-side

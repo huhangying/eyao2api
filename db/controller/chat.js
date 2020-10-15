@@ -16,7 +16,7 @@ module.exports = {
 
     getChatHistoryBySenderAndTo: (req, res, next) => {
         const { sender, to } = req.params;
-        Chat.find({ hid: req.token.hid, cs: {$ne: true}})
+        Chat.find({ hid: req.token.hid, cs: { $ne: true } })
             .or([{ sender: sender, to: to }, { sender: to, to: sender }]) // either sender or
             .sort({ created: -1 })
             .limit(100)
@@ -42,7 +42,7 @@ module.exports = {
     getUnreadByDoctor: (req, res, next) => {
         const { did } = req.params;
 
-        Chat.find({ to: did, hid: req.token.hid, read: 0, cs: {$ne: true} })
+        Chat.find({ to: did, hid: req.token.hid, read: 0, cs: { $ne: true } })
             .sort({ created: -1 })
             .select('-hid -__v')
             .lean()
@@ -54,7 +54,7 @@ module.exports = {
     getUnreadByPatient: (req, res, next) => {
         const { uid } = req.params;
 
-        Chat.find({ to: uid, hid: req.token.hid, read: 0, cs: {$ne: true} })
+        Chat.find({ to: uid, hid: req.token.hid, read: 0, cs: { $ne: true } })
             .sort({ created: -1 })
             .select('-hid -__v')
             .lean()
@@ -66,7 +66,7 @@ module.exports = {
     setReadByDoctorAndPatient: (req, res, next) => {
         const { did, uid } = req.params;
 
-        Chat.updateMany({ to: did, sender: uid, hid: req.token.hid, read: 0, cs: {$ne: true} },
+        Chat.updateMany({ to: did, sender: uid, hid: req.token.hid, read: 0, cs: { $ne: true } },
             { read: 1 })
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -76,7 +76,7 @@ module.exports = {
     setReadByPatientAndDoctor: (req, res, next) => {
         const { uid, did } = req.params;
 
-        Chat.updateMany({ to: uid, sender: did, hid: req.token.hid, read: 0, cs: {$ne: true} },
+        Chat.updateMany({ to: uid, sender: did, hid: req.token.hid, read: 0, cs: { $ne: true } },
             { read: 1 })
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -112,6 +112,29 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
+
+    // 客服病患列表 （当日？）
+    getCsPatientList: (req, res, next) => {
+        const aggregatorOpts = [{
+            $unwind: "$items"
+        },
+        {
+            $group: {
+                sender: "$items.sender",
+                count: { $sum: 1 }
+            }
+        }
+        ];
+
+        Chat.find({ hid: req.token.hid, cs: true })
+            .sort({ create: -1 })
+            .select('sender')
+            .aggregate(aggregatorOpts)
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // web side
     getCsUnreadByDoctor: (req, res, next) => {
         const { did } = req.params;

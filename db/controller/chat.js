@@ -115,22 +115,23 @@ module.exports = {
 
     // 客服病患列表 （当日？）
     getCsPatientList: (req, res, next) => {
-        const aggregatorOpts = [{
-            $unwind: "$items"
-        },
-        {
-            $group: {
-                sender: "$items.sender",
-                count: { $sum: 1 }
+        const aggregatorOpts = [
+            // {
+            //     $unwind: "$items"
+            // },
+            {
+                $group: {
+                    _id: "$items.sender",
+                    count: { $sum: 1 }
+                }
             }
-        }
         ];
 
         Chat.find({ hid: req.token.hid, cs: true })
             .sort({ create: -1 })
             .select('sender read')
-            // .aggregate(aggregatorOpts)
-            .lean()
+            .aggregate(aggregatorOpts)
+            // .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

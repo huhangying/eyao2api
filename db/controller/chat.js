@@ -130,6 +130,7 @@ module.exports = {
         Chat.find({ hid: req.token.hid, cs: true })
             .sort({ create: -1 })
             // .select('sender')
+            .populate('sender', '_id name')
             .distinct('sender')
             // .aggregate(aggregatorOpts)
             // .lean()

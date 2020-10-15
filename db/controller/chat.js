@@ -1,5 +1,5 @@
 const Chat = require('../model/chat.js');
-const Doctor = require('../model/doctor');
+const User = require('../model/user');
 
 module.exports = {
 
@@ -134,7 +134,7 @@ module.exports = {
         Chat.aggregate(aggregatorOpts)
             // .then((result) => res.json(result))
             .then(results => {
-                Doctor.populate(results, { path: '_id' })
+                User.populate(results, { path: '_id' })
                     .then((result) => res.json(result))
                     .catch(err => next(err));
             })

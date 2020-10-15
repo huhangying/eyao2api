@@ -122,7 +122,7 @@ module.exports = {
             {
                 $group: {
                     sender: '$sender',
-                    // count: { $sum: 1 }
+                    count: { $sum: 1 }
                 }
             },
             {

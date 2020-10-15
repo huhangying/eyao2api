@@ -122,8 +122,7 @@ module.exports = {
             {
                 $group: {
                     _id: '$sender',
-                    // sender: { $first: '$sender' },  //$first accumulator
-                    count: { $sum: 1 }
+                    // count: { $sum: 1 }
                 }
             },
             {
@@ -135,7 +134,13 @@ module.exports = {
             // .then((result) => res.json(result))
             .then(results => {
                 User.populate(results, { path: '_id' })
-                    .then((result) => res.json(result))
+                    .then((items) => {
+                        if (!items || items.length < 1) {
+                            res.json([]);
+                        } else {
+                            res.json(items.map(_ => _._id).filter(_ =>  _));
+                        }
+                    })
                     .catch(err => next(err));
             })
             .catch(err => next(err));

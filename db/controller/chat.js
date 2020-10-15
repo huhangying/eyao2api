@@ -1,4 +1,5 @@
-var Chat = require('../model/chat.js');
+const Chat = require('../model/chat.js');
+const Doctor = require('../model/doctor');
 
 module.exports = {
 
@@ -129,12 +130,16 @@ module.exports = {
 
         Chat.find({ hid: req.token.hid, cs: true })
             .sort({ create: -1 })
-            .select('sender')
-            // .distinct('sender')
-            .populate('sender', '_id name')
-            // .aggregate(aggregatorOpts)
-            // .lean()
-            .then((result) => res.json(result))
+            .distinct('sender')
+            .then(results => {
+                Doctor.populate(results, {path: 'sender'})
+                .then((result) => res.json(result))
+                .catch(err => next(err));
+            })
+            // .populate('sender', '_id name')
+            // // .aggregate(aggregatorOpts)
+            // // .lean()
+            // .then((result) => res.json(result))
             .catch(err => next(err));
     },
 

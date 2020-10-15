@@ -127,7 +127,7 @@ module.exports = {
                 }
             },
             {
-                $unwind: { path: '$sender' }
+                $unwind: { path: '$_id' }
             },
         ];
 

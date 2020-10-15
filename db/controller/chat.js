@@ -133,7 +133,7 @@ module.exports = {
         Chat.aggregate(aggregatorOpts)
             // .then((result) => res.json(result))
             .then(results => {
-                User.populate(results, { path: '_id' })
+                User.populate(results, { path: '_id', select: '-hid -__v' })
                     .then((items) => {
                         if (!items || items.length < 1) {
                             res.json([]);

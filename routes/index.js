@@ -295,7 +295,7 @@ router.route('/chats/read/doctor/:did/:uid') // web-side: clear unread count
 router.route('/chats/read/user/:uid/:did')  // wechat: clear unread count
     .get(Chat.setReadByPatientAndDoctor);
 router.route('/cs-chats/read/doctor/:did/:uid') // web-side
-    .get(Chat.setCsReadByPatientAndDoctor);
+    .get(Chat.setCsReadByDoctorAndPatient);
 
 router.route('/chat/:id')
     .get(Chat.GetById)

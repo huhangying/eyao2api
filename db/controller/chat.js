@@ -112,7 +112,7 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
-
+    // web side
     getCsUnreadByDoctor: (req, res, next) => {
         const { did } = req.params;
 
@@ -124,13 +124,13 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    setCsReadByPatientAndDoctor: (req, res, next) => {
+    // web side
+    setCsReadByDoctorAndPatient: (req, res, next) => {
         const { uid, did } = req.params;
 
-        Chat.updateMany({ to: uid, sender: did, hid: req.token.hid, read: 0, cs: true },
+        Chat.updateMany({ to: did, sender: uid, hid: req.token.hid, read: 0, cs: true },
             { read: 1 })
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
-
 }

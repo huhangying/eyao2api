@@ -121,8 +121,8 @@ module.exports = {
             { $sort: { create: -1 } },
             {
                 $group: {
-                    _id: '$_id',
-                    sender: { $first: '$sender' },  //$first accumulator
+                    _id: '$sender',
+                    // sender: { $first: '$sender' },  //$first accumulator
                     count: { $sum: 1 }
                 }
             },

@@ -92,6 +92,22 @@ router.route('/doctor/shortcuts/:did')
 router.route('/doctor/brief/:id')
     .get(Doctor.GetBriefInfo);
 
+//---------------- 付费咨询
+const Consult = require('../db/controller/consult');
+
+router.route('/consults')
+    .get(Consult.GetAll);
+router.route('/consult/:id')
+    .get(Consult.GetById)
+    .patch(urlencodedParser, Consult.UpdateById)
+    .delete(Consult.DeleteById);
+
+router.route('/consult/get-pending/:did/:uid')
+    .get(Consult.GetPendingByDoctorIdAndUserId);
+
+router.route('/consult')
+    .post(urlencodedParser, Consult.Add);
+
 //---------------- 药师 consult
 const DoctorConsult = require('../db/controller/doctor-consult');
 

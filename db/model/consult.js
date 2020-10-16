@@ -13,7 +13,8 @@ module.exports = mongoose.model(
         upload: { type: String },
 
         type: { type: Number, min: 0, max: 1 }, // 0: 图文咨询； 1：电话咨询
-        finished: { type: Boolean } 
+        setCharged: { type: Boolean },  // 药师设置，if true 
+        finished: { type: Boolean, required: true, default: false } 
     }, {
         timestamps: true
     })

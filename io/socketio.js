@@ -88,7 +88,7 @@ module.exports = (io) => {
             socket.to(room).emit('notification', {
                 patientId: consult.user,
                 type: consult.type === 1 ? 6 : 5, // 付费咨询 (0: 图文；1：电话) => notiType (5: 图文；6：电话 )
-                name: `${consult.userName} 发送了付费${consult.type === 1 ? '电话' : '图文'}咨询`,
+                name: consult.userName || '',
                 count: 1,
                 created: consult.created
             });

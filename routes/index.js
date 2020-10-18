@@ -97,6 +97,9 @@ const Consult = require('../db/controller/consult');
 
 router.route('/consults')
     .get(Consult.GetAll);
+router.route('/consults/get-pending/:did')
+    .get(Consult.GetPendingByDoctorId);
+    
 router.route('/consult/:id')
     .get(Consult.GetById)
     .patch(urlencodedParser, Consult.UpdateById)

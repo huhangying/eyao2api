@@ -20,6 +20,20 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据 Doctor ID 获取未处理列表
+    GetPendingByDoctorId: (req, res, next) => {
+        const { did } = req.params;
+        Consult.find({
+            doctor: did,
+            finished: false,
+            hid: req.token.hid
+        })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据 Doctor ID, Use ID 获取
     GetPendingByDoctorIdAndUserId: (req, res, next) => {
         const { did, uid } = req.params;

@@ -10,6 +10,8 @@ module.exports = mongoose.model(
 
         disease_types: [{ type: String }], // 咨询疾病类型
         content: { type: String }, // 问题描述
+        cell: { type: String }, // 电话咨询时必选
+        address: { type: String }, // 可选
         upload: { type: String },
 
         type: { type: Number, min: 0, max: 1 }, // 0: 图文咨询； 1：电话咨询

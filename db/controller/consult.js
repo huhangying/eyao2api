@@ -26,6 +26,7 @@ module.exports = {
         Consult.find({
             doctor: did,
             finished: false,
+            type: {$ne: null},
             hid: req.token.hid
         })
             .select('-hid -__v')

@@ -26,7 +26,7 @@ module.exports = {
         Consult.find({
             doctor: did,
             finished: false,
-            type: {$ne: null},
+            type: { $ne: null },
             hid: req.token.hid
         })
             .select('-hid -__v')
@@ -35,14 +35,29 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 根据 Doctor ID, Use ID 获取
+    // 根据 Doctor ID, Use ID, NO-type 获取
     GetPendingByDoctorIdAndUserId: (req, res, next) => {
         const { did, uid } = req.params;
         Consult.findOne({
             user: uid,
             doctor: did,
             finished: false,
-            type: {$eq: null},
+            type: { $eq: null },
+            hid: req.token.hid
+        })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // 根据 Doctor ID, Use ID, type 获取
+    GetPendingByDoctorIdUserIdAndType: (req, res, next) => {
+        const { did, uid, type } = req.params;
+        Consult.findOne({
+            user: uid,
+            doctor: did,
+            finished: false,
+            type: type,
             hid: req.token.hid
         })
             .select('-hid -__v')
@@ -88,13 +103,13 @@ module.exports = {
             user: uid,
             doctor: did,
             finished: false,
-            type: {$eq: null},
+            type: { $eq: null },
             hid: req.token.hid
         })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
-    },    
+    },
 
     DeleteById: (req, res, next) => {
         const { id } = req.params;

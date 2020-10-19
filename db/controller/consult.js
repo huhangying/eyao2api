@@ -62,6 +62,7 @@ module.exports = {
         Consult.findOneAndUpdate({
             doctor: data.doctor,
             user: data.user,
+            type: data.type,
             finished: false,
             hid: data.hid
         }, data, { new: true, upsert: true }) // check if existed
@@ -77,6 +78,21 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
+
+    // delete one if type=null, finished: false
+    DeletePendingByDoctorIdAndUserId: (req, res, next) => {
+        const { did, uid } = req.params;
+        Consult.findOneAndDelete({
+            user: uid,
+            doctor: did,
+            finished: false,
+            type: {$eq: null},
+            hid: req.token.hid
+        })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },    
 
     DeleteById: (req, res, next) => {
         const { id } = req.params;

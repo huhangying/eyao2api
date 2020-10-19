@@ -107,6 +107,8 @@ router.route('/consult/:id')
 
 router.route('/consult/get-pending/:did/:uid')
     .get(Consult.GetPendingByDoctorIdAndUserId);
+router.route('/consult/delete-pending/:did/:uid') // 删除多余的药师标记
+    .delete(Consult.DeletePendingByDoctorIdAndUserId);
 
 router.route('/consult')
     .post(urlencodedParser, Consult.Add);

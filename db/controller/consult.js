@@ -41,6 +41,7 @@ module.exports = {
             user: uid,
             doctor: did,
             finished: false,
+            type: {$eq: null},
             hid: req.token.hid
         })
             .select('-hid -__v')

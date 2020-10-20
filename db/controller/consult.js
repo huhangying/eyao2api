@@ -75,7 +75,7 @@ module.exports = {
             type: { $ne: null },
             hid: req.token.hid
         })
-            .sort({ updatedAt: 1 })
+            .sort({ createdAt: 1 })
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))

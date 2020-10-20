@@ -82,6 +82,20 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据 Doctor ID, Use ID 获取所有的 consults
+    MarkDoneByDoctorUserAndType: (req, res, next) => {
+        const { did, uid, type } = req.params;
+        Consult.updateMany({
+            user: uid,
+            doctor: did,
+            finished: false,
+            type: type,
+            hid: req.token.hid
+        }, { finished: true })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 创建收费咨询
     Add: (req, res, next) => {
         const data = req.body;

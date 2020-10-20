@@ -84,6 +84,8 @@ module.exports = (io) => {
 
         socket.on('consult', (room, consult) => {
             // console.log('---> on booking: ', room, booking);
+            socket.to(room).emit('consult', consult);
+
             // redirect to noti
             socket.to(room).emit('notification', {
                 patientId: consult.user,

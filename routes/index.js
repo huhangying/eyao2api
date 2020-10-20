@@ -99,6 +99,8 @@ router.route('/consults')
     .get(Consult.GetAll);
 router.route('/consults/get-pending/:did')
     .get(Consult.GetPendingByDoctorId);
+router.route('/consults/get/:did/:uid')
+    .get(Consult.GetConsultsByDoctorIdAndUserId);
     
 router.route('/consult/:id')
     .get(Consult.GetById)

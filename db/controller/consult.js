@@ -65,6 +65,23 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据 Doctor ID, Use ID 获取所有的 consults
+    GetConsultsByDoctorIdAndUserId: (req, res, next) => {
+        const { did, uid } = req.params;
+        Consult.find({
+            user: uid,
+            doctor: did,
+            // finished: false,
+            type: { $ne: null },
+            hid: req.token.hid
+        })
+            .sort({ updatedAt: 1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 创建收费咨询
     Add: (req, res, next) => {
         const data = req.body;

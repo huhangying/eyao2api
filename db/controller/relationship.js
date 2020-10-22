@@ -36,7 +36,7 @@ module.exports = {
         const { id } = req.params; // id is doctor id
         Relationship.find({ doctor: id, hid: req.token.hid, apply: true })
             .select('-hid -__v')
-            .populate('user', 'name _id cell gender birthdate icon')
+            .populate('user', 'name _id cell gender birthdate icon link_id')
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));

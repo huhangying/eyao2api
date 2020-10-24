@@ -101,10 +101,10 @@ router.route('/consults/get-pending/:did')
     .get(Consult.GetPendingByDoctorId);
 router.route('/consults/get/:did/:uid')
     .get(Consult.GetConsultsByDoctorIdAndUserId);
-    
+
 router.route('/consults/mark-done/:did/:uid/:type')
     .get(Consult.MarkDoneByDoctorUserAndType);
-    
+
 router.route('/consult/:id')
     .get(Consult.GetById)
     .patch(urlencodedParser, Consult.UpdateById)
@@ -133,13 +133,14 @@ const DoctorConsultComment = require('../db/controller/doctor-consult-comment');
 
 router.route('/doctor-consult-comment/:doctor')
     .get(DoctorConsultComment.GetAllByDoctorId);
+router.route('/doctor-consult-comment/consult/:cid') // get by consult id
+    .get(DoctorConsultComment.GetByConsultId);
 router.route('/doctor-consult-comment/:doctor/:from/:size')
     .get(DoctorConsultComment.GetByDoctorIdAndFromSize);
 
 router.route('/doctor-consult-comment')
     .post(urlencodedParser, DoctorConsultComment.Add)
 router.route('/doctor-consult-comment/:id')
-    .get(DoctorConsultComment.GetById)
     .delete(DoctorConsultComment.DeleteById);
 
 //---------------- 医患关系组

@@ -27,9 +27,9 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    GetById: async (req, res, next) => {
-        const { id } = req.params;
-        DoctorConsultComment.findById(id)
+    GetByConsultId: (req, res, next) => {
+        const { cid } = req.params;
+        DoctorConsultComment.findOne({consult: cid, hid: req.token.hid })
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -49,7 +49,7 @@ module.exports = {
     },
 
 
-    DeleteById: async (req, res, next) => {
+    DeleteById: (req, res, next) => {
         const { id } = req.params;
         DoctorConsultComment.findByIdAndDelete(id)
             .select('-hid -__v')

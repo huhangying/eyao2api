@@ -139,6 +139,7 @@ router.route('/doctor-consult-comment/:doctor/:from/:size')
 router.route('/doctor-consult-comment')
     .post(urlencodedParser, DoctorConsultComment.Add)
 router.route('/doctor-consult-comment/:id')
+    .get(DoctorConsultComment.GetById)
     .delete(DoctorConsultComment.DeleteById);
 
 //---------------- 医患关系组

@@ -27,6 +27,14 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    GetById: async (req, res, next) => {
+        const { id } = req.params;
+        DoctorConsultComment.findById(id)
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 创建
     Add: (req, res, next) => {
         const dcc = { ...req.body };

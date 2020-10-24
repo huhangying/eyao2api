@@ -6,7 +6,7 @@ module.exports = {
     // 根据药师ID获取信息
     GetByDoctorId: (req, res, next) => {
         const { doctor } = req.params;
-        DoctorConsult.findOne({ doctor_id: doctor, hid: req.token.hid})
+        DoctorConsult.findOne({ doctor: doctor, hid: req.token.hid})
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -18,7 +18,7 @@ module.exports = {
         const doctorConsult = { ...req.body };
 
         DoctorConsult.updateOne(
-            { doctor_id: doctor, hid: doctorConsult.hid },
+            { doctor: doctor, hid: doctorConsult.hid },
             doctorConsult,
             { upsert: true })
             .then((result) => res.json(result))
@@ -29,7 +29,7 @@ module.exports = {
     // no use
     DeleteByDoctorId: async (req, res, next) => {
         const { doctor } = req.params;
-        DoctorConsult.findOneAndDelete({doctor_id: doctor, hid: req.token.hid})
+        DoctorConsult.findOneAndDelete({doctor: doctor, hid: req.token.hid})
             .select('-hid -__v')
             .then((result) => res.json(result))
             .catch(err => next(err));

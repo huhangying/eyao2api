@@ -5,7 +5,7 @@ module.exports = mongoose.model(
   'doctor_consult',
   mongoose.Schema({
     hid: Number,
-    doctor_id: { type: String, required: true, index: true },
+    doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true, index: true },
 
     tags: { type: String },  //自定义标签
     disease_types: { type: String }, // 咨询疾病类型

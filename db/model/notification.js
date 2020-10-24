@@ -12,7 +12,8 @@ module.exports = mongoose.model(
         direction: { type: Boolean, required: true },  // true: user -> doctor; false: doctor -> user
         // 類別： 0：chat  1: 不良反应  2: 联合用药  3. 预约取消  4. 客服chat  5. 付费图文咨询  6. 付费电话咨询
         type: { type: Number, required: true }, 
-        count: { type: Number, default: 0 }
+        count: { type: Number, default: 0 },
+        keyId: String
     }, {
         timestamps: true
     })

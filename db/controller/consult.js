@@ -51,19 +51,19 @@ module.exports = {
     },
 
     // 根据 Doctor ID, Use ID, type 获取
-    GetPendingByDoctorIdUserIdAndType: (req, res, next) => {
-        const { did, uid, type } = req.params;
-        Consult.findOne({
-            user: uid,
-            doctor: did,
-            finished: false,
-            type: type,
-            hid: req.token.hid
-        })
-            .select('-hid -__v')
-            .then((result) => res.json(result))
-            .catch(err => next(err));
-    },
+    // GetPendingByDoctorIdUserIdAndType: (req, res, next) => {
+    //     const { did, uid, type } = req.params;
+    //     Consult.findOne({
+    //         user: uid,
+    //         doctor: did,
+    //         finished: false,
+    //         type: type,
+    //         hid: req.token.hid
+    //     })
+    //         .select('-hid -__v')
+    //         .then((result) => res.json(result))
+    //         .catch(err => next(err));
+    // },
 
     // 根据 Doctor ID, Use ID 获取所有的 consults
     GetConsultsByDoctorIdAndUserId: (req, res, next) => {

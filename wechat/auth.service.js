@@ -91,37 +91,30 @@ const checkWxResponse = (openid, hid, rspData, sendBody, doctorid, username) => 
 			username,
 		};
 
-		save2MsgQueue(msg);
+		add2MsgQueue(msg);
 	}
 }
 
-const save2MsgQueue = (data) => {
+const add2MsgQueue = (data) => {
 	// console.log('failed queue', data);
-	wxMsgQueue.findOneAndUpdate({ openid: data.openid, url: data.url, hid: data.hid },
-		{ ...data, $inc: { tryCount: 1 } }, { upsert: true, new: true })
+	wxMsgQueue.create(data)
 		.then(async (result) => {
-			// if (result.tryCount <= 1) { // if first time
-				// mark in user table
-				await User.findOneAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
-					{ $inc: { msgInQueue: 1 }, updated: new Date() });
-			// } else {
-			// 	result.tryCount++;
-			// 	await result.save();
-			// }
+			// mark in user table
+			await User.findOneAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
+				{ $inc: { msgInQueue: 1 }, updated: new Date() });
 		});
 }
 
 // 消息重新发送成功
-const removeFromMsgQueue = (openid, url, hid) => {
+const removeFromMsgQueue = (msgId, openid, hid) => {
 	// 
-	wxMsgQueue.findOneAndDelete({ openid: openid, url: url, hid: hid })
-		.then(async (result) => {
+	return wxMsgQueue.findByIdAndDelete(msgId)
+		.then((result) => {
 			if (result) {
 				// mark in user table
-				await User.findOneAndUpdate({ link_id: openid, hid: hid, apply: true },
-					{ $inc: { msgInQueue: -1 }, updated: new Date() });
-				result.received = true;
-				await result.save();
+				User.findOneAndUpdate({ link_id: openid, hid: hid, apply: true },
+					{ $inc: { msgInQueue: -1 }, updated: new Date() })
+					.exec();
 			}
 		});
 }
@@ -138,7 +131,9 @@ const resendFailedMsg = async (req, res, next) => {
 		return;
 	}
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
-	msgs.forEach(async msg => {
+	let successCount = 0;
+	let failedCount = 0;
+	msgs.slice(0, 1).forEach(async msg => {
 		// send one by one, and by types (text and template)
 		await axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
 			{
@@ -158,19 +153,22 @@ const resendFailedMsg = async (req, res, next) => {
 					access_token: access_token
 				}
 			})
-			.then((result) => {
+			.then(async (result) => {
 				if (result.data) {
 					if (result.data.errcode === 0) {
 						// save to message log for later retry
-						removeFromMsgQueue(openid, msg.url, msg.hid);
+						await removeFromMsgQueue(msg._id, openid, msg.hid);
+						successCount++;
 					} else {
-						checkWxResponse(openid, hid, result.data, msg.url);
+						// failed and increase tryCount
+						await wxMsgQueue.findByIdAndUpdate(msg._id, { $inc: { tryCount: 1 } }).exec();
+						failedCount++;
 					}
 				}
 			})
 			.catch(err => next(err));
 	})
-	res.json({ return: 'resent' });
+	res.json({ return: `resent: (success: ${successCount} failed: ${failedCount})` });
 }
 
 module.exports = {

@@ -12,7 +12,7 @@ module.exports =  {
     AWAY_RESPONSE: 'away_response',
 
     get: function(name){
-        var deferred = Q.defer();
+        const deferred = Q.defer();
 
         // check if value is existed.
         for (var i=0; i<_constList.length; i++) {

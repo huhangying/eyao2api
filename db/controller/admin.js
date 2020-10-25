@@ -6,7 +6,6 @@ var Diagnose = require('../model/diagnose');
 var Booking = require('../model/booking');
 var Chatroom = require('../model/chatroom');
 var Chat = require('../model/chat');
-var Q = require('q');
 
 module.exports = {
 
@@ -71,7 +70,7 @@ module.exports = {
                             }
                         }));
 
-                        Q.all(promises).then(
+                        Promise.all(promises).then(
                             function (rsp) {
                                 res.json({ log: log });
                             },

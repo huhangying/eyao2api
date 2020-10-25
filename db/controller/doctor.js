@@ -47,29 +47,6 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 查找关注药师 search by user_id
-    // getFocusDoctors: function (userId) {
-    //     var deferred = Q.defer();
-
-    //     Relationship.find({ user: userId, hid: req.token.hid, role: { $lt: 3 },  apply: true })
-    //         .sort({ order: 1, updated: -1 })
-    //         .exec(function (err, items) {
-    //             if (err) {
-    //                 deferred.resolve([]);
-    //             }
-
-    //             if (!items || items.length < 1) {
-    //                 deferred.resolve([]);
-
-    //             }
-
-    //             var doctors = items.map(function (a) { return a.doctor; });
-    //             deferred.resolve(doctors);
-    //         });
-
-    //     return deferred.promise;
-    // },
-
     // 查找未关注药师 search by user_id
     GetAllNotFocus: (req, res, next) => {
         const { did } = req.params;

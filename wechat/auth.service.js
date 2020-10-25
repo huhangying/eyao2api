@@ -127,7 +127,7 @@ const resendFailedMsg = async (req, res, next) => {
 	const msgs = await wxMsgQueue.find({ openid: openid, hid: hid, received: false });
 	if (!msgs || msgs.length < 1) {
 		// reset user
-		res.json({ msg: 'not_found', changed: false });
+		res.json({ msg: 'not_found', changed: 0 });
 		return;
 	}
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
@@ -174,7 +174,7 @@ const resendFailedMsg = async (req, res, next) => {
 		);
 	});
 	await Promise.all(promises);
-	res.json({ msg: `重新发送: (成功 ${successCount}个，失败: ${failedCount}个)`, changed: successCount > 0 });
+	res.json({ msg: `重新发送: (成功 ${successCount}个，失败: ${failedCount}个)`, changed: successCount });
 }
 
 module.exports = {

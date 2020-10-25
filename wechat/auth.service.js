@@ -137,8 +137,16 @@ const resendFailedMsg = async (req, res, next) => {
 	// msgs.reverse().slice(0, 1).forEach(async msg => {
 	msgs.forEach(async msg => {
 		// send one by one, and by types (text and template)
-		promises.push(axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
+		const sendBody = msg.type === 2 ?
 			{
+				// template
+				touser: openid,
+				template_id: msg.template_id,
+				url: msg.url,
+				data: msg.data
+			} :
+			{
+				// text
 				touser: openid,
 				msgtype: 'news',
 				news: {
@@ -149,28 +157,32 @@ const resendFailedMsg = async (req, res, next) => {
 						picurl: msg.picurl
 					}]
 				}
-			},
-			{
-				params: {
-					access_token: access_token
-				}
-			})
-			.then(async (result) => {
-				if (result.data) {
-					if (result.data.errcode === 0) {
-						// save to message log for later retry
-						await removeFromMsgQueue(msg._id, openid, msg.hid);
-						successCount++;
-					} else {
-						// failed and increase tryCount
-						await wxMsgQueue.findByIdAndUpdate(msg._id, { $inc: { tryCount: 1 } }, { new: true }).then((result) => {
-							// console.log(result);
-						});
-						failedCount++;
+			};
+		promises.push(
+			axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
+				sendBody,
+				{
+					params: {
+						access_token: access_token
 					}
 				}
-			})
-			.catch(err => next(err))
+			)
+				.then(async (result) => {
+					if (result.data) {
+						if (result.data.errcode === 0) {
+							// save to message log for later retry
+							await removeFromMsgQueue(msg._id, openid, msg.hid);
+							successCount++;
+						} else {
+							// failed and increase tryCount
+							await wxMsgQueue.findByIdAndUpdate(msg._id, { $inc: { tryCount: 1 } }, { new: true }).then((result) => {
+								// console.log(result);
+							});
+							failedCount++;
+						}
+					}
+				})
+				.catch(err => next(err))
 		);
 	});
 	await Promise.all(promises);

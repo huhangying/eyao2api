@@ -161,7 +161,8 @@ const resendFailedMsg = async (req, res, next) => {
 						successCount++;
 					} else {
 						// failed and increase tryCount
-						await wxMsgQueue.findByIdAndUpdate(msg._id, { $inc: { tryCount: 1 } }).then(() => {
+						await wxMsgQueue.findByIdAndUpdate(msg._id, { $inc: { tryCount: 1 } }, { new: true }).then((result) => {
+							console.log(result);
 						});
 						failedCount++;
 					}

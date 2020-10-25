@@ -127,14 +127,15 @@ const resendFailedMsg = async (req, res, next) => {
 	const msgs = await wxMsgQueue.find({ openid: openid, hid: hid, received: false });
 	if (!msgs || msgs.length < 1) {
 		// reset user
-		res.json({ return: 'not_found' });
+		res.json({ msg: 'not_found', changed: false });
 		return;
 	}
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	let successCount = 0;
 	let failedCount = 0;
 	const promises = [];
-	msgs.reverse().slice(0, 1).forEach(async msg => {
+	// msgs.reverse().slice(0, 1).forEach(async msg => {
+	msgs.forEach(async msg => {
 		// send one by one, and by types (text and template)
 		promises.push(axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
 			{
@@ -173,7 +174,7 @@ const resendFailedMsg = async (req, res, next) => {
 		);
 	});
 	await Promise.all(promises);
-	res.json({ return: `resent: (success: ${successCount} failed: ${failedCount})` });
+	res.json({ msg: `重新发送: (成功 ${successCount}个，失败: ${failedCount}个)`, changed: successCount > 0 });
 }
 
 module.exports = {

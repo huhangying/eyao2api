@@ -133,9 +133,10 @@ const resendFailedMsg = async (req, res, next) => {
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	let successCount = 0;
 	let failedCount = 0;
+	const promises = [];
 	msgs.reverse().slice(0, 1).forEach(async msg => {
 		// send one by one, and by types (text and template)
-		await axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
+		promises.push(axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
 			{
 				touser: openid,
 				msgtype: 'news',
@@ -168,8 +169,10 @@ const resendFailedMsg = async (req, res, next) => {
 					}
 				}
 			})
-			.catch(err => next(err));
-	})
+			.catch(err => next(err))
+		);
+	});
+	await Promise.all(promises);
 	res.json({ return: `resent: (success: ${successCount} failed: ${failedCount})` });
 }
 

@@ -18,7 +18,7 @@ module.exports = mongoose.model(
         data: mongoose.Schema.Types.Mixed,
 
         received: { type: Boolean, default: false },
-        tryCount: { type: Number, default: 0 },
+        tryCount: { type: Number, default: 1 },
         errcode: { type: Number },
         doctorid: { type: String }, // 用于微信消息记录
         username: { type: String }, // same as above

@@ -133,7 +133,7 @@ const resendFailedMsg = async (req, res, next) => {
 	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	let successCount = 0;
 	let failedCount = 0;
-	msgs.slice(0, 1).forEach(async msg => {
+	msgs.reverse().slice(0, 1).forEach(async msg => {
 		// send one by one, and by types (text and template)
 		await axios.post('https://api.weixin.qq.com/cgi-bin/message/custom/send',
 			{

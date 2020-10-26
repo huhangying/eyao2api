@@ -221,6 +221,7 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // no use
     UpdateIcon: function (req, res) {
         if (req.params && req.params.cell) {
             var query = { cell: req.params.cell };

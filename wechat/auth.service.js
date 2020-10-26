@@ -101,7 +101,7 @@ const add2MsgQueue = (data) => {
 		.then(async (result) => {
 			// mark in user table
 			await User.findOneAndUpdate({ link_id: result.openid, hid: result.hid, apply: true },
-				{ $inc: { msgInQueue: 1 }, updated: new Date() });
+				{ $inc: { msgInQueue: 1 } });
 		});
 }
 
@@ -113,7 +113,7 @@ const removeFromMsgQueue = (msgId, openid, hid) => {
 			if (result) {
 				// mark in user table
 				User.findOneAndUpdate({ link_id: openid, hid: hid, apply: true },
-					{ $inc: { msgInQueue: -1 }, updated: new Date() })
+					{ $inc: { msgInQueue: -1 }, resendDate: new Date() })
 					.exec();
 			}
 		});
@@ -126,6 +126,8 @@ const resendFailedMsg = async (req, res, next) => {
 	// get the list
 	const msgs = await wxMsgQueue.find({ openid: openid, hid: hid, received: false });
 	if (!msgs || msgs.length < 1) {
+		// set correct msgInQueue
+		User.findOneAndUpdate({ link_id: openid, hid: hid, apply: true }, { msgInQueue: 0, resendDate: new Date() }).exec();
 		// reset user
 		res.json({ msg: 'not_found', changed: 0 });
 		return;
@@ -186,6 +188,10 @@ const resendFailedMsg = async (req, res, next) => {
 		);
 	});
 	await Promise.all(promises);
+	if (successCount === 0) {
+		// update resend date
+		User.findOneAndUpdate({ link_id: openid, hid: hid, apply: true }, { resendDate: new Date() }).exec();
+	}
 	res.json({ msg: `重新发送: (成功 ${successCount}个，失败: ${failedCount}个)`, changed: successCount });
 }
 

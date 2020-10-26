@@ -30,6 +30,7 @@ module.exports = mongoose.model(
     locked_count: Number,
     apply: { type: Boolean, default: true },
     msgInQueue: { type: Number, default: 0 },
+    resendDate: { type: Date },
     diagnoses: String, // 疾病诊断
     prompt: String, // 诊断提醒
     notes: String, // 备注

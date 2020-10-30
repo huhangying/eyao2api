@@ -80,13 +80,14 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 根据药师ID 获取 没有过期的 病患取消预约
+    // 根据药师ID 获取 没有过期的,未读的 病患取消预约
     GetCancelledBookingsByDoctorId: (req, res, next) => {
         const { did } = req.params;
         Booking.find({
             doctor: did,
             hid: req.token.hid,
             status: 2, // status 2: 病患取消预约
+            read: { $ne: 1},
             date: {
                 $gte: moment().startOf('day').toDate(),
             },
@@ -107,6 +108,18 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
+
+    // set read by doctor and user
+    // 用於Web端標識已讀
+    setCancelReadByPatientDoctor: (req, res, next) => {
+        const { did, uid } = req.params;
+
+        Booking.updateMany({ doctor: did, user: uid, hid: req.token.hid, status: 2 },
+            { read: 1 })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
 
     // 根据药师ID 获取相关的预约统计
     GetCountsByDoctorId: (req, res, next) => {

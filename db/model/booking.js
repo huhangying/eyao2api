@@ -13,6 +13,7 @@ module.exports = mongoose.model(
                                               // 7: forwarded pending （药师接手未完成）
         score: { type: Number, min: 0, max: 10, default: 0 },//0: not started yet.
         notes: String,
-        created: { type: Date, default: Date.now }
+        created: { type: Date, default: Date.now },
+        read: { type: Number, default: 0 }, // for noti. 0: unread;   1: read
     })
 );

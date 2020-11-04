@@ -114,5 +114,9 @@ module.exports = {
     return Hospital.findOne({ ipList: host, apply: true })
       .select('hid name wxurl csdoctor');
   },
+  getByHid(hid) {
+    return Hospital.findOne({ hid: hid, apply: true })
+      .select('hid name wxurl csdoctor');
+  },
 
 }

@@ -270,14 +270,22 @@ module.exports = {
         if (!login.password) {
             return Status.returnStatus(res, Status.NO_PASSWORD);
         }
-        const hosptial = await Hospital.getHidByHost(req.hostname);
-        if (!hosptial) {
-            return Status.returnStatus(res, Status.FAILED);
+        let hid;
+        let hosptial;
+        if (login.hid) {
+            hid = login.hid;
+            hosptial = await Hospital.getByHid(hid)
+        } else {
+            hosptial = await Hospital.getHidByHost(req.hostname);
+            if (!hosptial) {
+                return Status.returnStatus(res, Status.FAILED);
+            }
+            hid = hosptial.hid;
         }
 
         const query = {
             user_id: login.user_id,
-            hid: hosptial.hid,
+            hid: hid,
             apply: true
         };
         Doctor.findOne(query)

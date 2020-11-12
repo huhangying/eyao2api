@@ -13,6 +13,10 @@ module.exports = mongoose.model(
     wxid: String,
     appid: String,  // wechat
     secret: String, // wechat
+    mch_id: String, // weixin payment
+    partnerKey: String,
+    notify_url: String, // http://www.zhaoyaoshi885.cn/api/wechat/notify
+    // wxcert_path: String,
     csdoctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' }, // 
     apply: { type: Boolean, default: true }
   }, {

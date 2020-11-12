@@ -68,7 +68,7 @@ module.exports = {
 
     // middleware
     verifyToken: (req, res, next) => {
-        if (req.url.indexOf('login') > 0 || req.url.indexOf('auth') > 0) {
+        if (req.url.search(/(login|auth|notify)/g) > 0) {
             return next(); // login is the only exception
         }
 

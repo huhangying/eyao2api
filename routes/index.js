@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-// var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const util = require('../util/util');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
 // var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -907,6 +907,7 @@ router.route('/admin/userdata/:id')
     .delete(Admin.DeleteUserAndRelatedData);
 
 ///////////////////////////////////////////////////////////////////////////////////
+//  微信公众号
 const wechat = require('../wechat/auth.service');
 const SignatureStore = require('../wechat/signature.controller'); // could remove?
 
@@ -935,7 +936,22 @@ router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
 router.route('/wechat/resend-msg/:openid') // 尝试重新发送
     .get(wechat.resendFailedMsg)
 
-// 
+// 微信支付 （JSAPI）
+const WxPayment = require('../wechat/payment');
+router.route('/wechat/pay-notify') // 回调通知
+    .post([bodyParser.text({ type: '*/xml' }), WxPayment.middlewareForExpress], WxPayment.notify);
+router.route('/wechat/pay-unified-order') // 统一下单
+    .post(WxPayment.middlewareForExpress, WxPayment.unifiedOrder);
+router.route('/wechat/pay-refund') // 申请退款 ?
+    .post(WxPayment.middlewareForExpress, WxPayment.refund);
+router.route('/wechat/pay-order-query') // 查询订单
+    .post(WxPayment.middlewareForExpress, WxPayment.orderQuery);
+router.route('/wechat/pay-reverse') // 撤消订单
+    .post(WxPayment.middlewareForExpress, WxPayment.reverse);
+router.route('/wechat/pay-close-order') // 查询关闭订单
+    .post(WxPayment.middlewareForExpress, WxPayment.closeOrder);
+
+// 微信失败消息
 const WxMsgQueue = require('../db/controller/wxMsgQueue');
 router.route('/wechat/msg-queue/all')
     .get(WxMsgQueue.GetAll);

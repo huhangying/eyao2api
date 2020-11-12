@@ -42,12 +42,12 @@ const notify = (req, res) => {
 
 // 微信统一下单
 const unifiedOrder = async (req, res, next) => {
-  const { openid, hid, clientIp, orderId, amount, paymentTitle } = req.body;
+  const { openid, hid, clientIp, out_trade_no, total_fee, body } = req.body;
   const api = await payApi(hid, clientIp);
   api.unifiedOrder({
-    out_trade_no: orderId, // 商户内部订单号
-    body: paymentTitle,
-    total_fee: amount,
+    out_trade_no, // 商户内部订单号
+    body,
+    total_fee,
     openid: openid
   })
     .then((result) => {

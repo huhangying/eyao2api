@@ -941,7 +941,7 @@ const WxPayment = require('../wechat/payment');
 router.route('/wechat/pay-notify') // 回调通知
     .post([bodyParser.text({ type: '*/xml' }), WxPayment.middlewareForExpress], WxPayment.notify);
 router.route('/wechat/pay-unified-order') // 统一下单
-    .post( WxPayment.middlewareForExpress, WxPayment.unifiedOrder);
+    .post(urlencodedParser, WxPayment.unifiedOrder);
 router.route('/wechat/pay-refund') // 申请退款 ?
     .post(WxPayment.middlewareForExpress, WxPayment.refund);
 router.route('/wechat/pay-order-query') // 查询订单

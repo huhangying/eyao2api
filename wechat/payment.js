@@ -17,12 +17,12 @@ const payApi = async (hid, clientIp) => {
   // return await tenpay.sandbox(config);
 }
 
-const middlewareForExpress = async() => {
-// const middlewareForExpress = async (req, res) => {
-  // const hid = req.body.hid;
-  // const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  // const api = await payApi(hid, clientIp);
-  const api = await payApi(2, '');
+// const middlewareForExpress = async() => {
+const middlewareForExpress = async (req, res) => {
+  const hid = req.body.hid;
+  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const api = await payApi(hid, clientIp);
+  // const api = await payApi(2, '');
   return api.middlewareForExpress('pay');
 }
 
@@ -52,7 +52,7 @@ const unifiedOrder = async (req, res, next) => {
     openid: openid
   })
     .then((result) => {
-      return res.json(result.data)
+      return res.json(result)
     })
     .catch(err => next(err));
 }

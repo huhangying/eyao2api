@@ -939,17 +939,17 @@ router.route('/wechat/resend-msg/:openid') // 尝试重新发送
 // 微信支付 （JSAPI）
 const WxPayment = require('../wechat/payment');
 router.route('/wechat/pay-notify') // 回调通知
-    .post([bodyParser.text({ type: '*/xml' }), WxPayment.middlewareForExpress], WxPayment.notify);
+    .post([bodyParser.text({ type: '*/xml' })], WxPayment.notify);
 router.route('/wechat/pay-unified-order') // 统一下单
-    .post([urlencodedParser, WxPayment.middlewareForExpress], WxPayment.unifiedOrder);
+    .post(urlencodedParser, WxPayment.unifiedOrder);
 router.route('/wechat/pay-refund') // 申请退款 ?
-    .post(WxPayment.middlewareForExpress, WxPayment.refund);
+    .post(urlencodedParser, WxPayment.refund);
 router.route('/wechat/pay-order-query') // 查询订单
-    .post(WxPayment.middlewareForExpress, WxPayment.orderQuery);
+    .post(urlencodedParser, WxPayment.orderQuery);
 router.route('/wechat/pay-reverse') // 撤消订单
-    .post(WxPayment.middlewareForExpress, WxPayment.reverse);
+    .post(urlencodedParser, WxPayment.reverse);
 router.route('/wechat/pay-close-order') // 查询关闭订单
-    .post(WxPayment.middlewareForExpress, WxPayment.closeOrder);
+    .post(urlencodedParser, WxPayment.closeOrder);
 
 // 微信失败消息
 const WxMsgQueue = require('../db/controller/wxMsgQueue');

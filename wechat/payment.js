@@ -16,10 +16,12 @@ const payApi = async (hid, clientIp) => {
   return await tenpay.sandbox(config);
 }
 
-const middlewareForExpress = async (req, res) => {
-  const hid = req.body.hid;
-  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const api = await payApi(hid, clientIp);
+const middlewareForExpress = async() => {
+// const middlewareForExpress = async (req, res) => {
+  // const hid = req.body.hid;
+  // const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  // const api = await payApi(hid, clientIp);
+  const api = await payApi(2, '');
   return api.middlewareForExpress('pay');
 }
 

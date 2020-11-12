@@ -18,7 +18,7 @@ const payApi = async (hid, clientIp) => {
 const middlewareForExpress = async (req, res) => {
   const hid = req.body.hid;
   const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const api = payApi(hid, clientIp);
+  const api = await payApi(hid, clientIp);
   return api.middlewareForExpress('pay');
 }
 

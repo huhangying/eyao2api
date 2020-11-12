@@ -37,11 +37,11 @@ const notify = (req, res) => {
 
 // 微信统一下单
 const unifiedOrder = async (req, res, next) => {
-  const { openid, hid, clientIp,  orderId, amount, paymentBody } = req.body;
+  const { openid, hid, clientIp,  orderId, amount, paymentTitle } = req.body;
   const api = await payApi(hid, clientIp);
   api.unifiedOrder({
     out_trade_no: orderId, // 商户内部订单号
-    body: paymentBody,
+    body: paymentTitle,
     total_fee: amount,
     openid: openid
   })

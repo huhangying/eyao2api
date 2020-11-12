@@ -4,7 +4,6 @@ const wxUtil = require('./wx-util');
 const payApi = async (hid, clientIp) => {
   // config
   const { appid, mch_id, partnerKey, notify_url } = await wxUtil.getHospitalSettingsByHid(hid);
-
   const config = {
     appid: appid,
     mchid: mch_id,
@@ -16,8 +15,11 @@ const payApi = async (hid, clientIp) => {
   return tenpay.init(config);
 }
 
-const middlewareForExpress = () => {
-  return payApi.middlewareForExpress('pay');
+const middlewareForExpress = async (req, res) => {
+  const hid = req.token.hid;
+  const clientIp = '';
+  const api = payApi(hid, clientIp);
+  return api.middlewareForExpress('pay');
 }
 
 // 回调通知 （中间件・微信消息通知）
@@ -37,7 +39,7 @@ const notify = (req, res) => {
 
 // 微信统一下单
 const unifiedOrder = async (req, res, next) => {
-  const { openid, hid, clientIp,  orderId, amount, paymentTitle } = req.body;
+  const { openid, hid, clientIp, orderId, amount, paymentTitle } = req.body;
   const api = await payApi(hid, clientIp);
   api.unifiedOrder({
     out_trade_no: orderId, // 商户内部订单号
@@ -45,15 +47,15 @@ const unifiedOrder = async (req, res, next) => {
     total_fee: amount,
     openid: openid
   })
-  .then((result) => {
-    return res.json(result.data)
-  })
-  .catch(err => next(err));
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
 }
 
 // 申请退款
 const refund = async (req, res, next) => {
-  const { hid, clientIp,  orderId, amount, refundId, refundAmount } = req.body;
+  const { hid, clientIp, orderId, amount, refundId, refundAmount } = req.body;
   const api = await payApi(hid, clientIp);
   api.refund({
     out_trade_no: orderId,    // 商户内部订单号
@@ -61,10 +63,10 @@ const refund = async (req, res, next) => {
     total_fee: amount,
     refund_fee: refundAmount
   })
-  .then((result) => {
-    return res.json(result.data)
-  })
-  .catch(err => next(err));
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
 }
 
 // 查询订单
@@ -74,10 +76,10 @@ const orderQuery = async (req, res, next) => {
   api.orderQuery({
     out_trade_no: orderId, // '商户内部订单号',
   })
-  .then((result) => {
-    return res.json(result.data)
-  })
-  .catch(err => next(err));
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
 }
 // 撤消订单
 const reverse = async (req, res, next) => {
@@ -86,10 +88,10 @@ const reverse = async (req, res, next) => {
   api.reverse({
     out_trade_no: orderId, // '商户内部订单号',
   })
-  .then((result) => {
-    return res.json(result.data)
-  })
-  .catch(err => next(err));
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
 }
 // 查询关闭订单
 const closeOrder = async (req, res, next) => {
@@ -98,10 +100,10 @@ const closeOrder = async (req, res, next) => {
   api.closeOrder({
     out_trade_no: orderId, // '商户内部订单号',
   })
-  .then((result) => {
-    return res.json(result.data)
-  })
-  .catch(err => next(err));
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
 }
 
 module.exports = {

@@ -2,6 +2,8 @@ const axios = require('axios').default;
 const Hospital = require('../db/model/hospital');
 const Const = require('../db/model/const');
 const AccessToken = require('./access-token.model');
+const NodeCache = require("node-cache");
+const apiCache = new NodeCache();
 
 const getHidByWxid = async (wxid) => {
   const hospital = await Hospital.findOne({ wxid: wxid, apply: true })
@@ -10,8 +12,13 @@ const getHidByWxid = async (wxid) => {
 }
 
 const getHospitalSettingsByHid = async (hid) => {
+  const cachedHospital = apiCache.get('hid' + hid);
+  if (cachedHospital) {
+    return cachedHospital;
+  }
   const hospital = await Hospital.findOne({ hid: hid, apply: true })
-  .select('-hid -__v');
+    .select('-hid -__v')
+  apiCache.set('hid' + hid, hospital);
   return hospital;
 }
 

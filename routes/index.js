@@ -931,17 +931,17 @@ router.route('/wechat/send-client-msg/:openid') // 系统/客服消息
     .post(urlencodedParser, wechat.sendClientMessage);
 
 router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
-    .get(wechat.generateApiToken)
+    .get(wechat.generateApiToken);
 
 router.route('/wechat/resend-msg/:openid') // 尝试重新发送
-    .get(wechat.resendFailedMsg)
+    .get(wechat.resendFailedMsg);
 
 // 微信支付 （JSAPI）
 const WxPayment = require('../wechat/payment');
 router.route('/wechat/pay-notify') // 回调通知
     .post([bodyParser.text({ type: '*/xml' }), WxPayment.middlewareForExpress], WxPayment.notify);
 router.route('/wechat/pay-unified-order') // 统一下单
-    .post(WxPayment.middlewareForExpress, WxPayment.unifiedOrder);
+    .post([urlencodedParser, WxPayment.middlewareForExpress], WxPayment.unifiedOrder);
 router.route('/wechat/pay-refund') // 申请退款 ?
     .post(WxPayment.middlewareForExpress, WxPayment.refund);
 router.route('/wechat/pay-order-query') // 查询订单

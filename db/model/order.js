@@ -16,6 +16,7 @@ module.exports = mongoose.model('order',
         // refundId: String,
         prepay_id: { type: String },
         status: { type: String },
+        startTime: { type: String },
     }, {
         timestamps: true
     })

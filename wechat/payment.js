@@ -43,7 +43,7 @@ const notify = (req, res) => {
 
 // 微信统一下单
 const unifiedOrder = async (req, res, next) => {
-  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   const { openid, hid, out_trade_no, total_fee, body } = req.body;
   const api = await payApi(hid, clientIp);
   api.unifiedOrder({

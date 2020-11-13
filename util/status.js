@@ -32,6 +32,7 @@ module.exports = {
     PASS: 'PASS',
     DOUBLE_BOOKING: 'double_booking',
     NO_BOOKING_AVAILABLE: 'no_booking_available',
+    NO_ORDERID: 'no_order_id',
 
     CHATROOM_ERROR: 'chatroom_error',
     NO_MESSAGE: 'no_message',

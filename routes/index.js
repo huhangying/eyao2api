@@ -844,7 +844,7 @@ router.route('/test/:id')
     .patch(urlencodedParser, Test.UpdateById);
 
 //---------------- FAQ
-var Faq = require('../db/controller/faq');
+const Faq = require('../db/controller/faq');
 
 router.route('/faqs')
     .get(Faq.GetAll);
@@ -950,6 +950,16 @@ router.route('/wechat/pay-reverse') // 撤消订单
     .post(urlencodedParser, WxPayment.reverse);
 router.route('/wechat/pay-close-order') // 查询关闭订单
     .post(urlencodedParser, WxPayment.closeOrder);
+
+// 账单
+const Order = require('../db/controller/order');
+router.route('/orders')
+    .get(Order.GetAll);
+router.route('/order')
+    .post(urlencodedParser, Order.Update);
+router.route('/order/:id')
+    .get(Order.GetById)
+    .delete(Order.DeleteById);
 
 // 微信失败消息
 const WxMsgQueue = require('../db/controller/wxMsgQueue');

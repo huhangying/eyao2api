@@ -13,8 +13,8 @@ const payApi = async (hid, clientIp) => {
     spbill_create_ip: clientIp, // 客户端IP地址
   };
   // return tenpay.init(config);
-  // return tenpay.init(config, true);
-  return await tenpay.sandbox(config);
+  return tenpay.init(config, true);
+  // return await tenpay.sandbox(config);
 }
 
 // const middlewareForExpress = async() => {
@@ -60,7 +60,8 @@ const unifiedOrder = async (req, res, next) => {
 
 // 申请退款
 const refund = async (req, res, next) => {
-  const { hid, clientIp, orderId, amount, refundId, refundAmount } = req.body;
+  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
+  const { hid, orderId, amount, refundId, refundAmount } = req.body;
   const api = await payApi(hid, clientIp);
   api.refund({
     out_trade_no: orderId,    // 商户内部订单号
@@ -76,7 +77,8 @@ const refund = async (req, res, next) => {
 
 // 查询订单
 const orderQuery = async (req, res, next) => {
-  const { hid, clientIp, orderId } = req.body;
+  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
+  const { hid, orderId } = req.body;
   const api = await payApi(hid, clientIp);
   api.orderQuery({
     out_trade_no: orderId, // '商户内部订单号',
@@ -88,7 +90,8 @@ const orderQuery = async (req, res, next) => {
 }
 // 撤消订单
 const reverse = async (req, res, next) => {
-  const { hid, clientIp, orderId } = req.body;
+  const { hid, orderId } = req.body;
+  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   const api = await payApi(hid, clientIp);
   api.reverse({
     out_trade_no: orderId, // '商户内部订单号',
@@ -100,7 +103,8 @@ const reverse = async (req, res, next) => {
 }
 // 查询关闭订单
 const closeOrder = async (req, res, next) => {
-  const { hid, clientIp, orderId } = req.body;
+  const { hid, orderId } = req.body;
+  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   const api = await payApi(hid, clientIp);
   api.closeOrder({
     out_trade_no: orderId, // '商户内部订单号',

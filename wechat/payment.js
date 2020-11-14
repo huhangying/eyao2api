@@ -13,14 +13,14 @@ const payApi = async (hid, clientIp) => {
     spbill_create_ip: clientIp, // 客户端IP地址
   };
   // return tenpay.init(config);
-  return tenpay.init(config, true);
-  // return await tenpay.sandbox(config);
+  // return tenpay.init(config, true);
+  return await tenpay.sandbox(config);
 }
 
 // const middlewareForExpress = async() => {
 const middlewareForExpress = async (req, res) => {
   const hid = req.body.hid;
-  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   const api = await payApi(hid, clientIp);
   // const api = await payApi(2, '');
   return api.middlewareForExpress('pay');

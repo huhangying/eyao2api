@@ -8,7 +8,7 @@ module.exports = mongoose.model(
     name: String,
     desc: String,
     order: Number,
-    assetFolder: { type: String },
+    // assetFolder: { type: String },
     //created: {type : Date, default: Date.now},
     //updated: {type : Date, default: Date.now},
     address: String,

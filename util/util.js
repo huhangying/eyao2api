@@ -66,6 +66,10 @@ module.exports = {
         return jwt.sign(data, SECRET_KEY, { expiresIn: '1d' });
     },
 
+    signNeverExpiredToken: (data) => {
+        return jwt.sign(data, SECRET_KEY, { expiresIn: '999d' });
+    },
+
     // middleware
     verifyToken: (req, res, next) => {
         if (req.url.search(/(login|auth|notify)/g) > 0) {

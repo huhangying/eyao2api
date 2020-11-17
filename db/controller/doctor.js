@@ -313,6 +313,64 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    //================== APP login ===================
+    // 注：login API 检测 hostname 得到hid，并需要返回never-expired token
+    AppLogin: async (req, res, next) => {
+        // 获取 login 数据（json）
+        const login = req.body;
+
+        // user_id
+        if (!login.user_id) {
+            return Status.returnStatus(res, Status.NO_ID);
+        }
+        // password
+        if (!login.password) {
+            return Status.returnStatus(res, Status.NO_PASSWORD);
+        }
+        let hid;
+        let hosptial;
+        if (login.hid) {
+            hid = login.hid;
+            hosptial = await Hospital.getByHid(hid)
+        } else {
+            hosptial = await Hospital.getHidByHost(req.hostname);
+            if (!hosptial) {
+                return Status.returnStatus(res, Status.FAILED);
+            }
+            hid = hosptial.hid;
+        }
+
+        const query = {
+            user_id: login.user_id,
+            hid: hid,
+            apply: true
+        };
+        Doctor.findOne(query)
+            .select('-__v')
+            .populate('department')
+            .then((result) => {
+                if (!result) {
+                    return Status.returnStatus(res, Status.NOT_REGISTERED);
+                }
+                // check password
+                if (login.password != util.decrypt(result.password)) {
+                    return Status.returnStatus(res, Status.WRONG_PASSWORD);
+                }
+                result.password = undefined; // remove password!
+
+                result.token = util.signNeverExpiredToken({
+                    hid: hosptial.hid,
+                    id: result.id,
+                    role: result.role
+                });
+                result.hospitalName = hosptial.name;
+                result.wechatUrl = hosptial.wxurl;
+                result.cs = result._id.equals(hosptial.csdoctor);
+                return res.json(result);
+            })
+            .catch(err => next(err));
+    },
+
     GetPassword: (req, res, next) => {
         const { did } = req.params;   //doctor user id
         Doctor.findOne({ user_id: did, hid: req.token.hid, apply: true })

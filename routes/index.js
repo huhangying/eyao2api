@@ -79,6 +79,8 @@ router.route('/doctor/:userid')
 
 router.route('/login/doctor')
     .patch(urlencodedParser, Doctor.Login);
+router.route('/app-login/doctor')
+    .patch(urlencodedParser, Doctor.AppLogin);
 
 router.route('/doctor/passwd/:did')
     .get(Doctor.GetPassword);

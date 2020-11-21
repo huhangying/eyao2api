@@ -440,6 +440,8 @@ router.route('/bookings/user/:uid')
 
 router.route('/bookings/doctor/:did')
     .get(Booking.GetByDoctorId);
+router.route('/bookings/doctor/:did/:from')
+    .get(Booking.GetByDoctorIdAndFrom);
 router.route('/bookings/cancelled/doctor/:did')
     .get(Booking.GetCancelledBookingsByDoctorId); // 获取没有过期的未读的病患取消预约
 router.route('/bookings/read-cancelled/doctor/:did/:uid') // web-side: clear unread count

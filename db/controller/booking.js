@@ -80,6 +80,27 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据药师ID 和开始时间 获取相关的预约
+    GetByDoctorIdAndFrom: (req, res, next) => {
+        const { did, from } = req.params;
+        Booking.find({ doctor: did, date: { $gte: new Date(from) }, hid: req.token.hid })
+            .sort({ date: -1 })
+            .populate([
+                {
+                    path: 'schedule',
+                    select: '-__v -hid'
+                },
+                {
+                    path: 'user',
+                    select: '_id name link_id cell gender birthdate visitedDepartments'
+                }
+            ])
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据药师ID 获取 没有过期的,未读的 病患取消预约
     GetCancelledBookingsByDoctorId: (req, res, next) => {
         const { did } = req.params;
@@ -87,7 +108,7 @@ module.exports = {
             doctor: did,
             hid: req.token.hid,
             status: 2, // status 2: 病患取消预约
-            read: { $ne: 1},
+            read: { $ne: 1 },
             date: {
                 $gte: moment().startOf('day').toDate(),
             },

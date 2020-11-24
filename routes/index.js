@@ -967,7 +967,7 @@ router.route('/order/:id')
 
 // jsapi config (signature)
 const Jsapi = require('../wechat/jsapi-config');
-router.route('/wechat/jsapi/:url')
+router.route('/wechat/jsapi')
     .get(Jsapi.getJsapiConfig);
 
 // 微信失败消息

@@ -20,7 +20,7 @@ function raw(args) {
 
 module.exports = {
   getJsapiConfig: async (req, res, next) => {
-    const { url } = req.params;
+    const { url } = req.query;
     const access_token = await wxUtil.getAccessTokenByHid(req.token.hid);
 
     axios.get(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${access_token}&type=jsapi`)

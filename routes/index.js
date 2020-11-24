@@ -966,9 +966,9 @@ router.route('/order/:id')
     .delete(Order.DeleteById);
 
 // jsapi config (signature)
-const Jsapi = require('../wechat/jsapi-config');
-router.route('/wechat/jsapi')
-    .get(Jsapi.getJsapiConfig);
+// const Jsapi = require('../wechat/jsapi-config');
+// router.route('/wechat/jsapi')
+//     .get(Jsapi.getJsapiConfig);
 
 // 微信失败消息
 const WxMsgQueue = require('../db/controller/wxMsgQueue');

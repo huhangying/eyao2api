@@ -965,6 +965,11 @@ router.route('/order/:id')
     .get(Order.GetById)
     .delete(Order.DeleteById);
 
+// jsapi config (signature)
+const Jsapi = require('../wechat/jsapi-config');
+router.route('/wechat/jsapi/:url')
+    .get(Jsapi.getJsapiConfig);
+
 // 微信失败消息
 const WxMsgQueue = require('../db/controller/wxMsgQueue');
 router.route('/wechat/msg-queue/all')

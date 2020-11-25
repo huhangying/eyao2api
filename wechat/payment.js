@@ -51,7 +51,7 @@ const unifiedOrder = async (req, res, next) => {
     body: utf8.encode(body),// 商品描述
     out_trade_no, // 商户内部订单号
     total_fee,
-    // openid,
+    openid,
     // attach
   })
     .then((result) => {

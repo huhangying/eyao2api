@@ -48,10 +48,11 @@ const unifiedOrder = async (req, res, next) => {
   const { openid, hid, out_trade_no, total_fee, body } = req.body;
   const api = await payApi(hid, clientIp);
   api.unifiedOrder({
-    out_trade_no, // 商户内部订单号
     body: utf8.encode(body),// 商品描述
+    out_trade_no, // 商户内部订单号
     total_fee,
-    openid: openid
+    // openid,
+    // attach
   })
     .then((result) => {
       return res.json(result)

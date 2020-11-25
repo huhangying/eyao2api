@@ -1,5 +1,6 @@
 const tenpay = require('tenpay');
 const wxUtil = require('./wx-util');
+const utf8 = require('utf8');
 
 const payApi = async (hid, clientIp) => {
   // config
@@ -48,7 +49,7 @@ const unifiedOrder = async (req, res, next) => {
   const api = await payApi(hid, clientIp);
   api.unifiedOrder({
     out_trade_no, // 商户内部订单号
-    body,
+    body: utf8.encode(body),// 商品描述
     total_fee,
     openid: openid
   })

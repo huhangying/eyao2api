@@ -9,7 +9,7 @@ const payApi = async (hid, clientIp) => {
     appid: appid,
     mchid: mch_id,
     partnerKey: partnerKey, // 微信支付安全密钥
-    // pfx: require('fs').readFileSync(wxcert_path), // 证书文件路径
+    pfx: require('fs').readFileSync('./lib/apiclient_cert.p12'), // 证书文件路径
     notify_url: notify_url, // 支付回调网址
     spbill_create_ip: clientIp, // 客户端IP地址
   };

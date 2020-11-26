@@ -385,6 +385,7 @@ class Payment {
       mch_id: this.mchid,
       nonce_str: util.generate(),
       notify_url: params.notify_url || this.notify_url,
+      openid: params.openid,
       out_trade_no: params.out_trade_no,
       spbill_create_ip: params.spbill_create_ip || this.spbill_create_ip,
       total_fee: params.total_fee,

@@ -178,9 +178,6 @@ class Payment {
   async _request(params, type, cert = false) {
     // 安全签名
     params.sign = this._getSign(params, params.sign_type);
-    // remove openid and sign_type
-    delete params.sign_type;
-
     // 创建请求参数
     let pkg = {
       method: 'POST',

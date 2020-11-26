@@ -1,4 +1,4 @@
-const tenpay = require('tenpay');
+const tenpay = require('./lib/tenpay/index');
 const wxUtil = require('./wx-util');
 const utf8 = require('utf8');
 
@@ -45,14 +45,14 @@ const notify = (req, res) => {
 // 微信统一下单
 const unifiedOrder = async (req, res, next) => {
   const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
-  const { openid, hid, out_trade_no, total_fee, body } = req.body;
+  const { openid, hid, out_trade_no, total_fee, body, attach } = req.body;
   const api = await payApi(hid, clientIp);
   api.unifiedOrder({
     body: utf8.encode(body),// 商品描述
     out_trade_no, // 商户内部订单号
     total_fee,
     openid,
-    // attach
+    attach
   })
     .then((result) => {
       return res.json(result)

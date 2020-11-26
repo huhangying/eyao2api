@@ -23,7 +23,7 @@ module.exports = {
     const { url } = req.query;
     const access_token = await wxUtil.getAccessTokenByHid(req.token.hid);
 
-    return axios.get(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${access_token}&type=jsapi`)
+    axios.get(`https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${access_token}&type=jsapi`)
       .then((result) => {
         if (!result || !result.data || !result.data.ticket) {
           return Status.returnStatus(res, Status.FAILED)

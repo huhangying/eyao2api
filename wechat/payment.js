@@ -4,14 +4,14 @@ const utf8 = require('utf8');
 
 const payApi = async (hid, clientIp) => {
   // config
-  const { appid, mch_id, partnerKey, notify_url } = await wxUtil.getHospitalSettingsByHid(hid);
+  const { appid, mch_id, partnerKey, notify_url, server_ip } = await wxUtil.getHospitalSettingsByHid(hid);
   const config = {
     appid: appid,
     mchid: mch_id,
     partnerKey: partnerKey, // 微信支付安全密钥
     // pfx: require('fs').readFileSync('./wechat/lib/apiclient_cert.p12'), // 证书文件路径
     notify_url: notify_url, // 支付回调网址
-    spbill_create_ip: clientIp, // 客户端IP地址
+    spbill_create_ip: server_ip, // 服务器IP地址
   };
   // return tenpay.init(config);
   return tenpay.init(config, true);

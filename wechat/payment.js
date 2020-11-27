@@ -55,8 +55,8 @@ const unifiedOrder = async (req, res, next) => {
     openid,
     attach
   })
-    .then((result) => {
-      return res.json(result)
+    .then((result) => {      
+      return res.json(api.getPayParams(result))
     })
     .catch(err => next(err));
 }

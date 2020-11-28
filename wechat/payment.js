@@ -55,8 +55,7 @@ const notify = (req, res) => {
     console.log(newSign);
 
     const existingOrder = await Order.findOrder(result.openid, result.out_refund_no);
-    // 订单金额是否与商户侧的订单金额一致, 
-    // 签名验证,
+    // 订单金额是否与商户侧的订单金额一致, 签名验证,
     if (existingOrder.amount != result.total_fee && !isSignValid(result, partnerKey)) {
       flag = false;
       returnMsg = '金额不一致或签名失败.';
@@ -73,7 +72,6 @@ const unifiedOrder = async (req, res, next) => {
   const api = await payApi(hid);
   api.getPayParams({
     body: body,// 商品描述
-    // body: utf8.encode(body),// 商品描述
     out_trade_no, // 商户内部订单号
     total_fee,
     openid,

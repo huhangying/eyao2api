@@ -60,11 +60,11 @@ module.exports = {
             { out_trade_no: out_trade_no, openid: openid },
             data,
             { upsert: true, new: true }
-        );
+        ).exec();
     },
 
     findOrder: (openid, out_trade_no) => {
-        return Order.findOne({ out_trade_no: out_trade_no, openid: openid });
+        return Order.findOne({ out_trade_no: out_trade_no, openid: openid }).exec();
     }
 
 }

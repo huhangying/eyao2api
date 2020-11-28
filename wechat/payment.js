@@ -37,36 +37,32 @@ const middlewareForExpress = async (req, res) => {
 // 中间件会对通知消息进行合法性验证, 并将消息解析为json格式放入req.weixin
 // reply()会自动封装SUCCESS消息, reply('some error_msg')会自动封装FAIL消息
 const notify = (req, res) => {
-  parser.parseString(req.body, (err, result) => {
+  parser.parseString(req.body, async (err, result) => {
     if (err) {
       // 错误处理
       return res.send(messageBuilder.payNotifyResponse({ return_code: 'FAIL', return_msg: 'ERROR' }));
-    } else if (result.return_code === 'FAIL') {
+    } else if (result.return_code !== 'SUCCESS' || result.result_code !== 'SUCCESS') {
       return res.send(messageBuilder.payNotifyResponse({ return_code: 'FAIL', return_msg: result.return_msg }));
+    } else if (!result.sign) {
+      return res.send(messageBuilder.payNotifyResponse({ return_code: 'FAIL', return_msg: '' }));
     }
     // update order table
     console.log(result);
-    Order.updateOrder(result.openid, result.out_refund_no, result).then(async rsp => {
-      let flag = true;
-      let returnMsg = 'OK';
-      // 订单金额是否与商户侧的订单金额一致
-      if (rsp.amount != rsp.total_fee) {
-        flag = false;
-        returnMsg = 'amount not equal.';
-        // 更新订单支付状态
-      } else {
-        const data = [...result];
-        delete data.sign;
-        const { partnerKey } = await wxUtil.getHospitalSettingsByHid(rsp.hid);
-        const newSign = verifySign(data, partnerKey)
-        console.log(newSign);
-        if (newSign !== rsp.sign) {
-          flag = false;
-          returnMsg = 'sign not match';
-        }
-      }
-      return res.send(messageBuilder.payNotifyResponse({ return_code: 'SUCCESS', return_msg: 'OK' }));
-    });
+    let flag = true;
+    let returnMsg = 'OK';
+    const { partnerKey } = await wxUtil.getHospitalSettingsByHid(result.attach); // attach is hid
+    const newSign = isSignValid(result, partnerKey)
+    console.log(newSign);
+
+    const existingOrder = await Order.findOrder(result.openid, result.out_refund_no);
+    // 订单金额是否与商户侧的订单金额一致, 签名验证,
+    if (existingOrder.amount != result.total_fee && !isSignValid(result, partnerKey)) {
+      flag = false;
+      returnMsg = '金额不一致或签名失败.';
+    }
+    await Order.updateOrder(result.openid, result.out_refund_no, {...result, return_msg: returnMsg});
+
+    res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));
   });
 }
 
@@ -140,10 +136,15 @@ const closeOrder = async (req, res, next) => {
     })
     .catch(err => next(err));
 }
+
+
 // 验证调用返回或微信主动通知签名时，传送的sign参数不参与签名，将生成的签名与该sign值作校验
-const verifySign = (data, partnerKey) => {
+const isSignValid = (result, partnerKey) => {
+  let data = [...result];
+  const sign = data.sign;
+  delete data.sign;
   let str = wxUtil.toQueryString(data) + '&key=' + partnerKey;
-  return wxUtil.md5(str).toUpperCase();
+  return wxUtil.md5(str).toUpperCase() === sign;
 }
 
 module.exports = {
@@ -154,6 +155,4 @@ module.exports = {
   orderQuery,
   reverse,
   closeOrder,
-
-  verifySign,
 }

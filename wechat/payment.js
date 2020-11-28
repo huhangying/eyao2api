@@ -59,12 +59,13 @@ const notify = (req, res) => {
         delete data.sign;
         const { partnerKey } = await wxUtil.getHospitalSettingsByHid(rsp.hid);
         const newSign = verifySign(data, partnerKey)
+        console.log(newSign);
         if (newSign !== rsp.sign) {
           flag = false;
           returnMsg = 'sign not match';
         }
       }
-      return res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));
+      return res.send(messageBuilder.payNotifyResponse({ return_code: 'SUCCESS', return_msg: 'OK' }));
     });
   });
 }

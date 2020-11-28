@@ -55,7 +55,8 @@ const notify = (req, res) => {
     console.log(newSign);
 
     const existingOrder = await Order.findOrder(result.openid, result.out_refund_no);
-    // 订单金额是否与商户侧的订单金额一致, 签名验证,
+    // 订单金额是否与商户侧的订单金额一致, 
+    // 签名验证,
     if (existingOrder.amount != result.total_fee && !isSignValid(result, partnerKey)) {
       flag = false;
       returnMsg = '金额不一致或签名失败.';

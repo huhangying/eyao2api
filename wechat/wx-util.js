@@ -4,6 +4,7 @@ const Const = require('../db/model/const');
 const AccessToken = require('./access-token.model');
 const NodeCache = require("node-cache");
 const apiCache = new NodeCache();
+const crypto = require('crypto');
 
 // sign
 const md5 = (str, encoding = 'utf8') => crypto.createHash('md5').update(str, encoding).digest('hex');

@@ -1,8 +1,10 @@
-const tenpay = require('./lib/tenpay/index');
+const tenpay = require('tenpay');
+// const tenpay = require('./lib/tenpay/index');
 const wxUtil = require('./wx-util');
 const utf8 = require('utf8');
 
-const payApi = async (hid, clientIp) => {
+const payApi = async (hid) => {
+  // const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   // config
   const { appid, mch_id, partnerKey, notify_url, server_ip } = await wxUtil.getHospitalSettingsByHid(hid);
   const config = {
@@ -21,9 +23,7 @@ const payApi = async (hid, clientIp) => {
 // const middlewareForExpress = async() => {
 const middlewareForExpress = async (req, res) => {
   const hid = req.body.hid;
-  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
-  const api = await payApi(hid, clientIp);
-  // const api = await payApi(2, '');
+  const api = await payApi(hid);
   return api.middlewareForExpress('pay');
 }
 
@@ -42,11 +42,10 @@ const notify = (req, res) => {
   res.reply('错误消息' || '');
 }
 
-// 微信统一下单
+// 微信统一下单/自动下单
 const unifiedOrder = async (req, res, next) => {
-  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   const { openid, hid, out_trade_no, total_fee, body, attach } = req.body;
-  const api = await payApi(hid, clientIp);
+  const api = await payApi(hid);
   api.getPayParams({
     body: body,// 商品描述
     // body: utf8.encode(body),// 商品描述
@@ -63,9 +62,8 @@ const unifiedOrder = async (req, res, next) => {
 
 // 申请退款
 const refund = async (req, res, next) => {
-  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   const { hid, orderId, amount, refundId, refundAmount } = req.body;
-  const api = await payApi(hid, clientIp);
+  const api = await payApi(hid);
   api.refund({
     out_trade_no: orderId,    // 商户内部订单号
     out_refund_no: refundId,  // 商户内部退款单号
@@ -80,9 +78,8 @@ const refund = async (req, res, next) => {
 
 // 查询订单
 const orderQuery = async (req, res, next) => {
-  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   const { hid, orderId } = req.body;
-  const api = await payApi(hid, clientIp);
+  const api = await payApi(hid);
   api.orderQuery({
     out_trade_no: orderId, // '商户内部订单号',
   })
@@ -94,8 +91,7 @@ const orderQuery = async (req, res, next) => {
 // 撤消订单
 const reverse = async (req, res, next) => {
   const { hid, orderId } = req.body;
-  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
-  const api = await payApi(hid, clientIp);
+  const api = await payApi(hid);
   api.reverse({
     out_trade_no: orderId, // '商户内部订单号',
   })
@@ -107,8 +103,7 @@ const reverse = async (req, res, next) => {
 // 查询关闭订单
 const closeOrder = async (req, res, next) => {
   const { hid, orderId } = req.body;
-  const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
-  const api = await payApi(hid, clientIp);
+  const api = await payApi(hid);
   api.closeOrder({
     out_trade_no: orderId, // '商户内部订单号',
   })

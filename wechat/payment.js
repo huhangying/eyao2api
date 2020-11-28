@@ -140,7 +140,7 @@ const closeOrder = async (req, res, next) => {
 
 // 验证调用返回或微信主动通知签名时，传送的sign参数不参与签名，将生成的签名与该sign值作校验
 const isSignValid = (result, partnerKey) => {
-  let data = [...result];
+  let data = Object.assign({}, result);
   const sign = data.sign;
   delete data.sign;
   let str = wxUtil.toQueryString(data) + '&key=' + partnerKey;

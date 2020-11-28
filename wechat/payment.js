@@ -16,8 +16,8 @@ const payApi = async (hid) => {
     spbill_create_ip: server_ip, // 服务器IP地址
   };
   // return tenpay.init(config);
-  return tenpay.init(config, true);
-  // return await tenpay.sandbox(config);
+  // return tenpay.init(config, true);
+  return await tenpay.sandbox(config);
 }
 
 // const middlewareForExpress = async() => {

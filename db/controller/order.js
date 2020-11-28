@@ -59,7 +59,7 @@ module.exports = {
         return Order.findOneAndUpdate(
             { out_trade_no: out_trade_no, openid: openid },
             data,
-            { upsert: true, new: true }
+            { upsert: true }
         ).exec();
     },
 

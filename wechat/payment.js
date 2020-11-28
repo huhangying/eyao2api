@@ -52,18 +52,19 @@ const notify = (req, res) => {
     let flag = true;
     let returnMsg = 'OK';
     const { partnerKey } = await wxUtil.getHospitalSettingsByHid(result.attach); // attach is hid
-    let existingOrder = await Order.findOrder(result.openid, result.out_refund_no);
-    // 订单金额是否与商户侧的订单金额一致, 签名验证,
-    if (existingOrder.amount != result.total_fee && !isSignValid(result, partnerKey)) {
-      flag = false;
-      returnMsg = '金额不一致或签名失败.';
-    }
-    existingOrder = {...existingOrder, ...result, return_msg: returnMsg};
-    console.log(existingOrder);
-    existingOrder.save();
-    //await Order.updateOrder(result.openid, result.out_refund_no, {...result, return_msg: returnMsg});
-
-    res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));
+    Order.findOrder(result.openid, result.out_refund_no).then(existingOrder => {
+      // 订单金额是否与商户侧的订单金额一致, 签名验证,
+      if (existingOrder.amount != result.total_fee && !isSignValid(result, partnerKey)) {
+        flag = false;
+        returnMsg = '金额不一致或签名失败.';
+      }
+      existingOrder = {...existingOrder, ...result, return_msg: returnMsg};
+      console.log(existingOrder);
+      existingOrder.save();
+      //await Order.updateOrder(result.openid, result.out_refund_no, {...result, return_msg: returnMsg});
+  
+      res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));
+    });
   });
 }
 

@@ -47,8 +47,7 @@ const notify = (req, res) => {
     } else if (!result.sign) {
       return res.send(messageBuilder.payNotifyResponse({ return_code: 'FAIL', return_msg: '' }));
     }
-    // update order table
-    console.log(result);
+
     let flag = true;
     let returnMsg = 'OK';
     const { partnerKey } = await wxUtil.getHospitalSettingsByHid(result.attach); // attach is hid
@@ -59,8 +58,8 @@ const notify = (req, res) => {
       returnMsg = '金额不一致或签名失败.';
     }
     // save back
-    const ret = await Order.updateOrder(result.openid, result.out_refund_no, {...result, return_msg: returnMsg});
-    console.log(ret);
+    await Order.updateOrder(result.openid, result.out_refund_no, {...result, return_msg: returnMsg});
+    // console.log(ret);
 
     res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));
   });

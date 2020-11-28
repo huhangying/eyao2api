@@ -4,6 +4,7 @@ const wxUtil = require('./wx-util');
 const utf8 = require('utf8');
 const { Parser } = require('xml2js');
 const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
+const messageBuilder = require('./message-builder');
 
 const payApi = async (hid) => {
   // const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
@@ -39,12 +40,13 @@ const notify = (req, res) => {
     if (err || result.return_code === 'FAIL') {
       // 错误处理
       console.log('error: ', err, result);
-      return res.reply('');
+      return res.send(messageBuilder.payNotifyResponse({return_code: 'FAIL', return_msg: 'OK'}));
     }
-    // 业务逻辑...
+    // 
     console.log(result);
+
     // 回复消息(参数为空回复成功, 传值则为错误消息)
-    res.reply('错误消息' || '');
+    res.send(messageBuilder.payNotifyResponse({return_code: 'SUCCESS', return_msg: 'OK'}));
   });
 }
 

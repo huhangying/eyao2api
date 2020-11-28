@@ -1,6 +1,10 @@
 const { Builder } = require('xml2js');
 const builder = new Builder({ headless: true, cdata: true, explicitRoot: false, rootName: 'xml' });
 
+const payNotifyResponse = (notifyRsp) => {
+  return builder.buildObject(notifyRsp);
+}
+
 const textMessage = (baseData, text) => {
   return builder.buildObject(
     Object.assign({
@@ -52,4 +56,6 @@ module.exports = {
   newsMessage,
   subscribeMessage,
   subscribeMessageWithDoctor,
+
+  payNotifyResponse,
 }

@@ -5,6 +5,14 @@ const AccessToken = require('./access-token.model');
 const NodeCache = require("node-cache");
 const apiCache = new NodeCache();
 
+// sign
+const md5 = (str, encoding = 'utf8') => crypto.createHash('md5').update(str, encoding).digest('hex');
+const toQueryString = (obj) => Object.keys(obj)
+  .filter(key => key !== 'sign' && obj[key] !== void 0 && obj[key] !== '')
+  .sort()
+  .map(key => key + '=' + obj[key])
+  .join('&');
+
 const getHidByWxid = async (wxid) => {
   const hospital = await Hospital.findOne({ wxid: wxid, apply: true })
     .select('hid');
@@ -87,4 +95,7 @@ module.exports = {
   refreshAccessToken,
 
   getUserInfo,
+  // wx sign
+  md5,
+  toQueryString,
 }

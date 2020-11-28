@@ -27,17 +27,14 @@ module.exports = {
         if (!item.openid) {
             return Status.returnStatus(res, Status.NO_USER);
         }
-        // doctor
-        if (!item.doctor) {
-            return Status.returnStatus(res, Status.NO_DOCTOR);
-        }
+
         // order id
-        if (!item.orderId) {
+        if (!item.out_trade_no) {
             return Status.returnStatus(res, Status.NO_ORDERID);
         }
 
         Order.findOneAndUpdate(
-            { orderId: item.orderId, openid: item.openid, hid: item.hid },
+            { out_trade_no: item.out_trade_no, openid: item.openid, hid: item.hid },
             item,
             { upsert: true, new: true }
         )
@@ -53,4 +50,17 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
+
+    //===============================================
+    // Functions
+    //===============================================
+
+    updateOrder: (openid, out_trade_no, data) => {
+        return Order.findOneAndUpdate(
+            { out_trade_no: out_trade_no, openid: openid },
+            data,
+            { upsert: true, new: true }
+        );
+    }
+
 }

@@ -5,11 +5,11 @@ module.exports = mongoose.model('order',
         hid: Number,
         openid: { type: String, required: true }, // M
         userName: { type: String },
-        doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
+        doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' },
         doctorName: { type: String },
         consultId: { type: String },
         consultType: { type: Number },
-        amount: { type: Number, required: true }, // 分
+        amount: { type: Number }, // 分
 
         prepay_id: { type: String },
         status: { type: String },
@@ -21,6 +21,8 @@ module.exports = mongoose.model('order',
         bank_type: String,
         transaction_id: String, // 微信订单号
         time_end: String,
+
+        return_msg: String, // if error
 
         // refund
         refund_id: String, // 微信退款单号

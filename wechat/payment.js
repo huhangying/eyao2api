@@ -1,10 +1,11 @@
 const tenpay = require('tenpay');
 // const tenpay = require('./lib/tenpay/index');
 const wxUtil = require('./wx-util');
-const utf8 = require('utf8');
+// const utf8 = require('utf8');
 const { Parser } = require('xml2js');
 const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
 const messageBuilder = require('./message-builder');
+const Order = require('../db/controller/order');
 
 const payApi = async (hid) => {
   // const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
@@ -37,16 +38,34 @@ const middlewareForExpress = async (req, res) => {
 // reply()会自动封装SUCCESS消息, reply('some error_msg')会自动封装FAIL消息
 const notify = (req, res) => {
   parser.parseString(req.body, (err, result) => {
-    if (err || result.return_code === 'FAIL') {
+    if (err) {
       // 错误处理
-      console.log('error: ', err, result);
-      return res.send(messageBuilder.payNotifyResponse({return_code: 'FAIL', return_msg: 'OK'}));
+      return res.send(messageBuilder.payNotifyResponse({ return_code: 'FAIL', return_msg: 'ERROR' }));
+    } else if (result.return_code === 'FAIL') {
+      return res.send(messageBuilder.payNotifyResponse({ return_code: 'FAIL', return_msg: result.return_msg }));
     }
-    // 
+    // update order table
     console.log(result);
-
-    // 回复消息(参数为空回复成功, 传值则为错误消息)
-    res.send(messageBuilder.payNotifyResponse({return_code: 'SUCCESS', return_msg: 'OK'}));
+    Order.updateOrder(result.openid, result.out_refund_no, result).then(async rsp => {
+      let flag = true;
+      let returnMsg = 'OK';
+      // 订单金额是否与商户侧的订单金额一致
+      if (rsp.amount != rsp.total_fee) {
+        flag = false;
+        returnMsg = 'amount not equal.';
+        // 更新订单支付状态
+      } else {
+        const data = [...result];
+        delete data.sign;
+        const { partnerKey } = await wxUtil.getHospitalSettingsByHid(rsp.hid);
+        const newSign = verifySign(data, partnerKey)
+        if (newSign !== rsp.sign) {
+          flag = false;
+          returnMsg = 'sign not match';
+        }
+      }
+      return res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));
+    });
   });
 }
 
@@ -62,7 +81,7 @@ const unifiedOrder = async (req, res, next) => {
     openid,
     attach
   })
-    .then((result) => {      
+    .then((result) => {
       return res.json(result)
     })
     .catch(err => next(err));
@@ -70,10 +89,10 @@ const unifiedOrder = async (req, res, next) => {
 
 // 申请退款
 const refund = async (req, res, next) => {
-  const { hid, orderId, amount, refundId, refundAmount } = req.body;
+  const { hid, out_trade_no, amount, refundId, refundAmount } = req.body;
   const api = await payApi(hid);
   api.refund({
-    out_trade_no: orderId,    // 商户内部订单号
+    out_trade_no: out_trade_no,    // 商户内部订单号
     out_refund_no: refundId,  // 商户内部退款单号
     total_fee: amount,
     refund_fee: refundAmount
@@ -86,10 +105,10 @@ const refund = async (req, res, next) => {
 
 // 查询订单
 const orderQuery = async (req, res, next) => {
-  const { hid, orderId } = req.body;
+  const { hid, out_trade_no } = req.body;
   const api = await payApi(hid);
   api.orderQuery({
-    out_trade_no: orderId, // '商户内部订单号',
+    out_trade_no: out_trade_no, // '商户内部订单号',
   })
     .then((result) => {
       return res.json(result.data)
@@ -98,10 +117,10 @@ const orderQuery = async (req, res, next) => {
 }
 // 撤消订单
 const reverse = async (req, res, next) => {
-  const { hid, orderId } = req.body;
+  const { hid, out_trade_no } = req.body;
   const api = await payApi(hid);
   api.reverse({
-    out_trade_no: orderId, // '商户内部订单号',
+    out_trade_no: out_trade_no, // '商户内部订单号',
   })
     .then((result) => {
       return res.json(result.data)
@@ -110,15 +129,20 @@ const reverse = async (req, res, next) => {
 }
 // 查询关闭订单
 const closeOrder = async (req, res, next) => {
-  const { hid, orderId } = req.body;
+  const { hid, out_trade_no } = req.body;
   const api = await payApi(hid);
   api.closeOrder({
-    out_trade_no: orderId, // '商户内部订单号',
+    out_trade_no: out_trade_no, // '商户内部订单号',
   })
     .then((result) => {
       return res.json(result.data)
     })
     .catch(err => next(err));
+}
+// 验证调用返回或微信主动通知签名时，传送的sign参数不参与签名，将生成的签名与该sign值作校验
+const verifySign = (data, partnerKey) => {
+  let str = wxUtil.toQueryString(data) + '&key=' + partnerKey;
+  return wxUtil.md5(str).toUpperCase();
 }
 
 module.exports = {
@@ -129,4 +153,6 @@ module.exports = {
   orderQuery,
   reverse,
   closeOrder,
+
+  verifySign,
 }

@@ -60,7 +60,7 @@ module.exports = {
             { out_trade_no: out_trade_no, openid: openid },
             data,
             { upsert: true }
-        ).exec();
+        );
     },
 
     findOrder: (openid, out_trade_no) => {

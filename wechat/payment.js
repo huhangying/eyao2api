@@ -2,6 +2,8 @@ const tenpay = require('tenpay');
 // const tenpay = require('./lib/tenpay/index');
 const wxUtil = require('./wx-util');
 const utf8 = require('utf8');
+const { Parser } = require('xml2js');
+const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
 
 const payApi = async (hid) => {
   // const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
@@ -33,13 +35,17 @@ const middlewareForExpress = async (req, res) => {
 // 中间件会对通知消息进行合法性验证, 并将消息解析为json格式放入req.weixin
 // reply()会自动封装SUCCESS消息, reply('some error_msg')会自动封装FAIL消息
 const notify = (req, res) => {
-  let info = req.weixin;
-
-  // 业务逻辑...
-  console.log(info);
-
-  // 回复消息(参数为空回复成功, 传值则为错误消息)
-  res.reply('错误消息' || '');
+  parser.parseString(req.body, (err, result) => {
+    if (err || result.return_code === 'FAIL') {
+      // 错误处理
+      console.log('error: ', err, result);
+      return res.reply('');
+    }
+    // 业务逻辑...
+    console.log(result);
+    // 回复消息(参数为空回复成功, 传值则为错误消息)
+    res.reply('错误消息' || '');
+  });
 }
 
 // 微信统一下单/自动下单

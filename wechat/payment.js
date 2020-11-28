@@ -6,6 +6,7 @@ const { Parser } = require('xml2js');
 const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
 const messageBuilder = require('./message-builder');
 const Order = require('../db/controller/order');
+const { exists } = require('../db/model/const');
 
 const payApi = async (hid) => {
   // const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
@@ -51,14 +52,16 @@ const notify = (req, res) => {
     let flag = true;
     let returnMsg = 'OK';
     const { partnerKey } = await wxUtil.getHospitalSettingsByHid(result.attach); // attach is hid
-    const existingOrder = await Order.findOrder(result.openid, result.out_refund_no);
+    let existingOrder = await Order.findOrder(result.openid, result.out_refund_no);
     // 订单金额是否与商户侧的订单金额一致, 签名验证,
     if (existingOrder.amount != result.total_fee && !isSignValid(result, partnerKey)) {
       flag = false;
       returnMsg = '金额不一致或签名失败.';
     }
-    console.log({...result, return_msg: returnMsg});
-    await Order.updateOrder(result.openid, result.out_refund_no, {...result, return_msg: returnMsg});
+    existingOrder = {...existingOrder, ...result, return_msg: returnMsg};
+    console.log(existingOrder);
+    existingOrder.save();
+    //await Order.updateOrder(result.openid, result.out_refund_no, {...result, return_msg: returnMsg});
 
     res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));
   });

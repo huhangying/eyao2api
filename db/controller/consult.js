@@ -111,6 +111,7 @@ module.exports = {
             doctor: data.doctor,
             user: data.user,
             type: data.type,
+            out_trade_no: data.out_trade_no,
             finished: false,
             hid: data.hid
         }, data, { new: true, upsert: true }) // check if existed

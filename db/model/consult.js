@@ -8,6 +8,7 @@ module.exports = mongoose.model(
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },  // to
         userName: String,
 
+        out_trade_no: { type: String }, // 商户订单号
         disease_types: [{ type: String }], // 咨询疾病类型
         content: { type: String }, // 问题描述
         cell: { type: String }, // 电话咨询时必选

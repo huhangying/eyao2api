@@ -72,7 +72,7 @@ const notify = (req, res) => {
 // 微信统一下单/自动下单
 const unifiedOrder = async (req, res, next) => {
   const { openid, hid, out_trade_no, total_fee, body, attach } = req.body;
-  const api = await payApi(hid, true);
+  const api = await payApi(hid);
   const { name } = await wxUtil.getHospitalSettingsByHid(hid);
   api.getPayParams({
     body: name + body,// 商品描述
@@ -83,22 +83,6 @@ const unifiedOrder = async (req, res, next) => {
   })
     .then((result) => {
       return res.json(result)
-    })
-    .catch(err => next(err));
-}
-
-// 申请退款
-const refund = async (req, res, next) => {
-  const { hid, out_trade_no, amount, refundId, refundAmount } = req.body;
-  const api = await payApi(hid);
-  api.refund({
-    out_trade_no: out_trade_no,    // 商户内部订单号
-    out_refund_no: refundId,  // 商户内部退款单号
-    total_fee: amount,
-    refund_fee: refundAmount
-  })
-    .then((result) => {
-      return res.json(result.data)
     })
     .catch(err => next(err));
 }
@@ -115,10 +99,24 @@ const orderQuery = async (req, res, next) => {
     })
     .catch(err => next(err));
 }
+
+// 关闭订单
+const closeOrder = async (req, res, next) => {
+  const { hid, out_trade_no } = req.body;
+  const api = await payApi(hid);
+  api.closeOrder({
+    out_trade_no: out_trade_no, // '商户内部订单号',
+  })
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
+}
+
 // 撤消订单
 const reverse = async (req, res, next) => {
   const { hid, out_trade_no } = req.body;
-  const api = await payApi(hid);
+  const api = await payApi(hid, true);
   api.reverse({
     out_trade_no: out_trade_no, // '商户内部订单号',
   })
@@ -127,12 +125,55 @@ const reverse = async (req, res, next) => {
     })
     .catch(err => next(err));
 }
-// 查询关闭订单
-const closeOrder = async (req, res, next) => {
+
+// 申请退款
+const refund = async (req, res, next) => {
+  const { hid, out_trade_no, amount, refundId, refundAmount } = req.body;
+  const api = await payApi(hid, true);
+  api.refund({
+    out_trade_no: out_trade_no,    // 商户内部订单号
+    out_refund_no: refundId,  // 商户内部退款单号
+    total_fee: amount,
+    refund_fee: refundAmount
+  })
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
+}
+
+// 查询退款
+const refundQuery = async (req, res, next) => {
   const { hid, out_trade_no } = req.body;
   const api = await payApi(hid);
-  api.closeOrder({
-    out_trade_no: out_trade_no, // '商户内部订单号',
+  api.refundQuery({
+    out_trade_no: out_trade_no,    // 商户内部订单号
+  })
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
+}
+
+// 下载对帐单
+const downloadBill = async (req, res, next) => {
+  const { hid, bill_date } = req.body;
+  const api = await payApi(hid);
+  api.downloadBill({
+    bill_date: bill_date, // 对账单日期
+  })
+    .then((result) => {
+      return res.json(result.data)
+    })
+    .catch(err => next(err));
+}
+
+// 下载资金帐单
+const downloadFundflow = async (req, res, next) => {
+  const { hid, bill_date } = req.body;
+  const api = await payApi(hid);
+  api.downloadFundflow({
+    bill_date: bill_date, // '商户内部订单号',
   })
     .then((result) => {
       return res.json(result.data)
@@ -154,8 +195,11 @@ module.exports = {
   middlewareForExpress,
   notify,
   unifiedOrder,
-  refund,
   orderQuery,
-  reverse,
   closeOrder,
+  reverse,
+  refund,
+  refundQuery,
+  downloadBill,
+  downloadFundflow,
 }

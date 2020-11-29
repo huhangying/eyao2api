@@ -6,20 +6,26 @@ const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: fals
 const messageBuilder = require('./message-builder');
 const Order = require('../db/controller/order');
 
-const payApi = async (hid) => {
+const payApi = async (hid, withCert) => {
   // const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
   // config
   const { appid, mch_id, partnerKey, notify_url, server_ip } = await wxUtil.getHospitalSettingsByHid(hid);
-  const config = {
+  const config = !withCert ? {
     appid: appid,
     mchid: mch_id,
     partnerKey: partnerKey, // 微信支付安全密钥
-    // pfx: require('fs').readFileSync('./wechat/lib/apiclient_cert.p12'), // 证书文件路径
     notify_url: notify_url, // 支付回调网址
     spbill_create_ip: server_ip, // 服务器IP地址
-  };
-  // return tenpay.init(config);
-  return tenpay.init(config, true);
+  } : {
+      appid: appid,
+      mchid: mch_id,
+      partnerKey: partnerKey, // 微信支付安全密钥
+      pfx: require('fs').readFileSync('./wechat/lib/apiclient_cert.p12'), // 证书文件路径
+      notify_url: notify_url, // 支付回调网址
+      spbill_create_ip: server_ip, // 服务器IP地址
+    };
+  return tenpay.init(config);
+  // return tenpay.init(config, true);
   // return await tenpay.sandbox(config);
 }
 
@@ -66,7 +72,7 @@ const notify = (req, res) => {
 // 微信统一下单/自动下单
 const unifiedOrder = async (req, res, next) => {
   const { openid, hid, out_trade_no, total_fee, body, attach } = req.body;
-  const api = await payApi(hid);
+  const api = await payApi(hid, true);
   const { name } = await wxUtil.getHospitalSettingsByHid(hid);
   api.getPayParams({
     body: name + body,// 商品描述

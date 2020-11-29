@@ -1,12 +1,10 @@
 const tenpay = require('tenpay');
-// const tenpay = require('./lib/tenpay/index');
 const wxUtil = require('./wx-util');
 // const utf8 = require('utf8');
 const { Parser } = require('xml2js');
 const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
 const messageBuilder = require('./message-builder');
 const Order = require('../db/controller/order');
-const { exists } = require('../db/model/const');
 
 const payApi = async (hid) => {
   // const clientIp = req.headers['x-real-ip'] || req.connection.remoteAddress.split(':').pop();
@@ -58,7 +56,7 @@ const notify = (req, res) => {
       returnMsg = '金额不一致或签名失败.';
     }
     // save back
-    await Order.updateOrder(result.openid, result.out_refund_no, {...result, return_msg: returnMsg});
+    await Order.updateOrder(result.openid, result.out_refund_no, { ...result, return_msg: returnMsg });
     // console.log(ret);
 
     res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));
@@ -69,8 +67,9 @@ const notify = (req, res) => {
 const unifiedOrder = async (req, res, next) => {
   const { openid, hid, out_trade_no, total_fee, body, attach } = req.body;
   const api = await payApi(hid);
+  const { name } = await wxUtil.getHospitalSettingsByHid(hid);
   api.getPayParams({
-    body: body,// 商品描述
+    body: name + body,// 商品描述
     out_trade_no, // 商户内部订单号
     total_fee,
     openid,

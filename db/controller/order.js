@@ -56,10 +56,10 @@ module.exports = {
     //===============================================
 
     updateOrder: (openid, out_trade_no, data) => {
-        return Order.updateOne(
+        return Order.findOneAndUpdate(
             { out_trade_no: out_trade_no, openid: openid },
-            { $set: data },
-         );
+            data
+        );
     },
 
     findOrder: (openid, out_trade_no) => {

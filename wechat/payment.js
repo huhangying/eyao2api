@@ -62,7 +62,7 @@ const notify = (req, res) => {
       returnMsg = '金额不一致或签名失败.';
     }
     // save back
-    await Order.updateOrder(result.openid, result.out_refund_no, { ...result, return_msg: returnMsg });
+    await Order.updateOrder(result.openid, result.out_trade_no, { ...result, return_msg: returnMsg });
     // console.log(ret);
 
     res.send(messageBuilder.payNotifyResponse({ return_code: flag ? 'SUCCESS' : 'FAIL', return_msg: returnMsg }));

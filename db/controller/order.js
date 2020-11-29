@@ -59,8 +59,7 @@ module.exports = {
         return Order.updateOne(
             { out_trade_no: out_trade_no, openid: openid },
             { $set: data },
-            { upsert: true }
-        );
+         );
     },
 
     findOrder: (openid, out_trade_no) => {

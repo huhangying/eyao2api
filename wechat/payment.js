@@ -95,7 +95,7 @@ const orderQuery = async (req, res, next) => {
     out_trade_no: out_trade_no, // '商户内部订单号',
   })
     .then((result) => {
-      return res.json(result.data)
+      return res.json(result)
     })
     .catch(err => next(err));
 }
@@ -108,7 +108,7 @@ const closeOrder = async (req, res, next) => {
     out_trade_no: out_trade_no, // '商户内部订单号',
   })
     .then((result) => {
-      return res.json(result.data)
+      return res.json(result)
     })
     .catch(err => next(err));
 }
@@ -121,7 +121,7 @@ const reverse = async (req, res, next) => {
     out_trade_no: out_trade_no, // '商户内部订单号',
   })
     .then((result) => {
-      return res.json(result.data)
+      return res.json(result)
     })
     .catch(err => next(err));
 }
@@ -137,7 +137,7 @@ const refund = async (req, res, next) => {
     refund_fee: refund_fee
   })
     .then((result) => {
-      return res.json(result.data)
+      return res.json(result)
     })
     .catch(err => next(err));
 }
@@ -150,7 +150,7 @@ const refundQuery = async (req, res, next) => {
     out_trade_no: out_trade_no,    // 商户内部订单号
   })
     .then((result) => {
-      return res.json(result.data)
+      return res.json(result)
     })
     .catch(err => next(err));
 }
@@ -163,7 +163,7 @@ const downloadBill = async (req, res, next) => {
     bill_date: bill_date, // 对账单日期
   })
     .then((result) => {
-      return res.json(result.data)
+      return res.json(result)
     })
     .catch(err => next(err));
 }
@@ -176,7 +176,7 @@ const downloadFundflow = async (req, res, next) => {
     bill_date: bill_date, // '商户内部订单号',
   })
     .then((result) => {
-      return res.json(result.data)
+      return res.json(result)
     })
     .catch(err => next(err));
 }

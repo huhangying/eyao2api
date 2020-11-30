@@ -954,6 +954,8 @@ router.route('/wechat/pay-reverse') // 撤消订单
     .post(urlencodedParser, WxPayment.reverse);
 router.route('/wechat/pay-close-order') // 查询关闭订单
     .post(urlencodedParser, WxPayment.closeOrder);
+router.route('/wechat/pay-download-bill') // 下载对帐单
+    .post(urlencodedParser, WxPayment.downloadBill);
 
 // 账单
 const Order = require('../db/controller/order');

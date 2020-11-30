@@ -128,13 +128,13 @@ const reverse = async (req, res, next) => {
 
 // 申请退款
 const refund = async (req, res, next) => {
-  const { hid, out_trade_no, amount, refundId, refundAmount } = req.body;
+  const { hid, out_trade_no, out_refund_no, total_fee, refund_fee } = req.body;
   const api = await payApi(hid, true);
   api.refund({
     out_trade_no: out_trade_no,    // 商户内部订单号
-    out_refund_no: refundId,  // 商户内部退款单号
-    total_fee: amount,
-    refund_fee: refundAmount
+    out_refund_no: out_refund_no,  // 商户内部退款单号
+    total_fee: total_fee,
+    refund_fee: refund_fee
   })
     .then((result) => {
       return res.json(result.data)

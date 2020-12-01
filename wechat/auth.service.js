@@ -285,7 +285,7 @@ module.exports = {
 		res.json(util.signToken({
 			hid: hid,
 			id: openid,
-			role: 0
+			role: 1
 		}));
 	},
 

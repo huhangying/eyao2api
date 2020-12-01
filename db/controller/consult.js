@@ -94,7 +94,7 @@ module.exports = {
         })
             .then((result) => {
                 if (result && result._id) {
-                    res.json({ exists: true, type: result.type });
+                    res.json({ exists: true, type: result.type, consultId: result._id });
                 } else {
                     res.json({ exists: false });
                 }

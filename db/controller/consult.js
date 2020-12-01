@@ -85,14 +85,20 @@ module.exports = {
     // 根据 Doctor ID, Use ID 获取所有的 consults
     CheckConsultExistedByDoctorIdAndUserId: (req, res, next) => {
         const { did, uid } = req.params;
-        Consult.exists({
+        Consult.findOne({
             user: uid,
             doctor: did,
             finished: false,
             type: { $ne: null },
             hid: req.token.hid
         })
-            .then((result) => res.json(result)) // true or false
+            .then((result) => {
+                if (result && result._id) {
+                    res.json({ exists: true, type: result.type });
+                } else {
+                    res.json({ exists: false });
+                }
+            }) // true or false
             .catch(err => next(err));
     },
 

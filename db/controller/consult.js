@@ -83,6 +83,20 @@ module.exports = {
     },
 
     // 根据 Doctor ID, Use ID 获取所有的 consults
+    CheckConsultExistedByDoctorIdAndUserId: (req, res, next) => {
+        const { did, uid } = req.params;
+        Consult.exists({
+            user: uid,
+            doctor: did,
+            finished: false,
+            type: { $ne: null },
+            hid: req.token.hid
+        })
+            .then((result) => res.json(result)) // true or false
+            .catch(err => next(err));
+    },
+
+    // 根据 Doctor ID, Use ID 获取所有的 consults
     MarkDoneByDoctorUserAndType: (req, res, next) => {
         const { did, uid, type } = req.params;
         Consult.updateMany({

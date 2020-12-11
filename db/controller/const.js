@@ -86,7 +86,7 @@ module.exports = {
   //======================= Seeding ==========================
   seeding: (req, res, next) => {
     const { hid } = req.params;
-    const items = req.body || [];
+    const {items} = req.body;
     if (items.length < 1) {
       return Status.returnStatus(res, Status.MISSING_PARAM);
     }

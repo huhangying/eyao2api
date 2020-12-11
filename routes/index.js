@@ -982,4 +982,13 @@ router.route('/wechat/msg-queue/doctor/:did')
     .get(WxMsgQueue.GetByDoctorId);
 router.route('/wechat/msg-queue/:id')
     .delete(WxMsgQueue.DeleteById);
+
+
+
+//=============== Seeding ===================
+router.route('/seeding/auth/consts/:hid')
+    .post(urlencodedParser, Const.seeding);
+router.route('/seeding/auth/hospital/:hid')
+    .post(urlencodedParser, Hospital.seeding);
+
 module.exports = router;

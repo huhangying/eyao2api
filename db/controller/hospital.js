@@ -37,10 +37,10 @@ module.exports = {
     Hospital.findOne({ hid: req.token.hid, apply: true })
       .select('_id csdoctor')
       .populate({
-        path: 'csdoctor', 
+        path: 'csdoctor',
         // populate: { path: 'department', select: '_id name' },
         select: '-hid -__v',
-        
+
       })
       .then((result) => res.json(result))
       .catch(err => next(err));
@@ -52,9 +52,9 @@ module.exports = {
     Hospital.findByIdAndUpdate(id, { csdoctor: csdoctor }, { new: true })
       .select('csdoctor')
       .populate({
-        path: 'csdoctor', 
+        path: 'csdoctor',
         // populate: { path: 'department', select: '_id name' },
-        select: '-hid -__v',        
+        select: '-hid -__v',
       })
       .then((result) => res.json(result.csdoctor))
       .catch(err => next(err));
@@ -118,5 +118,22 @@ module.exports = {
     return Hospital.findOne({ hid: hid, apply: true })
       .select('hid name wxurl csdoctor');
   },
+
+  //======================= Seeding ==========================
+  seeding: (req, res, next) => {
+    const { hid } = req.params;
+    const item = req.body;
+    if (!item) {
+      return Status.returnStatus(res, Status.MISSING_PARAM);
+    }
+    Hospital.exists({ hid: hid }).then(result => {
+      if (result) return Status.returnStatus(res, Status.EXISTED);
+
+      const itemsWithHid = Object.assign({ hid }, item);
+      Hospital.create(itemsWithHid)
+        .then((result) => res.json(result))
+        .catch(err => next(err));
+    });
+  }
 
 }

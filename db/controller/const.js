@@ -82,4 +82,22 @@ module.exports = {
       .then((result) => res.json(result))
       .catch(err => next(err));
   },
+
+  //======================= Seeding ==========================
+  seeding: (req, res, next) => {
+    const { hid } = req.params;
+    const items = req.body || [];
+    if (items.length < 1) {
+      return Status.returnStatus(res, Status.MISSING_PARAM);
+    }
+    Const.exists({ hid: hid }).then(result => {
+      if (result) return Status.returnStatus(res, Status.EXISTED);
+
+      const itemsWithHid = items.map(item => Object.assign({ hid }, item));
+      Const.insertMany(itemsWithHid)
+        .then((result) => res.json(result))
+        .catch(err => next(err));
+    });
+  }
+
 }

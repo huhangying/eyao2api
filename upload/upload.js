@@ -16,6 +16,7 @@ const upload = (req, res, next, targetDir, filePrefix) => {
 
     form.parse(req, (err, fields, files) => {
         if (err) next(err);
+        console.log(fields);
         console.log(files);
         const path = `${targetDir}${filePrefix + (files && files.file && files.file.name || '')}`;
         console.log(path);

@@ -3,7 +3,6 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const util = require('../util/util');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
-// var urlencodedParser = bodyParser.urlencoded({ extended: false })
 const bigFileUrlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000000 });
 
 router.use(util.verifyToken);

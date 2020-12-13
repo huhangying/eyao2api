@@ -20,11 +20,11 @@ const upload = (req, res, next, targetDir, filePrefix) => {
         console.log(files);
         const path = `${targetDir}${filePrefix + (files && files.file && files.file.name || '')}`;
         console.log(path);
-        // fs.copyFile(files.file.path, 'public/upload/' + path,
-        //     (err) => {
-        //         if (err) next(err);
-        //         res.json({ path });
-        //     });
+        fs.copyFile(files.file.path, 'public/upload/' + path,
+            (err) => {
+                if (err) next(err);
+                res.json({ path });
+            });
     });
 }
 

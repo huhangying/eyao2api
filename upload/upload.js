@@ -16,7 +16,7 @@ const upload = (req, res, next, targetDir, filePrefix) => {
 
     form.parse(req, (err, fields, files) => {
         if (err) next(err);
-
+        console.log(files);
         const path = `${targetDir}${filePrefix + (files && files.file && files.file.name || '')}`;
         fs.copyFile(files.file.path, 'public/upload/' + path,
             (err) => {

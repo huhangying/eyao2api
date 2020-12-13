@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const util = require('../util/util');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
 // var urlencodedParser = bodyParser.urlencoded({ extended: false })
+const bigFileUrlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: true });
 
 router.use(util.verifyToken);
 
@@ -881,16 +882,16 @@ var Uploader = require('../upload/upload');
 //     .post(urlencodedParser, Uploader.receiveFile);
 
 router.route('/upload/doctor/:prefix')
-    .post(urlencodedParser, Uploader.uploadDoctorFile);
+    .post(bigFileUrlencodedParser, Uploader.uploadDoctorFile);
 
 router.route('/upload/medicine/:prefix')
-    .post(urlencodedParser, Uploader.uploadMedicineFile);
+    .post(bigFileUrlencodedParser, Uploader.uploadMedicineFile);
 
 router.route('/upload/user/:prefix')
-    .post(urlencodedParser, Uploader.uploadUserFile);
+    .post(bigFileUrlencodedParser, Uploader.uploadUserFile);
 
 router.route('/upload/template/:prefix')
-    .post(urlencodedParser, Uploader.uploadTemplateFile);
+    .post(bigFileUrlencodedParser, Uploader.uploadTemplateFile);
 
 router.route('/upload/init-folders')
     .post(urlencodedParser, Uploader.initFolders);

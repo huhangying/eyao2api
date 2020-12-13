@@ -14,7 +14,7 @@ mongoose.connect('mongodb://192.168.87.250/xinhua', {
 });
 
 global.Status = require('./util/status.js');
-global.urlencodedParser = bodyParser.urlencoded({ extended: false });
+global.urlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: false });
 
 const app = express();
 const server = require('http').Server(app);
@@ -43,6 +43,7 @@ app.disable('etag'); //avoid 304 error
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 
 app.use(express.static(path.join(path.resolve(), 'public')));
 

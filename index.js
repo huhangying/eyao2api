@@ -42,7 +42,6 @@ app.set('view options', {
 app.disable('etag'); //avoid 304 error
 
 app.use(logger('dev'));
-app.use(bodyParser.json());
 app.use(bodyParser.json({limit: '50mb'}));
 
 app.use(express.static(path.join(path.resolve(), 'public')));

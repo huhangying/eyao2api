@@ -15,6 +15,15 @@ module.exports = {
       .catch(err => next(err));
   },
 
+  // 获取药师APP医院列表
+  GetAppHospitals: (req, res, next) => {
+    Hospital.find({ apply: true })
+      .select('name hid')
+      .lean()
+      .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
+
   // 根据ID获取详细信息
   GetById: (req, res, next) => {
     const { id } = req.params;

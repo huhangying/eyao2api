@@ -214,6 +214,8 @@ var Hospital = require('../db/controller/hospital');
 
 router.route('/hospitals')
     .get(Hospital.GetAll);
+router.route('/hospitals/app/login')
+    .get(Hospital.GetAppHospitals);
 
 router.route('/hospital/customer-service')
     .get(Hospital.GetCustomerService);

@@ -18,7 +18,9 @@ module.exports = mongoose.model(
 
         type: { type: Number, min: 0, max: 1 }, // 0: 图文咨询； 1：电话咨询
         setCharged: { type: Boolean },  // 药师设置，if true 
-        finished: { type: Boolean, required: true, default: false } 
+        finished: { type: Boolean, required: true, default: false },
+        
+        status: { type: Number, default: 0, min: 0, max: 3 } // 类似feedback设计。 0: after user sent;  2: 药师回复；
     }, {
         timestamps: true
     })

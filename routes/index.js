@@ -103,6 +103,8 @@ router.route('/consults/get-pending/:did')
     .get(Consult.GetPendingByDoctorId);
 router.route('/consults/get/:did/:uid')
     .get(Consult.GetConsultsByDoctorIdAndUserId);
+router.route('/consults/get-history/:did/:uid/:type')
+    .get(Consult.GetConsultsByDoctorIdUserIdAndType);
 router.route('/consults/check-exists/:did/:uid')
     .get(Consult.CheckConsultExistedByDoctorIdAndUserId);
 
@@ -116,8 +118,6 @@ router.route('/consult/:id')
 
 router.route('/consult/get-pending/:did/:uid')
     .get(Consult.GetPendingByDoctorIdAndUserId);
-router.route('/consults/get-history/:did/:uid/:type')
-    .get(Consult.GetConsultsByDoctorIdUserIdAndType);
 router.route('/consult/delete-pending/:did/:uid') // 删除多余的药师标记
     .delete(Consult.DeletePendingByDoctorIdAndUserId);
 

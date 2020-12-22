@@ -534,6 +534,9 @@ var Survey = require('../db/controller/survey');
 
 router.route('/surveys')
     .get(Survey.GetAll);
+router.route('/surveys/search')
+    .post(Survey.search);
+
 
 router.route('/surveys/:doctor/:user/:type/:readonly')
     .get(Survey.GetSurveysByUserType);

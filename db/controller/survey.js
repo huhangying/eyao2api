@@ -15,6 +15,20 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    search: (req, res, next) => {
+        const {department, doctor, start, end, hid} = req.body;
+        const searchCriteria = {
+            department: department || undefined,
+            doctor: doctor || undefined,
+            hid: hid            
+        }
+        Survey.find(searchCriteria)
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据ID获取详细信息
     GetById: (req, res, next) => {
         const { id } = req.params;

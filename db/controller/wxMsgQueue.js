@@ -39,4 +39,11 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    DeleteByOpenid: (req, res, next) => {
+        const { openid } = req.params;
+        WxMsgQueue.deleteMany({openid: openid, hid: req.token.hid})
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
 }

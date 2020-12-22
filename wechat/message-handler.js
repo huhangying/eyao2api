@@ -1,5 +1,6 @@
 const User = require('../db/model/user');
 const Relationship = require('../db/model/relationship');
+const WxMsgQueue = require('../db/model/wxMsgQueue');
 const wxUtil = require('./wx-util');
 const messageBuilder = require('./message-builder');
 const { Parser } = require('xml2js');
@@ -150,6 +151,8 @@ const unsubscribe = async (baseData) => {
   const user = await User.findOneAndUpdate({ link_id: openid, hid: hid }, { apply: false });
   if (user && user._id) {
     await Relationship.updateMany({ user: user._id, hid: hid }, { apply: false });
+    // 删除微信失败消息
+    await WxMsgQueue.deleteMany({openid: openid, hid: hid});
   }
   return messageBuilder.textMessage(
     baseData,

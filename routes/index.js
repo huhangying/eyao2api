@@ -986,6 +986,8 @@ router.route('/wechat/msg-queue/doctor/:did')
     .get(WxMsgQueue.GetByDoctorId);
 router.route('/wechat/msg-queue/:id')
     .delete(WxMsgQueue.DeleteById);
+router.route('/wechat/msg-queue/openid/:openid')
+    .delete(WxMsgQueue.DeleteByOpenid);
 
 
 

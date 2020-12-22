@@ -15,13 +15,22 @@ module.exports = {
     },
 
     search: (req, res, next) => {
-        const {department, doctor, start, end, hid} = req.body;
+        const { doctor, start, end, hid } = req.body;
         const searchCriteria = {
-            department: department || undefined,
             doctor: doctor || undefined,
-            hid: hid            
+            hid: hid
         }
         Booking.find(searchCriteria)
+            .populate([
+                {
+                    path: 'schedule',
+                    select: '-__v -hid'
+                },
+                {
+                    path: 'user',
+                    select: '_id name link_id cell gender birthdate visitedDepartments'
+                }
+            ])
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))

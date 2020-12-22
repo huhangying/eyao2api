@@ -77,6 +77,31 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据 doctor & type & user and list to retrieve details (包括完成和未完成)
+    GetAllSurveysByUserTypeAndList: (req, res, next) => {
+
+        const searchCriteria = {
+            user: req.params.user,
+            doctor: req.params.doctor,
+            type: req.params.type,
+            hid: req.token.hid,
+        };
+
+        Survey.find(searchCriteria)
+            .sort({ order: 1 })
+            .select('-hid -__v')
+            .lean()
+            .then(items => {
+                if (items.length && req.params.list) {
+                    const surveyList = req.params.list.split('|');
+                    items = items.filter(item => {
+                        return surveyList.indexOf(item._id.toString()) > -1;
+                    });
+                }
+                res.json(items)
+            })
+            .catch(err => next(err));
+    },
 
     // 获取 user 的未完成 surveys
     GetMySurveys: (req, res, next) => {

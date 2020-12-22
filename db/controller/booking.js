@@ -14,6 +14,20 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    search: (req, res, next) => {
+        const {department, doctor, start, end, hid} = req.body;
+        const searchCriteria = {
+            department: department || undefined,
+            doctor: doctor || undefined,
+            hid: hid            
+        }
+        Booking.find(searchCriteria)
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // CMS 用
     GetAllPopulated: (req, res, next) => {
         Booking.find({ hid: req.token.hid })

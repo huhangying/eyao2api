@@ -37,7 +37,7 @@ module.exports = {
         Relationship.find({ doctor: id, hid: req.token.hid, apply: true })
             .select('-hid -__v')
             .populate('user', 'name _id cell gender birthdate icon link_id diagnoses prompt notes role created')
-            .where('user').ne(null)
+            // .where('user').ne(null)
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
@@ -61,7 +61,7 @@ module.exports = {
             .sort({ group: -1 })
             .populate('user', 'link_id name _id')
             .populate('group', 'name _id')
-            .where('user').ne(null)
+            // .where('user').ne(null)
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

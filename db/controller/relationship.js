@@ -58,13 +58,9 @@ module.exports = {
         Relationship.find({ doctor: id, hid: req.token.hid, apply: true })
             .select('-hid -__v')
             .sort({ group: -1 })
-            // .populate('user', 'link_id name _id')
-            .populate({
-                path: 'user',
-                match: {link_id: {$exists: true}}, 
-                select: 'link_id name _id'
-            })
+            .populate('user', 'link_id name _id')
             .populate('group', 'name _id')
+            .where('user.link_id').exists()
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

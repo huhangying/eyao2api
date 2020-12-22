@@ -60,7 +60,7 @@ module.exports = {
             .sort({ group: -1 })
             .populate('user', 'link_id name _id')
             .populate('group', 'name _id')
-            .where('user.link_id').exists()
+            .where('user').exists()
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

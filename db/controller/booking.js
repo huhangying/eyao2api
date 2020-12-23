@@ -16,19 +16,34 @@ module.exports = {
 
     search: (req, res, next) => {
         const { doctor, start, end, hid } = req.body;
-        const searchCriteria = {
+        let searchCriteria = {
             doctor: doctor || undefined,
             hid: hid
+        };
+        if (doctor) {
+            searchCriteria.doctor = doctor;
         }
+        if (start) {
+            searchCriteria.date = { $gte: new Date(start) }
+        }
+        if (end) {
+            searchCriteria.date = { $lt: new Date(end) }
+        }
+
+
         Booking.find(searchCriteria)
             .populate([
                 {
+                    path: 'doctor',
+                    select: 'name department title'
+                },
+                {
                     path: 'schedule',
-                    select: '-__v -hid'
+                    select: 'date period'
                 },
                 {
                     path: 'user',
-                    select: '_id name link_id cell gender birthdate visitedDepartments'
+                    select: 'name cell gender birthdate'
                 }
             ])
             .select('-hid -__v')

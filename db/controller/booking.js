@@ -20,13 +20,6 @@ module.exports = {
         let searchCriteria = {
             hid: hid
         };
-        if (doctor) {
-            // const ds = doctor.split('|').map(_ => {
-            //     return _ ? mongoose.Types.ObjectId(_) : '';
-            // });
-            // console.log(ds);
-            searchCriteria.doctor = { $in: doctor.split('|') };
-        }
         if (start) {
             searchCriteria.date = { $gte: new Date(start) }
         }
@@ -34,14 +27,19 @@ module.exports = {
             searchCriteria.date = { $lt: new Date(end) }
         }
 
-
-        let query = Booking.find(searchCriteria);
-
         if (doctor) {
-            query = query.where('doctor').in(doctor.split('|'));
+            const doctors = doctor.split('|');
+            if (doctors.length === 1) {
+                searchCriteria.doctor = doctor;
+            } else {
+                // const ds = doctor.split('|').map(_ => {
+                //     return _ ? mongoose.Types.ObjectId(_) : '';
+                // });
+                // console.log(ds);
+                searchCriteria.doctor = { $in: doctors };
+            }
         }
-
-        query
+        Booking.find(searchCriteria)
             .populate([
                 {
                     path: 'doctor',

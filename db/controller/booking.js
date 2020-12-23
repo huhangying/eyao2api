@@ -21,7 +21,11 @@ module.exports = {
             hid: hid
         };
         if (doctor) {
-            searchCriteria.doctor = { $in: doctor.split('|').map(_ => Mongoose.Type.ObjectId(_)) };
+            searchCriteria.doctor = {
+                $in: doctor.split('|').map(_ => {
+                    return _ ? Mongoose.Type.ObjectId(_) : '';
+                })
+            };
         }
         if (start) {
             searchCriteria.date = { $gte: new Date(start) }

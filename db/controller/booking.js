@@ -50,7 +50,9 @@ module.exports = {
             .then((result) => {
                 res.json(result);
             })
-            .catch(err => next(err));
+            .catch(err => {
+                next(err);
+            });
     },
 
     // CMS 用

@@ -2,7 +2,7 @@
 const Booking = require('../model/booking.js');
 const Schedule = require('../model/schedule.js');
 const moment = require('moment');
-const { ObjectId } = require('mongoose');
+const { Type } = require('mongoose');
 
 module.exports = {
 
@@ -21,7 +21,7 @@ module.exports = {
             hid: hid
         };
         if (doctor) {
-            searchCriteria.doctor = { $in: doctor.split('|').map(_ => ObjectId(_)) };
+            searchCriteria.doctor = { $in: doctor.split('|').map(_ => Type.ObjectId(_)) };
         }
         if (start) {
             searchCriteria.date = { $gte: new Date(start) }
@@ -47,13 +47,9 @@ module.exports = {
                 }
             ])
             .select('-hid -__v')
-            // .lean()
-            .then((result) => {
-                res.json(result);
-            })
-            .catch(err => {
-                next(err);
-            });
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
     },
 
     // CMS 用

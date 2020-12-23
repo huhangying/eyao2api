@@ -20,7 +20,7 @@ module.exports = {
             hid: hid
         };
         if (doctor) {
-            searchCriteria.doctor = doctor;
+            searchCriteria.doctor = { $in: doctor.split('|') };
         }
         if (start) {
             searchCriteria.date = { $gte: new Date(start) }

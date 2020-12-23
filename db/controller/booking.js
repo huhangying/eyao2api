@@ -46,7 +46,7 @@ module.exports = {
                 }
             ])
             .select('-hid -__v')
-            .lean()
+            // .lean()
             .then((result) => {
                 res.json(result);
             })

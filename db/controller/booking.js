@@ -35,7 +35,13 @@ module.exports = {
         }
 
 
-        Booking.find(searchCriteria)
+        let query = Booking.find(searchCriteria);
+
+        if (doctor) {
+            query = query.where('doctor').in(doctor.split('|'));
+        }
+
+        query
             .populate([
                 {
                     path: 'doctor',

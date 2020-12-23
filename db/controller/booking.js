@@ -22,7 +22,7 @@ module.exports = {
         };
         if (doctor) {
             const ds = doctor.split('|').map(_ => {
-                return _ ? new mongoose.Types.ObjectId(_) : '';
+                return _ ? mongoose.Types.ObjectId(_) : '';
             });
             console.log(ds);
             searchCriteria.doctor = { $in: ds };

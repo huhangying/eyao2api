@@ -23,7 +23,7 @@ module.exports = {
         if (doctor) {
             searchCriteria.doctor = {
                 $in: doctor.split('|').map(_ => {
-                    return _ ? mongoose.Types.ObjectId(_) : '';
+                    return _ ? new mongoose.Types.ObjectId(_) : '';
                 })
             };
         }

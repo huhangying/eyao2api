@@ -26,19 +26,15 @@ module.exports = {
         if (end) {
             searchCriteria.date = { $lt: new Date(end) }
         }
-
         if (doctor) {
             const doctors = doctor.split('|');
             if (doctors.length === 1) {
                 searchCriteria.doctor = doctor;
             } else {
-                // const ds = doctor.split('|').map(_ => {
-                //     return _ ? mongoose.Types.ObjectId(_) : '';
-                // });
-                // console.log(ds);
                 searchCriteria.doctor = { $in: doctors };
             }
         }
+        
         Booking.find(searchCriteria)
             .populate([
                 {

@@ -266,7 +266,7 @@ module.exports = {
         const date_start = new Date(date).setHours(0, 0, 0, 0);
         Schedule.findOne({
             doctor: doctorid,
-            date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000), $gt: date_start },
+            date: { $lt: new Date(date_start + 24 * 60 * 60 * 1000), $gte: date_start },
             period: period,
             limit: { $gt: 0 },
             hid: req.token.hid,

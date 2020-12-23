@@ -2,7 +2,7 @@
 const Booking = require('../model/booking.js');
 const Schedule = require('../model/schedule.js');
 const moment = require('moment');
-const { Types } = require('mongoose');
+const mongoose = require('mongoose');
 
 module.exports = {
 
@@ -23,7 +23,7 @@ module.exports = {
         if (doctor) {
             searchCriteria.doctor = {
                 $in: doctor.split('|').map(_ => {
-                    return _ ? new Types.ObjectId(_) : '';
+                    return _ ? mongoose.Types.ObjectId(_) : '';
                 })
             };
         }

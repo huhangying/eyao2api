@@ -17,7 +17,6 @@ module.exports = {
     search: (req, res, next) => {
         const { doctor, start, end, hid } = req.body;
         let searchCriteria = {
-            doctor: doctor || undefined,
             hid: hid
         };
         if (doctor) {

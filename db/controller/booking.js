@@ -21,11 +21,11 @@ module.exports = {
             hid: hid
         };
         if (doctor) {
-            searchCriteria.doctor = {
-                $in: doctor.split('|').map(_ => {
-                    return _ ? new mongoose.Types.ObjectId(_) : '';
-                })
-            };
+            const ds = doctor.split('|').map(_ => {
+                return _ ? new mongoose.Types.ObjectId(_) : '';
+            });
+            console.log(ds);
+            searchCriteria.doctor = { $in: ds };
         }
         if (start) {
             searchCriteria.date = { $gte: new Date(start) }

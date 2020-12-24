@@ -16,12 +16,28 @@ module.exports = {
     },
 
     search: (req, res, next) => {
-        const {department, doctor, start, end, hid} = req.body;
-        const searchCriteria = {
-            department: department || undefined,
-            doctor: doctor || undefined,
-            hid: hid            
+        const { department, doctor, start, end, hid } = req.body;
+        let searchCriteria = {
+            hid: hid
+        };
+        if (start) {
+            searchCriteria.updatedAt = { $gte: new Date(start) }
         }
+        if (end) {
+            searchCriteria.updatedAt = { $lt: new Date(end) }
+        }
+        if (doctor) {
+            const doctors = doctor.split('|');
+            if (doctors.length === 1) {
+                searchCriteria.doctor = doctor;
+            } else {
+                searchCriteria.doctor = { $in: doctors };
+            }
+        }
+        if (department) {
+            searchCriteria.department = department;
+        }
+
         Survey.find(searchCriteria)
             .select('-hid -__v')
             .lean()

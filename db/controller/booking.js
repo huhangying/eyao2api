@@ -2,7 +2,6 @@
 const Booking = require('../model/booking.js');
 const Schedule = require('../model/schedule.js');
 const moment = require('moment');
-const mongoose = require('mongoose');
 
 module.exports = {
 
@@ -34,7 +33,7 @@ module.exports = {
                 searchCriteria.doctor = { $in: doctors };
             }
         }
-        
+
         Booking.find(searchCriteria)
             .populate([
                 {

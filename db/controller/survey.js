@@ -40,6 +40,16 @@ module.exports = {
 
         Survey.find(searchCriteria)
             .select('-hid -__v')
+            .populate([
+                {
+                    path: 'doctor',
+                    select: 'name department title'
+                },
+                {
+                    path: 'user',
+                    select: 'name cell gender'
+                }
+            ])
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));

@@ -46,7 +46,7 @@ module.exports = {
                 },
                 {
                     path: 'user',
-                    select: 'name cell gender birthdate'
+                    select: 'name cell gender'
                 }
             ])
             .select('-hid -__v')

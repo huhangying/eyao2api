@@ -6,11 +6,9 @@ module.exports = {
     search: (req, res, next) => {
         const { doctor, start, end, hid, cs } = req.body;
         let searchCriteria = {
-            hid: hid
+            hid: hid,
+            cs: cs === 'true'
         };
-        if (cs === true || cs === false) {
-            searchCriteria.cs = cs;
-        }
         if (start || end) {
             if (start && end) {
                 searchCriteria.created = { $gte: new Date(start), $lt: new Date(end) };

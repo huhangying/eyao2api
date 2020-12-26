@@ -38,7 +38,7 @@ module.exports = {
         Consult.find(searchCriteria)
             .select('-hid -__v')
             .lean()
-            .then((result) => res.json(result))
+            .then((results) => res.json(results))
             .catch(err => next(err));
     },
 

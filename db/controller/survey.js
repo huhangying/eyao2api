@@ -20,11 +20,14 @@ module.exports = {
         let searchCriteria = {
             hid: hid
         };
-        if (start) {
-            searchCriteria.updatedAt = { $gte: new Date(start) }
-        }
-        if (end) {
-            searchCriteria.updatedAt = { $lt: new Date(end) }
+        if (start || end) {
+            if (start && end) {
+                searchCriteria.updatedAt = { $gte: new Date(start), $lt: new Date(end) };
+            } else if (start) {
+                searchCriteria.updatedAt = { $gte: new Date(start) };
+            } else if (end) {
+                searchCriteria.updatedAt = { $lt: new Date(end) };
+            }
         }
         if (doctor) {
             const doctors = doctor.split('|');

@@ -19,11 +19,14 @@ module.exports = {
         let searchCriteria = {
             hid: hid
         };
-        if (start) {
-            searchCriteria.date = { $gte: new Date(start) }
-        }
-        if (end) {
-            searchCriteria.date = { $lt: new Date(end) }
+        if (start || end) {
+            if (start && end) {
+                searchCriteria.date = { $gte: new Date(start), $lt: new Date(end) };
+            } else if (start) {
+                searchCriteria.date = { $gte: new Date(start) };
+            } else if (end) {
+                searchCriteria.date = { $lt: new Date(end) };
+            }
         }
         if (doctor) {
             const doctors = doctor.split('|');

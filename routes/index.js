@@ -308,6 +308,8 @@ var Chat = require('../db/controller/chat');
 
 // router.route('/chats')
 //     .get(Chat.GetAll);
+router.route('/chats/search')
+    .post(Chat.search);
 
 router.route('/chats/:room')
     .get(Chat.GetAllByRoom);

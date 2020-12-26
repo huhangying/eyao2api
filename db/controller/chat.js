@@ -3,6 +3,49 @@ const User = require('../model/user');
 
 module.exports = {
 
+    search: (req, res, next) => {
+        const { doctor, start, end, hid, cs } = req.body;
+        let searchCriteria = {
+            hid: hid
+        };
+        if (cs === true || cs === false) {
+            searchCriteria.cs = cs;
+        }
+        if (start || end) {
+            if (start && end) {
+                searchCriteria.created = { $gte: new Date(start), $lt: new Date(end) };
+            } else if (start) {
+                searchCriteria.created = { $gte: new Date(start) };
+            } else if (end) {
+                searchCriteria.created = { $lt: new Date(end) };
+            }
+        }
+        if (doctor) {
+            const doctors = doctor.split('|');
+            if (doctors.length === 1) {
+                searchCriteria.doctor = doctor;
+            } else {
+                searchCriteria.doctor = { $in: doctors };
+            }
+        }
+
+        Chat.find(searchCriteria)
+            // .populate([
+            //     {
+            //         path: 'doctor',
+            //         select: 'name department title'
+            //     },
+            //     {
+            //         path: 'user',
+            //         select: 'name cell gender'
+            //     }
+            // ])
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // for API access
     SendMsg: (req, res, next) => {
         const chat = req.body;

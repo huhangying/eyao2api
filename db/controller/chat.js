@@ -23,9 +23,9 @@ module.exports = {
         if (doctor) {
             const doctors = doctor.split('|');
             if (doctors.length === 1) {
-                searchCriteria.doctor = doctor;
+                searchCriteria.room = doctor;
             } else {
-                searchCriteria.doctor = { $in: doctors };
+                searchCriteria.room = { $in: doctors };
             }
         }
 

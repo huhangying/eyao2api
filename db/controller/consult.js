@@ -11,6 +11,37 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    search: (req, res, next) => {
+        const { doctor, start, end, hid, type } = req.body;
+        let searchCriteria = {
+            hid: hid,
+            type: type
+        };        
+        if (start || end) {
+            if (start && end) {
+                searchCriteria.created = { $gte: new Date(start), $lt: new Date(end) };
+            } else if (start) {
+                searchCriteria.created = { $gte: new Date(start) };
+            } else if (end) {
+                searchCriteria.created = { $lt: new Date(end) };
+            }
+        }
+        if (doctor) {
+            const doctors = doctor.split('|');
+            if (doctors.length === 1) {
+                searchCriteria.doctor = doctor;
+            } else {
+                searchCriteria.doctor = { $in: doctors };
+            }
+        }
+
+        Consult.find(searchCriteria)
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据ID获取详细信息
     GetById: (req, res, next) => {
         const { id } = req.params;

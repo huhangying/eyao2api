@@ -99,6 +99,8 @@ const Consult = require('../db/controller/consult');
 
 router.route('/consults')
     .get(Consult.GetAll);
+router.route('/consults/search')
+    .post(urlencodedParser, Consult.search);
 router.route('/consults/get-pending/:did')
     .get(Consult.GetPendingByDoctorId);
 router.route('/consults/get/:did/:uid')

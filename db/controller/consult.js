@@ -21,11 +21,11 @@ module.exports = {
         }
         if (start || end) {
             if (start && end) {
-                searchCriteria.created = { $gte: new Date(start), $lt: new Date(end) };
+                searchCriteria.createdAt = { $gte: new Date(start), $lt: new Date(end) };
             } else if (start) {
-                searchCriteria.created = { $gte: new Date(start) };
+                searchCriteria.createdAt = { $gte: new Date(start) };
             } else if (end) {
-                searchCriteria.created = { $lt: new Date(end) };
+                searchCriteria.createdAt = { $lt: new Date(end) };
             }
         }
         if (doctor) {

@@ -15,8 +15,10 @@ module.exports = {
         const { doctor, start, end, hid, type } = req.body;
         let searchCriteria = {
             hid: hid,
-            type: type
-        };        
+        };
+        if (type === '0' || type === '1') {
+            searchCriteria.type = +type;
+        }
         if (start || end) {
             if (start && end) {
                 searchCriteria.created = { $gte: new Date(start), $lt: new Date(end) };

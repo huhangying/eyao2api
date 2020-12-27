@@ -670,6 +670,8 @@ var ArticlePage = require('../db/controller/articlePage');
 
 router.route('/pages')
     .get(ArticlePage.GetAll);
+router.route('/pages/search')
+    .post(ArticlePage.search);
 
 router.route('/pages/cat/:catid')
     .get(ArticlePage.GetArticlePagesByCatId);

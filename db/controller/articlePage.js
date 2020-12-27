@@ -18,11 +18,11 @@ module.exports = {
         };
         if (start || end) {
             if (start && end) {
-                searchCriteria.updatedAt = { $gte: new Date(start), $lt: new Date(end) };
+                searchCriteria.createdAt = { $gte: new Date(start), $lt: new Date(end) };
             } else if (start) {
-                searchCriteria.updatedAt = { $gte: new Date(start) };
+                searchCriteria.createdAt = { $gte: new Date(start) };
             } else if (end) {
-                searchCriteria.updatedAt = { $lt: new Date(end) };
+                searchCriteria.createdAt = { $lt: new Date(end) };
             }
         }
         if (doctor) {
@@ -35,8 +35,8 @@ module.exports = {
         }
 
         ArticlePage.find(searchCriteria)
-            .select('doctor doctor_name cat name title updatedAt')
-            .populate('cat')
+            .select('doctor doctor_name cat name title createdAt')
+            .populate('cat', 'name department')
             .lean()
             .then((results) => res.json(results))
             .catch(err => next(err));

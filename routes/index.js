@@ -768,6 +768,8 @@ const Diagnose = require('../db/controller/diagnose');
 
 router.route('/diagnose/medicine-usage/search')
     .post(Diagnose.searchMedicineUsage);
+router.route('/diagnose/test-usage/search')
+    .post(Diagnose.searchTestUsage);
 
 router.route('/diagnose/:doctor/:user')
     .get(Diagnose.GetByUserAndDoctor);

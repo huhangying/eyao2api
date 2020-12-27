@@ -45,6 +45,8 @@ router.route('/users/search') //GET
 //---------------- 药师注册
 var Doctor = require('../db/controller/doctor');
 
+router.route('/doctors/brief-list')
+    .get(Doctor.GetDoctorList);//
 router.route('/doctors/:number')
     .get(Doctor.GetAllDoctors);//
 router.route('/doctors/search/:name')

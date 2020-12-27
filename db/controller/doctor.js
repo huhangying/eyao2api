@@ -20,6 +20,15 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // brief version doctor list
+    GetDoctorList: (req, res, next) => {
+        Doctor.find({ role: { $lt: 3 }, apply: true, hid: req.token.hid })
+            .select('name title department')
+            .lean()
+            .then((results) => res.json(results))
+            .catch(err => next(err));
+    },
+
     // for CMS //never use?
     GetAll: (req, res, next) => {
         let { number } = req.params;

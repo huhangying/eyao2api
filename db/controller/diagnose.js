@@ -66,6 +66,7 @@ module.exports = {
 
         Diagnose.find(searchCriteria)
             .select('doctor user labResults updatedAt')
+            .populate('labResults.test')
             .lean()
             .then((results) => res.json(results))
             .catch(err => next(err));

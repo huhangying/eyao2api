@@ -20,7 +20,7 @@ module.exports = mongoose.model(
         setCharged: { type: Boolean },  // 药师设置，if true 
         finished: { type: Boolean, required: true, default: false },
         
-        status: { type: Number, default: 0, min: 0, max: 3 } // 类似feedback设计。 0: after user sent;  2: 药师回复；
+        status: { type: Number, default: 0, min: 0, max: 4 } // 类似feedback设计。 0: after user sent;  2: 药师回复； 4： 药师拒绝
     }, {
         timestamps: true
     })

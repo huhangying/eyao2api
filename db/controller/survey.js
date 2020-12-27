@@ -18,6 +18,7 @@ module.exports = {
     search: (req, res, next) => {
         const { department, doctor, start, end, hid } = req.body;
         let searchCriteria = {
+            type: {$ne: 5}, // 去除 门诊结论
             hid: hid
         };
         if (start || end) {

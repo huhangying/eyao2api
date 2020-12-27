@@ -764,7 +764,10 @@ router.route('/feedback/:id')
     .patch(urlencodedParser, UserFeedback.UpdateById);
 
 //---------------- 药师坐诊
-var Diagnose = require('../db/controller/diagnose');
+const Diagnose = require('../db/controller/diagnose');
+
+router.route('/diagnose/medicine-usage/search')
+    .post(Diagnose.searchMedicineUsage);
 
 router.route('/diagnose/:doctor/:user')
     .get(Diagnose.GetByUserAndDoctor);

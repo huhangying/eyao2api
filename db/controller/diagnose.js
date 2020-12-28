@@ -7,6 +7,38 @@ const Booking = require('../model/booking');
 
 module.exports = {
 
+    // 门诊就诊
+    search: (req, res, next) => {
+        const { doctor, start, end, hid } = req.body;
+        let searchCriteria = {
+            hid: hid,
+            // status: 3, // achived/finished
+        };
+        if (start || end) {
+            if (start && end) {
+                searchCriteria.updatedAt = { $gte: new Date(start), $lt: new Date(end) };
+            } else if (start) {
+                searchCriteria.updatedAt = { $gte: new Date(start) };
+            } else if (end) {
+                searchCriteria.updatedAt = { $lt: new Date(end) };
+            }
+        }
+        if (doctor) {
+            const doctors = doctor.split('|');
+            if (doctors.length === 1) {
+                searchCriteria.doctor = doctor;
+            } else {
+                searchCriteria.doctor = { $in: doctors };
+            }
+        }
+
+        Diagnose.find(searchCriteria)
+            .select('doctor user booking surveys status updatedAt')
+            .lean()
+            .then((results) => res.json(results))
+            .catch(err => next(err));
+    },
+
     // 药品使用
     searchMedicineUsage: (req, res, next) => {
         const { doctor, start, end, hid } = req.body;

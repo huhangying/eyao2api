@@ -768,6 +768,8 @@ router.route('/feedback/:id')
 //---------------- 药师坐诊
 const Diagnose = require('../db/controller/diagnose');
 
+router.route('/diagnose/search')
+    .post(Diagnose.search);
 router.route('/diagnose/medicine-usage/search')
     .post(Diagnose.searchMedicineUsage);
 router.route('/diagnose/test-usage/search')

@@ -33,7 +33,8 @@ module.exports = {
         }
 
         Diagnose.find(searchCriteria)
-            .select('doctor user booking surveys status updatedAt')
+            .select('doctor user booking status updatedAt')
+            .populate('user', 'name visitedDepartments')
             .lean()
             .then((results) => res.json(results))
             .catch(err => next(err));

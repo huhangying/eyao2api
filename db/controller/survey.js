@@ -18,7 +18,7 @@ module.exports = {
     search: (req, res, next) => {
         const { department, doctor, start, end, hid } = req.body;
         let searchCriteria = {
-            type: {$ne: 5}, // 去除 门诊结论
+            type: { $ne: 5 }, // 去除 门诊结论
             hid: hid
         };
         if (start || end) {
@@ -43,7 +43,7 @@ module.exports = {
         }
 
         Survey.find(searchCriteria)
-            .select('-hid -__v')
+            .select('-hid -questions -__v')
             .populate([
                 {
                     path: 'doctor',
@@ -54,6 +54,37 @@ module.exports = {
                     select: 'name cell gender'
                 }
             ])
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    contentSearch: (req, res, next) => {
+        const { department, type, start, end, hid } = req.body;
+        let searchCriteria = {
+            hid: hid
+        };
+        if (start || end) {
+            if (start && end) {
+                searchCriteria.updatedAt = { $gte: new Date(start), $lt: new Date(end) };
+            } else if (start) {
+                searchCriteria.updatedAt = { $gte: new Date(start) };
+            } else if (end) {
+                searchCriteria.updatedAt = { $lt: new Date(end) };
+            }
+        }
+        if (type) {
+            searchCriteria.type = type;
+        } else {
+            searchCriteria.type = { $in: [1, 2, 3, 4, 7] };
+        }
+
+        if (department) {
+            searchCriteria.department = department;
+        }
+
+        Survey.find(searchCriteria)
+            .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));

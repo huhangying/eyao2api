@@ -546,6 +546,8 @@ router.route('/surveys')
     .get(Survey.GetAll);
 router.route('/surveys/search')
     .post(Survey.search);
+router.route('/surveys/content-search')
+    .post(Survey.contentSearch);
 
 
 router.route('/surveys/:doctor/:user/:type/:readonly')

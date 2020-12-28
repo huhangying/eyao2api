@@ -40,10 +40,6 @@ module.exports = {
         Booking.find(searchCriteria)
             .populate([
                 {
-                    path: 'doctor',
-                    select: 'name department title'
-                },
-                {
                     path: 'schedule',
                     select: 'date period'
                 },

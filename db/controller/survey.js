@@ -60,10 +60,14 @@ module.exports = {
     },
 
     contentSearch: (req, res, next) => {
-        const { department, type, start, end, hid } = req.body;
+        const { department, type, doctor, start, end, hid } = req.body;
         let searchCriteria = {
-            hid: hid
+            hid: hid,
+            department: department,
         };
+        if (doctor) {
+            searchCriteria.doctor = doctor;
+        }
         if (start || end) {
             if (start && end) {
                 searchCriteria.updatedAt = { $gte: new Date(start), $lt: new Date(end) };
@@ -85,6 +89,12 @@ module.exports = {
 
         Survey.find(searchCriteria)
             .select('-hid -__v')
+            .populate([
+                {
+                    path: 'user',
+                    select: 'name cell gender'
+                }
+            ])
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));

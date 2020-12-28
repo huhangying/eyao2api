@@ -36,7 +36,7 @@ module.exports = {
 
         ArticlePage.find(searchCriteria)
             .select('doctor doctor_name cat name title createdAt')
-            .populate('cat', 'name department')
+            .populate('cat', '_id name department')
             .lean()
             .then((results) => res.json(results))
             .catch(err => next(err));

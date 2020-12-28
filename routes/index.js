@@ -15,6 +15,8 @@ router.route('/').get((req, res) => {
 //---------------- 用户注册
 var User = require('../db/controller/user');
 
+router.route('/users/search')
+    .post(User.search);
 router.route('/users/:number')
     .get(User.GetAll); //
 router.route('/users/cms/:number')

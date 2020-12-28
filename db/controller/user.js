@@ -17,6 +17,29 @@ module.exports = {
             .then((result) => res.json(result))
             .catch(err => next(err));
     },
+    
+    search: (req, res, next) => {
+        const { start, end, hid } = req.body;
+        let searchCriteria = {
+            hid: hid,
+            apply: true
+        };
+        if (start || end) {
+            if (start && end) {
+                searchCriteria.created = { $gte: new Date(start), $lt: new Date(end) };
+            } else if (start) {
+                searchCriteria.created = { $gte: new Date(start) };
+            } else if (end) {
+                searchCriteria.created = { $lt: new Date(end) };
+            }
+        }
+
+        User.find(searchCriteria)
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
 
     GetAllCms: (req, res, next) => {
         let { number } = req.params;

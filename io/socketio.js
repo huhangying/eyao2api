@@ -26,7 +26,8 @@ module.exports = (io) => {
 
             socket.to(room).emit('notification', {
                 sender: chat.sender,
-                patientId: room !== chat.sender ? chat.sender: chat.to,
+                patientId: chat.sender,
+                // patientId: room !== chat.sender ? chat.sender: chat.to,
                 type: 0,
                 name: chat.senderName || '',
                 count: 1,
@@ -44,7 +45,8 @@ module.exports = (io) => {
 
             socket.to(room).emit('notification', {
                 sender: chat.sender,
-                patientId: room !== chat.sender ? chat.sender: chat.to,
+                patientId: chat.sender,
+                // patientId: room !== chat.sender ? chat.sender: chat.to,
                 type: 4, // 客服chat
                 name: chat.senderName || '',
                 count: 1,

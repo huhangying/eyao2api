@@ -24,17 +24,19 @@ module.exports = (io) => {
 
             socket.to(room).emit('chat', chat);
 
-            socket.to(room).emit('notification', {
-                // doctorId: room,
-                patientId: chat.sender,
-                // patientId: room !== chat.sender ? chat.sender: chat.to,
-                type: 0,
-                name: chat.senderName || '',
-                count: 1,
-                keyId: chat._id,
-                created: chat.created
-            });
-            console.log(room, chat);
+            // 微信端不接收notification，所以只对药师发送
+            if (room !== chat.sender) {
+                socket.to(room).emit('notification', {
+                    patientId: chat.sender,
+                    // patientId: room !== chat.sender ? chat.sender: chat.to,
+                    type: 0,
+                    name: chat.senderName || '',
+                    count: 1,
+                    keyId: chat._id,
+                    created: chat.created
+                });
+                console.log(room, chat);
+            }
         });
 
         // customer service chat
@@ -43,16 +45,18 @@ module.exports = (io) => {
 
             socket.to(room).emit('chat', chat); // 还是用原来chat的那一套来传递消息
 
-            socket.to(room).emit('notification', {
-                // doctorId: room,
-                patientId: chat.sender,
-                // patientId: room !== chat.sender ? chat.sender: chat.to,
-                type: 4, // 客服chat
-                name: chat.senderName || '',
-                count: 1,
-                created: chat.created
-            });
-
+            // 微信端不接收notification，所以只对药师发送
+            if (room !== chat.sender) {
+                socket.to(room).emit('notification', {
+                    patientId: chat.sender,
+                    // patientId: room !== chat.sender ? chat.sender: chat.to,
+                    type: 4, // 客服chat
+                    name: chat.senderName || '',
+                    count: 1,
+                    created: chat.created
+                });
+                console.log(room, chat);
+            }
         });
 
         // Feedback
@@ -62,15 +66,17 @@ module.exports = (io) => {
 
             socket.to(room).emit('feedback', feedback);
 
-            socket.to(room).emit('notification', {
-                // doctorId: room,
-                patientId: feedback.user,
-                type: feedback.type, // 1 不良反应 or 2 联合用药
-                name: feedback.senderName || '',
-                count: 1,
-                keyId: feedback._id,
-                created: feedback.createdAt
-            });
+            // 微信端不接收notification，所以只对药师发送
+            if (feedback.status < 2) {
+                socket.to(room).emit('notification', {
+                    patientId: feedback.user,
+                    type: feedback.type, // 1 不良反应 or 2 联合用药
+                    name: feedback.senderName || '',
+                    count: 1,
+                    keyId: feedback._id,
+                    created: feedback.createdAt
+                });
+            }
         });
 
         // Booking (cancel feature for now)
@@ -96,15 +102,17 @@ module.exports = (io) => {
             socket.to(room).emit('consult', consult);
 
             // redirect to noti
-            socket.to(room).emit('notification', {
-                // doctorId: room,
-                patientId: consult.user,
-                type: consult.type === 1 ? 6 : 5, // 付费咨询 (0: 图文；1：电话) => notiType (5: 图文；6：电话 )
-                name: consult.userName || '',
-                count: 1,
-                keyId: consult._id,
-                created: consult.created
-            });
+            // 微信端不接收notification，所以只对药师发送
+            if (consult.status < 2) {
+                socket.to(room).emit('notification', {
+                    patientId: consult.user,
+                    type: consult.type === 1 ? 6 : 5, // 付费咨询 (0: 图文；1：电话) => notiType (5: 图文；6：电话 )
+                    name: consult.userName || '',
+                    count: 1,
+                    keyId: consult._id,
+                    created: consult.created
+                });
+            }
         });
     });
 }

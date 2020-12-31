@@ -25,14 +25,14 @@ module.exports = (io) => {
             socket.to(room).emit('chat', chat);
 
             socket.to(room).emit('notification', {
-                patientId: chat.sender,
+                sender: chat.sender,
+                patientId: room !== chat.sender ? chat.sender: chat.to,
                 type: 0,
                 name: chat.senderName || '',
                 count: 1,
                 keyId: chat._id,
                 created: chat.created
             });
-            console.log(room, chat);
 
         });
 
@@ -43,7 +43,8 @@ module.exports = (io) => {
             socket.to(room).emit('chat', chat); // 还是用原来chat的那一套来传递消息
 
             socket.to(room).emit('notification', {
-                patientId: chat.sender,
+                sender: chat.sender,
+                patientId: room !== chat.sender ? chat.sender: chat.to,
                 type: 4, // 客服chat
                 name: chat.senderName || '',
                 count: 1,
@@ -60,6 +61,7 @@ module.exports = (io) => {
             socket.to(room).emit('feedback', feedback);
 
             socket.to(room).emit('notification', {
+                sender: feedback.sender,
                 patientId: feedback.user,
                 type: feedback.type, // 1 不良反应 or 2 联合用药
                 name: feedback.senderName || '',
@@ -75,6 +77,7 @@ module.exports = (io) => {
             // console.log('---> on booking: ', room, booking);
             // redirect to noti
             socket.to(room).emit('notification', {
+                sender: booking.sender,
                 patientId: booking.user._id,
                 type: 3, // 门诊预约
                 name: `${booking.user.name} 取消了${moment(booking.date).format('LL')}预约`,
@@ -92,6 +95,7 @@ module.exports = (io) => {
 
             // redirect to noti
             socket.to(room).emit('notification', {
+                sender: consult.sender,
                 patientId: consult.user,
                 type: consult.type === 1 ? 6 : 5, // 付费咨询 (0: 图文；1：电话) => notiType (5: 图文；6：电话 )
                 name: consult.userName || '',

@@ -35,7 +35,7 @@ module.exports = (io) => {
                     keyId: chat._id,
                     created: chat.created
                 });
-                console.log(room, chat);
+                // console.log(room, chat);
             }
         });
 
@@ -55,7 +55,7 @@ module.exports = (io) => {
                     count: 1,
                     created: chat.created
                 });
-                console.log(room, chat);
+                // console.log(room, chat);
             }
         });
 
@@ -67,7 +67,7 @@ module.exports = (io) => {
             socket.to(room).emit('feedback', feedback);
 
             // 微信端不接收notification，所以只对药师发送
-            if (feedback.status < 2) {
+            if (!feedback.status || feedback.status < 2) {
                 socket.to(room).emit('notification', {
                     patientId: feedback.user,
                     type: feedback.type, // 1 不良反应 or 2 联合用药
@@ -103,7 +103,7 @@ module.exports = (io) => {
 
             // redirect to noti
             // 微信端不接收notification，所以只对药师发送
-            if (consult.status < 2) {
+            if (!consult.status || consult.status < 2) {
                 socket.to(room).emit('notification', {
                     patientId: consult.user,
                     type: consult.type === 1 ? 6 : 5, // 付费咨询 (0: 图文；1：电话) => notiType (5: 图文；6：电话 )

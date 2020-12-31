@@ -34,7 +34,7 @@ module.exports = (io) => {
                 keyId: chat._id,
                 created: chat.created
             });
-
+            console.log(room, chat);
         });
 
         // customer service chat

@@ -6,7 +6,7 @@ module.exports = (io) => {
 
         socket.on('disconnect', () => {
             console.log(`<---------x user disconnected on ${socket.id}`);
-            socket.socket.reconnect();
+            // socket.socket.reconnect();
         });
 
         socket.on('joinRoom', (room) => {

@@ -111,7 +111,7 @@ module.exports = (io) => {
                     name: consult.userName || '',
                     count: 1,
                     keyId: consult._id,
-                    created: consult.created
+                    created: consult.createdAt
                 });
             }
         });

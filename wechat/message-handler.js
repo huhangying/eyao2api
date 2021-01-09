@@ -32,20 +32,24 @@ const msgHandler = (msgbufer) => {
             case '帮助':
               // 返回帮助内容
               helpTxt = [
-                '1. 在公众号对话框中输入...',
-                '2. 输入关键字『todo』可以得到网站的入口链接.'
+                '功能正在建设中...'
               ]
+              // helpTxt = [
+              //   '1. 在公众号对话框中输入...',
+              //   '2. 输入关键字『todo』可以得到网站的入口链接.'
+              // ]
+
               resolve(messageBuilder.textMessage(baseData, helpTxt.join('\n')));
               break;
 
-            case 'news':
-              resolve(messageBuilder.newsMessage(baseData,
-                '测试图文链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
-              break;
-            case 'link':
-              resolve(messageBuilder.newsMessage(baseData,
-                '测试链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.cn/images/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
-              break;
+            // case 'news':
+            //   resolve(messageBuilder.newsMessage(baseData,
+            //     '测试图文链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+            //   break;
+            // case 'link':
+            //   resolve(messageBuilder.newsMessage(baseData,
+            //     '测试链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.cn/images/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+            //   break;
 
             default:
               resolve('');
@@ -101,7 +105,7 @@ const scan = async (baseData, did, ticket) => {
       messageBuilder.subscribeMessageWithDoctor(baseData, did, ticket) :
       messageBuilder.subscribeMessage(baseData);
   } else {
-    return messageBuilder.textMessage(baseData, user.name + ', 欢迎回来！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。');
+    return messageBuilder.textMessage(baseData, user.name + ', 欢迎回来！\n为了更好的服务您，请点击‘个人中心’菜单设置个人资料。');
   }
 }
 
@@ -109,6 +113,7 @@ const subscribe = async (baseData, did) => {
   did = did.replace('qrscene_', '');
   const openid = baseData.ToUserName;
   const hid = await wxUtil.getHidByWxid(baseData.FromUserName);
+  const {name} = await wxUtil.getHospitalSettingsByHid(hid);
   const userInfo = await getUserInfo(openid, hid);
   // console.log(userInfo);
   if (userInfo.data && userInfo.data.subscribe) {
@@ -137,7 +142,7 @@ const subscribe = async (baseData, did) => {
         { upsert: true }
       );
     }
-    return messageBuilder.textMessage(baseData, '欢迎关注！\n为了更好的服务您，请点击‘个人中心’菜单设置详细的资料。');
+    return messageBuilder.textMessage(baseData, `欢迎您的关注！${name}，您身边的用药专家。\n为了更好的服务您，请点击“个人中心 -> 健康档案”完善个人信息。`);
   } else {
     // error ! it should not happen
     return messageBuilder.textMessage(baseData, 'Error');

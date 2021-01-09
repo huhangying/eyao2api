@@ -9,7 +9,7 @@ const ENCRYPT_KEY = 'xinhua e yao';
 const SECRET_KEY = "YRRAh";
 //1h 59m, weixin token is only valid within 2 hours
 const REFRESH_INTERVAL = 1000 * 119 * 60;
-const TOKEN = 'harry';
+const TOKEN = 'hwemsh'; // used for changing wechet settings
 
 ///////////////////////////////////////////
 // for Wechat belows

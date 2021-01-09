@@ -948,7 +948,7 @@ const wechat = require('../wechat/auth.service');
 const SignatureStore = require('../wechat/signature.controller'); // could remove?
 
 router.route('/wechat/auth')
-    .get(wechat.authTest)
+    .get(wechat.authTest) // used in changing wechat settingd
     .post(wechat.receiveAuth);
 router.route('/wechat/authSignature/:openid')
     .get(SignatureStore.GetByOpenId);

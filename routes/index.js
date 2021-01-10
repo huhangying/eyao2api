@@ -972,9 +972,9 @@ router.route('/wechat/login/:hid/:openid') // get apiToken and wechat secret
 router.route('/wechat/resend-msg/:openid') // 尝试重新发送
     .get(wechat.resendFailedMsg);
 
-router.route('/wechat/material-count') // 获取永久素材总数
+router.route('/wechat/material-count/auth/:hid') // 获取永久素材总数
     .get(wechat.getWxMaterialCount);  
-router.route('/wechat/material-list/:page') // 获取永久素材的列表, :page is page index (20/page)
+router.route('/wechat/material-list/auth/:hid/:page') // 获取永久素材的列表, :page is page index (20/page)
     .get(wechat.getWxMaterialList);  
 
 // 微信支付 （JSAPI）

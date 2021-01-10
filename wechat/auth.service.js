@@ -196,7 +196,8 @@ const resendFailedMsg = async (req, res, next) => {
 }
 
 const getWxMaterialCount = async (req, res, next) => {
-	const access_token = await wxUtil.getAccessTokenByHid(req.token.hid);
+	const { hid } = req.params;
+	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	wxUtil.getWxMaterialCount(access_token)
 		.then((result) => {
 			return res.json(result.data)
@@ -205,8 +206,8 @@ const getWxMaterialCount = async (req, res, next) => {
 }
 
 const getWxMaterialList = async (req, res, next) => {
-	const { page } = req.params;
-	const access_token = await wxUtil.getAccessTokenByHid(req.token.hid);
+	const { hid, page } = req.params;
+	const access_token = await wxUtil.getAccessTokenByHid(hid);
 	wxUtil.getWxMaterialList(access_token, page)
 		.then((result) => {
 			return res.json(result.data)

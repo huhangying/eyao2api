@@ -90,7 +90,7 @@ const getUserInfo = (openid, access_token) => {
 // 获取永久素材总数
 const getWxMaterialCount = (access_token) => {
   // subscribe参数判断是否已经关注：0-未关注，1-已关注
-  return axios.get('https://api.weixin.qq.com/material/get_materialcount', {
+  return axios.get('https://api.weixin.qq.com/cgi-bin/material/get_materialcount', {
     params: {
       access_token: access_token,
     }
@@ -100,11 +100,11 @@ const getWxMaterialCount = (access_token) => {
 // 获取永久素材的列表
 const getWxMaterialList = (access_token, pageIndex) => {
   // subscribe参数判断是否已经关注：0-未关注，1-已关注
-  return axios.post('https://api.weixin.qq.com/material/batchget_material',
+  return axios.post('https://api.weixin.qq.com/cgi-bin/material/batchget_material',
     {
       type: 'news',
-      offset: (+pageIndex) * 20,
-      count: 20
+      offset: (+pageIndex) * 5,
+      count: 5
     },
     {
       params: {

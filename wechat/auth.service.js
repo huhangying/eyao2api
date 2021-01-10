@@ -195,6 +195,26 @@ const resendFailedMsg = async (req, res, next) => {
 	res.json({ msg: `重新发送: (成功 ${successCount}个，失败: ${failedCount}个)`, changed: successCount });
 }
 
+const getWxMaterialCount = async (req, res, next) => {
+	const access_token = await wxUtil.getAccessTokenByHid(req.token.hid);
+	wxUtil.getWxMaterialCount(access_token)
+		.then((result) => {
+			return res.json(result.data)
+		})
+		.catch(err => next(err));
+}
+
+const getWxMaterialList = async (req, res, next) => {
+	const { page } = req.params;
+	const access_token = await wxUtil.getAccessTokenByHid(req.token.hid);
+	wxUtil.getWxMaterialList(access_token, page)
+		.then((result) => {
+			return res.json(result.data)
+		})
+		.catch(err => next(err));
+}
+
+
 module.exports = {
 	// wechat sign test
 	authTest: (req, res) => {
@@ -276,6 +296,8 @@ module.exports = {
 	sendClientMessage,
 	removeFromMsgQueue,
 	resendFailedMsg,
+	getWxMaterialCount,
+	getWxMaterialList,
 
 	///
 	// api

@@ -87,6 +87,32 @@ const getUserInfo = (openid, access_token) => {
   });
 }
 
+// 获取永久素材总数
+const getWxMaterialCount = (access_token) => {
+  // subscribe参数判断是否已经关注：0-未关注，1-已关注
+  return axios.get('https://api.weixin.qq.com/material/get_materialcount', {
+    params: {
+      access_token: access_token,
+    }
+  });
+}
+
+// 获取永久素材的列表
+const getWxMaterialList = (access_token, pageIndex) => {
+  // subscribe参数判断是否已经关注：0-未关注，1-已关注
+  return axios.post('https://api.weixin.qq.com/material/batchget_material',
+    {
+      type: 'news',
+      offset: (+pageIndex) * 20,
+      count: 20
+    },
+    {
+      params: {
+        access_token: access_token,
+      }
+    });
+}
+
 module.exports = {
   getHidByWxid,
   getHospitalSettingsByHid,
@@ -96,6 +122,8 @@ module.exports = {
   refreshAccessToken,
 
   getUserInfo,
+  getWxMaterialCount,
+  getWxMaterialList,
   // wx sign
   md5,
   toQueryString,

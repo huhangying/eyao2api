@@ -11,7 +11,9 @@ module.exports = mongoose.model(
         title: { type: String, required: true },
         title_image: { type: String },
         targetUrl: { type: String, required: true },
-        keywords: { type: String } // separated by |
+        keywords: { type: String }, // separated by |
+        author: String, // wx
+        update_time: Number, // wx
     }, {
         timestamps: true
     })

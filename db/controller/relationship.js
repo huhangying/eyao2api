@@ -110,7 +110,7 @@ module.exports = {
             .select('doctor')
             .populate({
                 path: 'doctor',
-                populate: { path: 'department', select: '_id name' },
+                populate: { path: 'department', select: '_id name address' },
                 select: '_id name department title bulletin expertise gender honor hours icon status prices',
             })
             .lean()
@@ -126,7 +126,7 @@ module.exports = {
             .select('doctor apply')
             .populate({
                 path: 'doctor',
-                populate: { path: 'department', select: '_id name' },
+                populate: { path: 'department', select: '_id name address' },
                 select: '_id name department title bulletin expertise gender honor hours icon status',
             })
             .lean()

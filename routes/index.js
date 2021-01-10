@@ -882,7 +882,7 @@ router.route('/test/:id')
 //---------------- FAQ
 const Faq = require('../db/controller/faq');
 
-router.route('/faqs')
+router.route('/faqs/wechat/auth/:hid') // used by wechat
     .get(Faq.GetAll);
 router.route('/faqs/edit')
     .get(Faq.GetEditAll);

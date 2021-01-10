@@ -4,9 +4,10 @@ const Faq = require('../model/faq.js');
 
 module.exports = {
 
-    // 返回所有有效的
+    // 返回所有有效的, used by wechat
     GetAll: (req, res, next) => {
-        Faq.find({ hid: req.token.hid, apply: true })
+        const {hid} = req.params;
+        Faq.find({ hid: hid, apply: true })
             .select('question answer')
             .sort({ order: 1 })
             .lean()

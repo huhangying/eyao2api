@@ -64,6 +64,8 @@ router.route('/doctors/find/:number/:skip')
 
 router.route('/doctors/department/:departmentid')
     .get(Doctor.GetByDepartmentId);//
+router.route('/doctors/department/cms/:departmentid')
+    .get(Doctor.CmsGetByDepartmentId);
 
 router.route('/doctor/cell/:cell')
     .get(Doctor.GetByCell);

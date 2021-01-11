@@ -154,6 +154,17 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据药师ID获取用户信息 (包括无效药师)
+    CmsGetByDepartmentId: (req, res, next) => {
+        const { departmentid } = req.params;
+        Doctor.find({ department: departmentid, hid: req.token.hid, role: { $lt: 3 } })
+            .select('-hid -password -qrcode -__v')
+            .lean()
+            .sort({ order: 1, updated: -1 })
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     GetShortcuts: (req, res, next) => {
         const { did } = req.params;   //doctor user id
         Doctor.findOne({ user_id: did, hid: req.token.hid, apply: true })

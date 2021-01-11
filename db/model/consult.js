@@ -16,7 +16,7 @@ module.exports = mongoose.model(
         address: { type: String }, // 可选
         upload: { type: String },
 
-        type: { type: Number, min: 0, max: 1 }, // 0: 图文咨询； 1：电话咨询
+        type: { type: Number, min: 0, max: 6 }, // 0: 图文咨询； 1：电话咨询;// 5/6 is chat in consult
         setCharged: { type: Boolean },  // 药师设置，if true 
         finished: { type: Boolean, required: true, default: false },
         

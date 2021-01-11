@@ -121,7 +121,7 @@ module.exports = {
             user: uid,
             doctor: did,
             finished: false,
-            type: { $ne: null },
+            type: { $in: [0, 1] },
             hid: req.token.hid
         })
             .then((result) => {

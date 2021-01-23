@@ -4,9 +4,13 @@ module.exports = (io) => {
     io.on('connection', socket => {
         console.log(`--------> connected to socket: ${socket.id}`);
 
-        socket.on('disconnect', () => {
-            console.log(`<--------- disconnected on ${socket.id}`);
+        socket.on('disconnect', (reason) => {
+            console.log(`<--------- disconnected ${socket.id}: ${reason}`);
             // socket.socket.reconnect();
+            if (reason === 'client namespace disconnect') {
+                socket.disconnect(true);
+                console.log(`<--------- disconnected ${socket.id}`);
+            }
         });
 
         socket.on('joinRoom', (room) => {

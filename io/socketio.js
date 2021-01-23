@@ -40,9 +40,7 @@ module.exports = (io) => {
                     keyId: chat._id,
                     created: chat.created
                 });
-                console.log('noti: ->', room, chat);
             }
-            console.log('chat: ->', room, chat);
         });
 
         // customer service chat

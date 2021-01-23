@@ -2,7 +2,7 @@ const moment = require('moment');
 
 module.exports = (io) => {
     io.on('connection', socket => {
-        console.log(`----> connected to socket: ${socket.id}: ${io.sockets.length}`);
+        console.log(`----> connected to socket: ${socket.id}: ${io.sockets}`);
 
         socket.on('disconnect', (reason) => {
             console.log(`<----- disconnected ${socket.id}: ${reason}: ${io.count}`);

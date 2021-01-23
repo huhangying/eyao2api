@@ -2,14 +2,14 @@ const moment = require('moment');
 
 module.exports = (io) => {
     io.on('connection', socket => {
-        console.log(`----> connected to socket: ${socket.id}: ${io.sockets}`);
+        console.log(`----> connect to socket: ${socket.id}`);
 
         socket.on('disconnect', (reason) => {
-            console.log(`<----- disconnected ${socket.id}: ${reason}: ${io.count}`);
+            console.log(`<----- disconnect ${socket.id}: ${reason}`);
             // socket.socket.reconnect();
-            if (reason === 'client namespace disconnect') {
+            if (reason === 'transport close') {
                 socket.disconnect(true);
-                console.log(`<----- disconnected ${socket.id}: ${io.count}`);
+                console.log(`<----- disconnect ${socket.id}`);
             }
         });
 

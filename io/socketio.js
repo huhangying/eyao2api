@@ -15,12 +15,12 @@ module.exports = (io) => {
 
         socket.on('joinRoom', (room) => {
             socket.join(room);
-            console.log('joined to room ' + room);
+            // console.log('joined to room ' + room);
         });
 
         socket.on('leaveRoom', (room) => {
             socket.leave(room);
-            console.log('left room ' + room);
+            // console.log('left room ' + room);
         });
 
         // Chat

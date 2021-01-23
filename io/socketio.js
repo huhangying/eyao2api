@@ -5,7 +5,7 @@ module.exports = (io) => {
         console.log(`--------> connected to socket: ${socket.id}`);
 
         socket.on('disconnect', () => {
-            console.log(`<---------x user disconnected on ${socket.id}`);
+            console.log(`<--------- disconnected on ${socket.id}`);
             // socket.socket.reconnect();
         });
 
@@ -36,8 +36,9 @@ module.exports = (io) => {
                     keyId: chat._id,
                     created: chat.created
                 });
-                // console.log(room, chat);
+                console.log('noti: ->', room, chat);
             }
+            console.log('chat: ->', room, chat);
         });
 
         // customer service chat

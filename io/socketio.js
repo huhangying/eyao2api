@@ -5,11 +5,11 @@ module.exports = (io) => {
         console.log(`----> connected to socket: ${socket.id}: ${io.count}`);
 
         socket.on('disconnect', (reason) => {
-            console.log(`<----- disconnected ${socket.id}: ${reason}`);
+            console.log(`<----- disconnected ${socket.id}: ${reason}: ${io.count}`);
             // socket.socket.reconnect();
             if (reason === 'client namespace disconnect') {
                 socket.disconnect(true);
-                console.log(`<----- disconnected ${socket.id}`);
+                console.log(`<----- disconnected ${socket.id}: ${io.count}`);
             }
         });
 

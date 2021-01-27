@@ -6,7 +6,7 @@ module.exports = {
         ArticleSearch.find({ hid: req.token.hid })
             .sort({ updatedAt: -1 })
             .lean()
-            .then((result) => res.json(result))
+            .then((results) => res.json(results))
             .catch(err => next(err));
     },
 

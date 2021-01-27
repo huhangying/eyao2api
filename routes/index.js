@@ -815,7 +815,7 @@ router.route('/diagnose-counts/:did')
     .get(Diagnose.GetDiagnoseCountsByDoctor);
 
 //---------------- 文章关键字搜索
-var ArticleSearch = require('../db/controller/articleSearch');
+const ArticleSearch = require('../db/controller/articleSearch');
 
 router.route('/keywordsearchs')
     .get(ArticleSearch.GetAll);

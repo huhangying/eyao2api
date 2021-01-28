@@ -14,7 +14,7 @@ module.exports = mongoose.model(
         keywords: { type: String }, // separated by |
         author: String, // wx
         digest: String, // wx
-        update_time: Number, // wx
+        update_time: Number, // wx, second
     }, {
         timestamps: true
     })

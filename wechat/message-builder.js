@@ -32,7 +32,8 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
 }
 
 const newsMessages = (baseData, title, description, picUrl, url) => {
-  const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr(title + 1, description+2, picUrl, url);
+  const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr('多图文2标题', 'description+2', picUrl, url);
+  console.log(items);
   return `<xml>
 <ToUserName><![CDATA[${baseData.ToUserName}]]></ToUserName>
 <FromUserName><![CDATA[${baseData.FromUserName}]]></FromUserName>

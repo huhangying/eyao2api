@@ -32,26 +32,25 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
 }
 
 const newsMessages = (baseData, title, description, picUrl, url) => {
+  const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr(title, description, picUrl, url);
   return builder.buildObject(
     Object.assign({
       MsgType: 'news',
       ArticleCount: 2,
-      Articles: [
-        {item: {
-          Title: title,
-          Description: description,
-          PicUrl: picUrl,
-          Url: url,
-        }},
-        {item: {
-          Title: title,
-          Description: description,
-          PicUrl: picUrl,
-          Url: url,
-        }},
-      ],
+      Articles: {
+        items
+      },
     }, baseData)
   );
+}
+
+const buildMessageItemStr = (title, description, picUrl, url) => {
+  return `<item>
+  <Title><![CDATA[${title}]]></Title>
+  <Description><![CDATA[${description}]]></Description>
+  <PicUrl><![CDATA[${picUrl}]]></PicUrl>
+  <Url><![CDATA[${url}]]></Url>
+</item>`;
 }
 
 const subscribeMessage = (baseData) => {

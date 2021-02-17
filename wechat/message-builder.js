@@ -32,7 +32,7 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
 }
 
 const newsMessages = (baseData, title, description, picUrl, url) => {
-  const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr(title, description, picUrl, url);
+  const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr(title + 1, description+2, picUrl, url);
   return `<xml>
 <ToUserName><![CDATA[${baseData.ToUserName}]]></ToUserName>
 <FromUserName><![CDATA[${baseData.FromUserName}]]></FromUserName>

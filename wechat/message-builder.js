@@ -37,9 +37,7 @@ const newsMessages = (baseData, title, description, picUrl, url) => {
     Object.assign({
       MsgType: 'news',
       ArticleCount: 2,
-      Articles: {
-        items
-      },
+      Articles: items,
     }, baseData)
   );
 }

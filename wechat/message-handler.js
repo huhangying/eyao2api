@@ -42,14 +42,14 @@ const msgHandler = (msgbufer) => {
               resolve(messageBuilder.textMessage(baseData, helpTxt.join('\n')));
               break;
 
-            // case 'news':
-            //   resolve(messageBuilder.newsMessage(baseData,
-            //     '测试图文链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
-            //   break;
-            // case 'link':
-            //   resolve(messageBuilder.newsMessage(baseData,
-            //     '测试链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.cn/images/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
-            //   break;
+            case 'news':
+              resolve(messageBuilder.newsMessage(baseData,
+                '测试图文链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+              break;
+            case 'link':
+              resolve(messageBuilder.newsMessage(baseData,
+                '测试链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.com/images/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+              break;
 
             default:
               resolve('');

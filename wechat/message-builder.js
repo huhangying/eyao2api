@@ -34,7 +34,7 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
 const newsMessages = (baseData, title, description, picUrl, url) => {
   const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr('多图文2标题', 'description+2', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png');
   console.log(items);
-  return `<xml>
+  const body = `<xml>
 <ToUserName><![CDATA[${baseData.ToUserName}]]></ToUserName>
 <FromUserName><![CDATA[${baseData.FromUserName}]]></FromUserName>
 <CreateTime>${baseData.CreateTime}</CreateTime>
@@ -42,6 +42,8 @@ const newsMessages = (baseData, title, description, picUrl, url) => {
 <ArticleCount>${2}</ArticleCount>
 <Articles>${items}</Articles>
 </xml>`;
+  console.log(body);
+  return body;
 }
 
 const buildMessageItemStr = (title, description, picUrl, url) => {

@@ -32,7 +32,7 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
 }
 
 const newsMessages = (baseData, title, description, picUrl, url) => {
-  const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr('多图文2标题', 'description+2', picUrl, url);
+  const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr('多图文2标题', 'description+2', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.cn:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png');
   console.log(items);
   return `<xml>
 <ToUserName><![CDATA[${baseData.ToUserName}]]></ToUserName>

@@ -43,7 +43,7 @@ const msgHandler = (msgbufer) => {
               break;
 
             case 'news':
-              resolve(messageBuilder.newsMessage(baseData,
+              resolve(messageBuilder.newsMessages(baseData,
                 '测试图文链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
               break;
             case 'link':

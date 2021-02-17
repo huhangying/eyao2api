@@ -37,18 +37,18 @@ const newsMessages = (baseData, title, description, picUrl, url) => {
       MsgType: 'news',
       ArticleCount: 2,
       Articles: [
-        {
+        {item: {
           Title: title,
           Description: description,
           PicUrl: picUrl,
           Url: url,
-        },
-        {
+        }},
+        {item: {
           Title: title,
           Description: description,
           PicUrl: picUrl,
           Url: url,
-        },
+        }},
       ],
     }, baseData)
   );

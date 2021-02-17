@@ -18,9 +18,26 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
   return builder.buildObject(
     Object.assign({
       MsgType: 'news',
-      ArticleCount: 2,
+      ArticleCount: 1,
       Articles: {
-        item: [{
+        item: {
+          Title: title,
+          Description: description,
+          PicUrl: picUrl,
+          Url: url,
+        },
+      },
+    }, baseData)
+  );
+}
+
+const newsMessages = (baseData, title, description, picUrl, url) => {
+  return builder.buildObject(
+    Object.assign({
+      MsgType: 'news',
+      ArticleCount: 2,
+      Articles: [
+        {
           Title: title,
           Description: description,
           PicUrl: picUrl,
@@ -33,7 +50,6 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
           Url: url,
         },
       ],
-      },
     }, baseData)
   );
 }
@@ -61,6 +77,7 @@ const subscribeMessageWithDoctor = (baseData, did, ticket) => {
 module.exports = {
   textMessage,
   newsMessage,
+  newsMessages,
   subscribeMessage,
   subscribeMessageWithDoctor,
 

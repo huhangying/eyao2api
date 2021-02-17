@@ -18,14 +18,21 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
   return builder.buildObject(
     Object.assign({
       MsgType: 'news',
-      ArticleCount: 1,
+      ArticleCount: 2,
       Articles: {
-        item: {
+        item: [{
           Title: title,
           Description: description,
           PicUrl: picUrl,
           Url: url,
         },
+        {
+          Title: title,
+          Description: description,
+          PicUrl: picUrl,
+          Url: url,
+        },
+      ],
       },
     }, baseData)
   );

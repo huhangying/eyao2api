@@ -33,13 +33,14 @@ const newsMessage = (baseData, title, description, picUrl, url) => {
 
 const newsMessages = (baseData, title, description, picUrl, url) => {
   const items = buildMessageItemStr(title, description, picUrl, url) + buildMessageItemStr(title, description, picUrl, url);
-  return builder.buildObject(
-    Object.assign({
-      MsgType: 'news',
-      ArticleCount: 2,
-      Articles: items,
-    }, baseData)
-  );
+  return `<xml>
+<ToUserName><![CDATA[${baseData.ToUserName}]]></ToUserName>
+<FromUserName><![CDATA[${baseData.FromUserName}]]></FromUserName>
+<CreateTime>${baseData.CreateTime}</CreateTime>
+<MsgType><![CDATA[news]]></MsgType>
+<ArticleCount>${2}</ArticleCount>
+<Articles>${items}</Articles>
+</xml>`;
 }
 
 const buildMessageItemStr = (title, description, picUrl, url) => {

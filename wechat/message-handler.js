@@ -53,7 +53,10 @@ const msgHandler = (msgbufer) => {
                 return resolve(messageBuilder.textMessage(baseData, '请输入至少两个字公众号搜索文章。'));
               }
               msg = await ArticleSearch.serachResultsByKeyword(keyword, result.ToUserName);
-              resolve(msg);
+              console.log(msg);
+              resolve(messageBuilder.newsMessage(baseData, '公众号关键字搜索', msg,
+                'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png',
+                'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
               break;
           }
           break;
@@ -114,7 +117,7 @@ const subscribe = async (baseData, did) => {
   did = did.replace('qrscene_', '');
   const openid = baseData.ToUserName;
   const hid = await wxUtil.getHidByWxid(baseData.FromUserName);
-  const {name} = await wxUtil.getHospitalSettingsByHid(hid);
+  const { name } = await wxUtil.getHospitalSettingsByHid(hid);
   const userInfo = await getUserInfo(openid, hid);
   // console.log(userInfo);
   if (userInfo.data && userInfo.data.subscribe) {
@@ -158,7 +161,7 @@ const unsubscribe = async (baseData) => {
   if (user && user._id) {
     await Relationship.updateMany({ user: user._id, hid: hid }, { apply: false });
     // 删除微信失败消息
-    await WxMsgQueue.deleteMany({openid: openid, hid: hid});
+    await WxMsgQueue.deleteMany({ openid: openid, hid: hid });
   }
   return messageBuilder.textMessage(
     baseData,

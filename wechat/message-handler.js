@@ -52,7 +52,7 @@ const msgHandler = (msgbufer) => {
               if (keyword.length < 2) {
                 return resolve(messageBuilder.textMessage(baseData, '请输入至少两个字公众号搜索文章。'));
               }
-              return ArticleSearch.serachResultsByKeyword(keyword, result.ToUserName).then(result => {
+              ArticleSearch.serachResultsByKeyword(keyword, result.ToUserName).then(result => {
                 resolve(result);
               });
           }

@@ -237,7 +237,6 @@ module.exports = {
 		req.on('end', async function () {
 			const msgXml = Buffer.concat(buffer).toString('utf-8');
 			try {
-				console.log(msgXml);
 				const r = await messageHandler.msgHandler(msgXml);
 				res.send(r);
 			} catch (error) {

@@ -22,7 +22,7 @@ module.exports = {
     // 根据keyword 获取article list
     GetSerachResults: (req, res, next) => {
         const { keyword } = req.params;
-        var keywordRE = new RegExp(keyword, 'i');
+        const keywordRE = new RegExp(keyword, 'i');
         ArticleSearch.find({
             $or: [{ keywords: keywordRE }, { name: keywordRE }, { title: keywordRE }],
             hid: req.token.hid
@@ -33,6 +33,28 @@ module.exports = {
             .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
+    },
+
+    // 内部函数
+    serachResultsByKeyword: (keyword, hid) => {
+        const keywordRE = new RegExp(keyword, 'i');
+        return ArticleSearch.find({
+            $or: [{ keywords: keywordRE }, { name: keywordRE }, { title: keywordRE }],
+            hid: hid
+        })
+        .sort({ updatedAt: -1 })
+        .limit(20)
+        .select('name')
+        .lean()
+        .then(results => {
+            if (!results || results.length < 1) {
+                return '没有找到公众号文章';
+            }
+            return results.map(_ => _.name).join('\n');
+        })
+        .catch(err => {
+            return '搜索出错';
+        });
     },
 
     // 创建文章搜索对应表

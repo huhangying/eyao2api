@@ -1,5 +1,6 @@
 const User = require('../db/model/user');
 const Relationship = require('../db/model/relationship');
+const ArticleSearch = require('../db/controller/articleSearch');
 const WxMsgQueue = require('../db/model/wxMsgQueue');
 const wxUtil = require('./wx-util');
 const messageBuilder = require('./message-builder');
@@ -7,7 +8,7 @@ const { Parser } = require('xml2js');
 const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
 
 const msgHandler = (msgbufer) => {
-  let baseData, helpTxt, msg;
+  let baseData, helpTxt, msg, keyword;
 
   return new Promise((resolve, reject) => {
     parser.parseString(msgbufer.toString(), async (err, result) => {
@@ -26,24 +27,20 @@ const msgHandler = (msgbufer) => {
 
       switch (result.MsgType) {
         case 'text':
-          switch (result.Content.toLowerCase()) {
+          keyword = result.Content.toLowerCase();
+          switch (keyword) {
             case 'help':
             case '?':
             case '帮助':
               // 返回帮助内容
               helpTxt = [
-                '功能正在建设中...'
-              ]
-              // helpTxt = [
-              //   '1. 在公众号对话框中输入...',
-              //   '2. 输入关键字『todo』可以得到网站的入口链接.'
-              // ]
-
+                '您可以输入关键字搜索公众号文章。'
+              ];
               resolve(messageBuilder.textMessage(baseData, helpTxt.join('\n')));
               break;
 
             case 'news':
-              resolve(messageBuilder.newsMessages(baseData,
+              resolve(messageBuilder.newsMessage(baseData,
                 '测试图文链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
               break;
             case 'link':
@@ -52,8 +49,12 @@ const msgHandler = (msgbufer) => {
               break;
 
             default:
-              resolve('');
-              break;
+              if (keyword.length < 2) {
+                return resolve(messageBuilder.textMessage(baseData, '请输入至少两个字公众号搜索文章。'));
+              }
+              return ArticleSearch.serachResultsByKeyword(keyword).then(result => {
+                resolve(result);
+              });
           }
           break;
 

@@ -42,7 +42,6 @@ module.exports = {
         if (!hosptial) {
             return '搜索出错';
         }
-        console.log('hid: ', hosptial.hid);
         const keywordRE = new RegExp(keyword, 'i');
         return ArticleSearch.find({
             $or: [{ keywords: keywordRE }, { name: keywordRE }, { title: keywordRE }],

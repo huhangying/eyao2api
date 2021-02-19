@@ -2,7 +2,7 @@
  * Created by hhu on 2018/5/31.
  */
 
-var Hospital = require('../model/hospital.js');
+const Hospital = require('../model/hospital.js');
 
 module.exports = {
 
@@ -126,6 +126,11 @@ module.exports = {
   getByHid(hid) {
     return Hospital.findOne({ hid: hid, apply: true })
       .select('hid name wxurl csdoctor');
+  },
+
+  getHidByWxid(wxid) {
+    return Hospital.findOne({ wxid: wxid, apply: true })
+      .select('hid');
   },
 
   //======================= Seeding ==========================

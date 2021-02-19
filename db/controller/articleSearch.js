@@ -1,4 +1,5 @@
 const ArticleSearch = require('../model/articleSearch');
+const Hospital = require('../controller/hospital');
 
 module.exports = {
 
@@ -36,11 +37,15 @@ module.exports = {
     },
 
     // 内部函数
-    serachResultsByKeyword: (keyword, hid) => {
+    serachResultsByKeyword: async (keyword, wxid) => {
+        const hosptial = await Hospital.getHidByWxid(wxid);
+        if (!hosptial) {
+            return '搜索出错';
+        }
         const keywordRE = new RegExp(keyword, 'i');
         return ArticleSearch.find({
             $or: [{ keywords: keywordRE }, { name: keywordRE }, { title: keywordRE }],
-            hid: hid
+            hid: hosptial.hid
         })
         .sort({ updatedAt: -1 })
         .limit(20)

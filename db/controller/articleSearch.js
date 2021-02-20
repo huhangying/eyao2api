@@ -40,7 +40,7 @@ module.exports = {
     serachResultsByKeyword: async (keyword, wxid) => {
         const hosptial = await Hospital.getHidByWxid(wxid);
         if (!hosptial) {
-            return '搜索出错';
+            return 'error';
         }
         const keywordRE = new RegExp(keyword, 'i');
         return ArticleSearch.find({
@@ -53,12 +53,12 @@ module.exports = {
         .lean()
         .then(results => {
             if (!results || results.length < 1) {
-                return '没有找到公众号文章';
+                return '';
             }
             return results.map(_ => _.name).join('\n');
         })
         .catch(err => {
-            return '搜索出错';
+            return 'error';
         });
     },
 

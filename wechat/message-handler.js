@@ -50,12 +50,17 @@ const msgHandler = (msgbufer) => {
 
             default:
               if (keyword.length < 2) {
-                return resolve(messageBuilder.textMessage(baseData, '请输入至少两个字公众号搜索文章。'));
+                return resolve(messageBuilder.textMessage(baseData, '请输入至少两个字搜索公众号文章。'));
               }
               msg = await ArticleSearch.serachResultsByKeyword(keyword, result.ToUserName);
               console.log(msg);
-              resolve(messageBuilder.newsMessage(baseData, '公众号关键字搜索', msg,
-                'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png',
+              if (!msg)              {
+                return resolve('没有找到公众号文章。请用别的关键字搜索。');
+              } else if (msg === 'error') {
+                return resolve('搜索出错');
+              }
+              resolve(messageBuilder.newsMessage(baseData, `公众号关键字搜索结果`, msg,
+                'http://timebox.i234.me:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png',
                 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
               break;
           }

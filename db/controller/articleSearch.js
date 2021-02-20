@@ -37,15 +37,11 @@ module.exports = {
     },
 
     // 内部函数
-    serachResultsByKeyword: async (keyword, wxid) => {
-        const hosptial = await Hospital.getHidByWxid(wxid);
-        if (!hosptial) {
-            return 'error';
-        }
+    serachResultsByKeyword: async (keyword, hid) => {
         const keywordRE = new RegExp(keyword, 'i');
         return ArticleSearch.find({
             $or: [{ keywords: keywordRE }, { name: keywordRE }, { title: keywordRE }],
-            hid: hosptial.hid
+            hid: hid
         })
         .sort({ updatedAt: -1 })
         .limit(20)

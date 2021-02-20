@@ -1,6 +1,7 @@
 const User = require('../db/model/user');
 const Relationship = require('../db/model/relationship');
 const ArticleSearch = require('../db/controller/articleSearch');
+const Hospital = require('../controller/hospital');
 const WxMsgQueue = require('../db/model/wxMsgQueue');
 const wxUtil = require('./wx-util');
 const messageBuilder = require('./message-builder');
@@ -8,7 +9,7 @@ const { Parser } = require('xml2js');
 const parser = new Parser({ trim: true, explicitArray: false, explicitRoot: false });
 
 const msgHandler = (msgbufer) => {
-  let baseData, helpTxt, msg, keyword;
+  let baseData, helpTxt, msg, keyword, hospital;
 
   return new Promise((resolve, reject) => {
     parser.parseString(msgbufer.toString(), async (err, result) => {
@@ -39,30 +40,36 @@ const msgHandler = (msgbufer) => {
               resolve(messageBuilder.textMessage(baseData, helpTxt.join('\n')));
               break;
 
-            case 'news':
-              resolve(messageBuilder.newsMessage(baseData,
-                '测试图文链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
-              break;
-            case 'link':
-              resolve(messageBuilder.newsMessage(baseData,
-                '测试链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.com/images/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
-              break;
+            // case 'news':
+            //   resolve(messageBuilder.newsMessage(baseData,
+            //     '测试图文链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png', 'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+            //   break;
+            // case 'link':
+            //   resolve(messageBuilder.newsMessage(baseData,
+            //     '测试链接', 'XX药师给您发送了XXXX', 'http://www.zhaoyaoshi885.com/images/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+            //   break;
 
             default:
               if (keyword.length < 2) {
                 return resolve(messageBuilder.textMessage(baseData, '请输入至少两个字搜索公众号文章。'));
               }
-              msg = await ArticleSearch.serachResultsByKeyword(keyword, result.ToUserName);
-              console.log(msg);
-              if (!msg)              {
-                resolve('没有找到公众号文章。请用别的关键字搜索。');
-              } else if (msg === 'error') {
-                resolve('搜索出错');
-              } else {
-                resolve(messageBuilder.newsMessage(baseData, `公众号关键字搜索结果`, msg,
-                  'http://timebox.i234.me:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png',
-                  'http://www.zhaoyaoshi885.com:888/1/template/584c1a21e4a25347fecc9847_titlenwIfGKT2op.png'));
+              hospital = await Hospital.getHidByWxid(result.ToUserName);
+              if (!hospital || !hospital.hid) {
+                return resolve(messageBuilder.textMessage(baseData, '搜索出错'));
               }
+
+              msg = await ArticleSearch.serachResultsByKeyword(keyword, hospital.hid);
+              if (!msg) {
+                return resolve(messageBuilder.textMessage(baseData, '没有找到公众号文章。请用别的关键字搜索。'));
+              } else if (msg === 'error') {
+                return resolve(messageBuilder.textMessage(baseData, '搜索出错'));
+              }
+              resolve(messageBuilder.newsMessage(baseData,
+                '公众号关键字搜索结果', msg,
+                `${hospital.wxurl.replace('/wechat/', '/images/')}assets/search-result.png`,
+                `${hospital.wxurl}news-search?keyword={keyword}`
+              ));
+
               break;
           }
           break;

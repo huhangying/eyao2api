@@ -130,7 +130,7 @@ module.exports = {
 
   getHidByWxid(wxid) {
     return Hospital.findOne({ wxid: wxid, apply: true })
-      .select('hid');
+      .select('hid name wxurl');
   },
 
   //======================= Seeding ==========================

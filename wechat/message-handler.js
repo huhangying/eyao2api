@@ -65,7 +65,7 @@ const msgHandler = (msgbufer) => {
                 return resolve(messageBuilder.textMessage(baseData, '搜索出错'));
               }
               resolve(messageBuilder.newsMessage(baseData,
-                '公众号关键字搜索结果', msg,
+                '公众号文章搜索结果', msg,
                 `${hospital.wxurl.replace('/wechat/', '/images/')}assets/search-result.png`,
                 `${hospital.wxurl}news-search?keyword={keyword}`
               ));

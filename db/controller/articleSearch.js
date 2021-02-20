@@ -53,7 +53,7 @@ module.exports = {
         .lean()
         .then(results => {
             if (!results || results.length < 1) {
-                return '';
+                return 'empty';
             }
             return results.map(_ => _.name).join('\n');
         })

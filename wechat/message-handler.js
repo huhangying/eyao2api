@@ -54,7 +54,7 @@ const msgHandler = (msgbufer) => {
               }
               msg = await ArticleSearch.serachResultsByKeyword(keyword, result.ToUserName);
               console.log(msg);
-              if (!msg)              {
+              if (!msg || msg === 'empty')              {
                 return resolve('没有找到公众号文章。请用别的关键字搜索。');
               } else if (msg === 'error') {
                 return resolve('搜索出错');

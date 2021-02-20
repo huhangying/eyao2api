@@ -67,7 +67,7 @@ const msgHandler = (msgbufer) => {
               resolve(messageBuilder.newsMessage(baseData,
                 '公众号文章搜索结果', msg,
                 `${hospital.wxurl.replace('/wechat/', '/images/')}assets/search-result.png`,
-                `${hospital.wxurl}news-search?keyword={keyword}`
+                `${hospital.wxurl}news-search?h=${hospital.hid}&k=${keyword}`
               ));
 
               break;

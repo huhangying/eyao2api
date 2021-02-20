@@ -22,11 +22,11 @@ module.exports = {
 
     // 根据keyword 获取article list
     GetSerachResults: (req, res, next) => {
-        const { keyword } = req.params;
+        const { keyword, hid } = req.params;
         const keywordRE = new RegExp(keyword, 'i');
         ArticleSearch.find({
             $or: [{ keywords: keywordRE }, { name: keywordRE }, { title: keywordRE }],
-            hid: req.token.hid
+            hid: hid
         })
             .select('-hid -__v')
             .sort({ updatedAt: -1 })

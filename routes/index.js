@@ -828,7 +828,7 @@ router.route('/keywordsearch/:id')
     .delete(ArticleSearch.DeleteById)
     .patch(urlencodedParser, ArticleSearch.UpdateById);
 
-router.route('/keywordsearchs/keyword/:keyword')
+router.route('/auth/keywordsearchs/:hid/:keyword')
     .get(ArticleSearch.GetSerachResults);
 
 //---------------- 实验室化验结果 //todo: to remove

@@ -53,7 +53,6 @@ const msgHandler = (msgbufer) => {
                 return resolve(messageBuilder.textMessage(baseData, '请输入至少两个字搜索公众号文章。'));
               }
               msg = await ArticleSearch.serachResultsByKeyword(keyword, result.ToUserName);
-              console.log(msg);
               if (!msg || msg === 'empty')              {
                 return resolve('没有找到公众号文章。请用别的关键字搜索。');
               } else if (msg === 'error') {

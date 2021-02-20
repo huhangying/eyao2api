@@ -52,6 +52,7 @@ module.exports = {
         .select('name')
         .lean()
         .then(results => {
+            console.log(results);
             if (!results || results.length < 1) {
                 return 'empty';
             }

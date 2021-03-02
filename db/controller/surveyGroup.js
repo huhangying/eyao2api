@@ -2,6 +2,8 @@
  * Created by harry on 16/6/30.
  */
 
+ // no use. to remove
+
 var SurveyGroup = require('../model/surveyGroup.js');
 
 module.exports = {

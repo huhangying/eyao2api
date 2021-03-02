@@ -2,6 +2,8 @@
  * Created by harry on 16/6/30.
  */
 
+// todo: remove
+
 var SurveyCat = require('../model/surveyCat.js');
 
 module.exports = {

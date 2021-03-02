@@ -503,25 +503,25 @@ router.route('/consts/group/:group')
 //===================================== Version 1.0
 
 //---------------- 问卷调查类别/section
-var SurveyCat = require('../db/controller/surveyCat');
+// var SurveyCat = require('../db/controller/surveyCat');
 
-router.route('/surveycats')
-    .get(SurveyCat.GetAll);
-router.route('/surveycats/department/:did')
-    .get(SurveyCat.GetSurveyCatsByDepartmentId);
+// router.route('/surveycats')
+//     .get(SurveyCat.GetAll);
+// router.route('/surveycats/department/:did')
+//     .get(SurveyCat.GetSurveyCatsByDepartmentId);
 
-router.route('/surveycat')
-    .post(urlencodedParser, SurveyCat.Add);
+// router.route('/surveycat')
+//     .post(urlencodedParser, SurveyCat.Add);
 
-router.route('/surveycat/:id')
-    .get(SurveyCat.GetById)
-    .delete(SurveyCat.DeleteById)
-    .patch(urlencodedParser, SurveyCat.UpdateById);
+// router.route('/surveycat/:id')
+//     .get(SurveyCat.GetById)
+//     .delete(SurveyCat.DeleteById)
+//     .patch(urlencodedParser, SurveyCat.UpdateById);
 
 
 
 //---------------- 问卷模版,包含问题
-var SurveyTemplate = require('../db/controller/surveyTemplate');
+const SurveyTemplate = require('../db/controller/surveyTemplate');
 
 router.route('/surveytemplates')
     .get(SurveyTemplate.GetAll);
@@ -577,22 +577,59 @@ router.route('/survey/:id')
 router.route('/surveys/close/:doctor/:user') // set finished=true for type in [1,2,5]
     .patch(urlencodedParser, Survey.CloseAllRelativeSurveys);
 
+//---------------- 线下咨询模板
+const AdviseTemplate = require('../db/controller/adviseTemplate');
+
+router.route('/advisetemplates')
+    .get(AdviseTemplate.GetAll);
+
+router.route('/advisetemplates/department/:did') // 线下咨询模板
+    .get(AdviseTemplate.GetAdviseTemplatesByDepartmentId);
+
+router.route('/advise')
+    .post(urlencodedParser, AdviseTemplate.Add);
+
+router.route('/advise/:id')
+    .get(AdviseTemplate.GetById)
+    .delete(AdviseTemplate.DeleteById)
+    .patch(urlencodedParser, AdviseTemplate.UpdateById);
+
+//---------------- 线下咨询
+const Advise = require('../db/controller/advise');
+
+router.route('/advises')
+    .get(Advise.GetAll);
+
+router.route('/advises/user-history/:user/:doctor')
+    .get(Advise.GetUserAdviseHistory);
+
+router.route('/advises/doctor-pending/:doctor')
+    .get(Advise.GetDoctorPendingAdvises);
+
+router.route('/advise')
+    .post(urlencodedParser, Advise.Add);
+
+router.route('/advise/:id')
+    .get(Advise.GetById)
+    .delete(Advise.DeleteById)
+    .patch(urlencodedParser, Advise.UpdateById);
+
 //---------------- 问卷调查集合
-var SurveyGroup = require('../db/controller/surveyGroup');
+// var SurveyGroup = require('../db/controller/surveyGroup');
 
-router.route('/surveygroups')
-    .get(SurveyGroup.GetAll);
+// router.route('/surveygroups')
+//     .get(SurveyGroup.GetAll);
 
-router.route('/surveygroups/:department/type/:type')
-    .get(SurveyGroup.GetSurveyGroupsByType);
+// router.route('/surveygroups/:department/type/:type')
+//     .get(SurveyGroup.GetSurveyGroupsByType);
 
-router.route('/surveygroup')
-    .post(urlencodedParser, SurveyGroup.Add);
+// router.route('/surveygroup')
+//     .post(urlencodedParser, SurveyGroup.Add);
 
-router.route('/surveygroup/:id')
-    .get(SurveyGroup.GetById)
-    .delete(SurveyGroup.DeleteById)
-    .patch(urlencodedParser, SurveyGroup.UpdateById);
+// router.route('/surveygroup/:id')
+//     .get(SurveyGroup.GetById)
+//     .delete(SurveyGroup.DeleteById)
+//     .patch(urlencodedParser, SurveyGroup.UpdateById);
 
 //---------------- 药品管理
 var Medicine = require('../db/controller/medicine');
@@ -975,9 +1012,9 @@ router.route('/wechat/resend-msg/:openid') // 尝试重新发送
     .get(wechat.resendFailedMsg);
 
 router.route('/wechat/material-count/auth/:hid') // 获取永久素材总数
-    .get(wechat.getWxMaterialCount);  
+    .get(wechat.getWxMaterialCount);
 router.route('/wechat/material-list/auth/:hid/:page') // 获取永久素材的列表, :page is page index (20/page)
-    .get(wechat.getWxMaterialList);  
+    .get(wechat.getWxMaterialList);
 
 // 微信支付 （JSAPI）
 const WxPayment = require('../wechat/payment');

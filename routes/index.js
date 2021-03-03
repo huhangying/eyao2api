@@ -586,10 +586,10 @@ router.route('/advisetemplates')
 router.route('/advisetemplates/department/:did') // 线下咨询模板
     .get(AdviseTemplate.GetAdviseTemplatesByDepartmentId);
 
-router.route('/advise')
+router.route('/advisetemplate')
     .post(urlencodedParser, AdviseTemplate.Add);
 
-router.route('/advise/:id')
+router.route('/advisetemplate/:id')
     .get(AdviseTemplate.GetById)
     .delete(AdviseTemplate.DeleteById)
     .patch(urlencodedParser, AdviseTemplate.UpdateById);

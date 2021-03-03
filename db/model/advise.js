@@ -4,14 +4,14 @@ module.exports = mongoose.model(
     'advise',
     mongoose.Schema({
         hid: Number,
-        surveyTemplate: { type: mongoose.Schema.Types.ObjectId, ref: 'survey_template', required: true },
+        adviseTemplate: { type: mongoose.Schema.Types.ObjectId, ref: 'advise_template', required: true },
 
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
 
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         name: { type: String, required: true, trim: true }, // user name
         gender: String,
-        ago: Number,
+        age: Number,
         cell: String,
 
         questions: [
@@ -34,6 +34,7 @@ module.exports = mongoose.model(
                 ],
             }
         ],
+        order: { type: Number },
         isPerformance: { type: Boolean, default: false }, // 是否绩效考核
         isOpen: { type: Boolean, default: true }, // 是否开放线下咨询历史记录给其他药师
         finished: { type: Boolean, default: false },

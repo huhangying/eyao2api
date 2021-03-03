@@ -1,5 +1,4 @@
 const ArticleSearch = require('../model/articleSearch');
-const Hospital = require('../controller/hospital');
 
 module.exports = {
 

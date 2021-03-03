@@ -23,7 +23,7 @@ module.exports = {
     GetCmsAdviseTemplatesByDepartmentId: (req, res, next) => {
         const { did } = req.params; // did is department
         const searchCriteria = (did === 'none' || !did) ?
-            { deparment: {$exists: true, $ne: null}, hid: req.token.hid } :
+            { deparment: {$exists: false, $ne: null}, hid: req.token.hid } :
             { department: did, hid: req.token.hid }
         AdviseTemplate.find(searchCriteria)
             .sort({ order: 1 })

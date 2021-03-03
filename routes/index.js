@@ -585,6 +585,8 @@ router.route('/advisetemplates')
 
 router.route('/advisetemplates/department/:did') // 线下咨询模板
     .get(AdviseTemplate.GetAdviseTemplatesByDepartmentId);
+router.route('/advisetemplates/cms/department/:did') // 线下咨询模板 for cms
+    .get(AdviseTemplate.GetCmsAdviseTemplatesByDepartmentId);
 
 router.route('/advisetemplate')
     .post(urlencodedParser, AdviseTemplate.Add);

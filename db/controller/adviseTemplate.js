@@ -19,10 +19,27 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 获取 department 可用的 template list
+    // 获取 department 可用的 template list (for CMS)
+    GetCmsAdviseTemplatesByDepartmentId: (req, res, next) => {
+        const { did } = req.params; // did is department
+        const searchCriteria = (did === 'none' || !did) ?
+            { deparment: null, hid: req.token.hid } :
+            { department: did, hid: req.token.hid }
+        AdviseTemplate.find(searchCriteria)
+            .sort({ order: 1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // 获取 department 可用的 template list (not for CMS)
     GetAdviseTemplatesByDepartmentId: (req, res, next) => {
         const { did } = req.params; // did is department
-        AdviseTemplate.find({ $or: [{ department: did }, { deparment: null }], hid: req.token.hid, apply: true })
+        const searchCriteria = (did === 'none' || !did) ?
+            { deparment: null, hid: req.token.hid, apply: true } :
+            { $or: [{ department: did }, { deparment: null }], hid: req.token.hid, apply: true }
+        AdviseTemplate.find(searchCriteria)
             .sort({ order: 1 })
             .select('-hid -__v')
             .lean()

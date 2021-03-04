@@ -23,7 +23,7 @@ module.exports = {
     GetCmsAdviseTemplatesByDepartmentId: (req, res, next) => {
         const { did } = req.params; // did is department
         const searchCriteria = (did === 'none' || !did) ?
-            { deparment: null, hid: req.token.hid }  // null: field not exists
+            { deparment: {$exists: false}, hid: req.token.hid }  // null: field not exists
             :
             { department: did, hid: req.token.hid }
         AdviseTemplate.find(searchCriteria)

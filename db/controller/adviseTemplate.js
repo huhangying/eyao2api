@@ -22,14 +22,14 @@ module.exports = {
     // 获取 department 可用的 template list (for CMS)
     GetCmsAdviseTemplatesByDepartmentId: (req, res, next) => {
         const { did } = req.params; // did is department
-        const searchCriteria = (did === 'none' || !did) ?
-            { deparment: {$not: {$exists: true, $ne: null}}, hid: req.token.hid }  // null: field not exists
+        const searchCriteria = (did === 'none') ?
+            { deparment: {$exists: false} }  // null: field not exists
             :
             { department: did, hid: req.token.hid }
         AdviseTemplate.find(searchCriteria)
             .sort({ order: 1 })
             .select('-hid -__v')
-            // .lean()
+            .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

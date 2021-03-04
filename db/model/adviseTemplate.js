@@ -5,7 +5,8 @@ module.exports = mongoose.model(
     mongoose.Schema({
         hid: Number,
         name: { type: String, required: true, trim: true },
-        department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', default: null },
+        department: { type: String, default: 'none' }, // department id
+        // department: { type: mongoose.Schema.Types.ObjectId, ref: 'department', default: null },
 
         questions: [
             {

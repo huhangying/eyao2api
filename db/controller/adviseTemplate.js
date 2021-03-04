@@ -29,7 +29,7 @@ module.exports = {
         AdviseTemplate.find(searchCriteria)
             .sort({ order: 1 })
             .select('-hid -__v')
-            .lean()
+            // .lean()
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

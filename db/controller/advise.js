@@ -1,4 +1,5 @@
 const Advise = require('../model/advise');
+const moment = require('moment');
 
 module.exports = {
 
@@ -36,14 +37,17 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 获取 doctor 的未完成 advises
+    // 获取 Today's doctor 的未完成 advises
     GetDoctorPendingAdvises: (req, res, next) => {
         const { doctor } = req.params;
 
         Advise.find({
             doctor: doctor,
             hid: req.token.hid,
-            finished: false
+            finished: false,
+            updatedAt: {
+                $gte: moment().startOf('day').toDate(),
+            }
         })
             // .populate({ path: 'doctor', select: 'name title department' })
             .sort({ updatedAt: -1 })

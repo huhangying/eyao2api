@@ -13,7 +13,7 @@ router.route('/').get((req, res) => {
 });
 
 //---------------- 用户注册
-var User = require('../db/controller/user');
+const User = require('../db/controller/user');
 
 router.route('/users/search')
     .post(User.search);
@@ -45,7 +45,7 @@ router.route('/users/search') //GET
 
 
 //---------------- 药师注册
-var Doctor = require('../db/controller/doctor');
+const Doctor = require('../db/controller/doctor');
 
 router.route('/doctors/brief-list')
     .get(Doctor.GetDoctorList);//
@@ -156,7 +156,7 @@ router.route('/doctor-consult-comment/:id')
     .delete(DoctorConsultComment.DeleteById);
 
 //---------------- 医患关系组
-var Group = require('../db/controller/group');
+const Group = require('../db/controller/group');
 
 router.route('/groups')
     .get(Group.GetAll);
@@ -176,7 +176,7 @@ router.route('/group')
 
 
 //---------------- 医患关系
-var Relationship = require('../db/controller/relationship');
+const Relationship = require('../db/controller/relationship');
 
 router.route('/relationships')
     .get(Relationship.GetAll);
@@ -218,7 +218,7 @@ router.route('/relationship/remove/:did/:uid')
     .delete(Relationship.RemoveRelationship);
 
 //---------------- 医院+
-var Hospital = require('../db/controller/hospital');
+const Hospital = require('../db/controller/hospital');
 
 router.route('/hospitals')
     .get(Hospital.GetAll);
@@ -246,7 +246,7 @@ router.route('/hospital/wechat/auth/:hid')
 
 
 //---------------- 医院科室
-var Department = require('../db/controller/department');
+const Department = require('../db/controller/department');
 
 router.route('/departments')
     .get(Department.GetAll);
@@ -263,7 +263,7 @@ router.route('/department/:id')
 
 
 //---------------- 疾病类别
-var Disease = require('../db/controller/disease');
+const Disease = require('../db/controller/disease');
 
 router.route('/diseases')
     .get(Disease.GetAll);
@@ -312,7 +312,7 @@ router.route('/chatrooms/check/user/:id')
 
 
 //---------------- 聊天 chat
-var Chat = require('../db/controller/chat');
+const Chat = require('../db/controller/chat');
 
 // router.route('/chats')
 //     .get(Chat.GetAll);
@@ -383,7 +383,7 @@ router.route('/chat/send')
 //     .patch(urlencodedParser, Notification.ClearNoti);
 
 //---------------- 门诊
-var Schedule = require('../db/controller/schedule');
+const Schedule = require('../db/controller/schedule');
 
 router.route('/schedules')
     .get(Schedule.GetAll);
@@ -428,7 +428,7 @@ router.route('/schedules-bat-delete')
 
 
 //---------------- 门诊时间端
-var Period = require('../db/controller/period');
+const Period = require('../db/controller/period');
 
 router.route('/periods')
     .get(Period.GetAll);
@@ -442,7 +442,7 @@ router.route('/period')
     .post(urlencodedParser, Period.Add);
 
 //---------------- 预约
-var Booking = require('../db/controller/booking');
+const Booking = require('../db/controller/booking');
 
 router.route('/bookings')
     .get(Booking.GetAll);
@@ -482,7 +482,7 @@ router.route('/booking/:id')
     .delete(Booking.DeleteById);
 
 //---------------- 系统全局变量
-var Const = require('../db/controller/const');
+const Const = require('../db/controller/const');
 
 router.route('/consts')
     .get(Const.GetAll);
@@ -542,7 +542,7 @@ router.route('/surveytemplate/:id')
     .patch(urlencodedParser, SurveyTemplate.UpdateById);
 
 //---------------- 问卷调查,包含问题
-var Survey = require('../db/controller/survey');
+const Survey = require('../db/controller/survey');
 
 router.route('/surveys')
     .get(Survey.GetAll);
@@ -616,6 +616,21 @@ router.route('/advise/:id')
     .delete(Advise.DeleteById)
     .patch(urlencodedParser, Advise.UpdateById);
 
+//---------------- 线下咨询 comment
+const AdviseComment = require('../db/controller/adviseComment');
+
+router.route('/advise-comment/:doctor')
+    .get(AdviseComment.GetAllByDoctorId);
+router.route('/advise-comment/advise/:aid') // get by advise id
+    .get(AdviseComment.GetById);
+router.route('/advise-comment/:doctor/:from/:size')
+    .get(AdviseComment.GetByDoctorIdAndFromSize);
+
+router.route('/advise-comment')
+    .post(urlencodedParser, AdviseComment.Add)
+router.route('/advise-comment/:id')
+    .delete(AdviseComment.DeleteById);
+    
 //---------------- 问卷调查集合
 // var SurveyGroup = require('../db/controller/surveyGroup');
 
@@ -634,7 +649,7 @@ router.route('/advise/:id')
 //     .patch(urlencodedParser, SurveyGroup.UpdateById);
 
 //---------------- 药品管理
-var Medicine = require('../db/controller/medicine');
+const Medicine = require('../db/controller/medicine');
 
 router.route('/medicines')
     .get(Medicine.GetAll);
@@ -759,7 +774,7 @@ router.route('/messagelog/:id')
 
 
 //---------------- 不良反应(基于科室)
-var AdverseReaction = require('../db/controller/adverseReaction');
+const AdverseReaction = require('../db/controller/adverseReaction');
 
 router.route('/adversereactions')
     .get(AdverseReaction.GetAll);
@@ -945,7 +960,7 @@ router.route('/surveyStatusLog/:key')
     .get(SurveyStatusLog.GetByKey);
 
 //===================== 图片上传
-var Uploader = require('../upload/upload');
+const Uploader = require('../upload/upload');
 
 // router.route('/upload/:dir')
 // router.route('/upload')
@@ -978,7 +993,7 @@ router.route('/upload/list/:dir')
 //  数据库管理
 //
 ///////////////////////////////////////////////////////////////////////////////////
-var Admin = require('../db/controller/admin');
+const Admin = require('../db/controller/admin');
 
 router.route('/admin/userdata/:id')
     .delete(Admin.DeleteUserAndRelatedData);

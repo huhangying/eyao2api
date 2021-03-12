@@ -21,12 +21,30 @@ module.exports = {
     },
 
     // 获取病患线下咨询历史记录
+    // used by Doctor-side
     GetUserAdviseHistory: (req, res, next) => {
         const { user, doctor } = req.params;
 
         Advise.find({
             user: user,
             $or: [{ isOpen: true, docotor: { $ne: doctor } }, { docotor: doctor }], // 开放给其他药师的，加上药师本身的
+            hid: req.token.hid,
+            finished: true
+        })
+            .sort({ order: 1 })
+            .select('-hid -__v')
+            .lean()
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
+    // 获取病患线下咨询历史记录
+    // used by Patient-Side
+    GetAdviseHistoryByUser: (req, res, next) => {
+        const { user } = req.params;
+
+        Advise.find({
+            user: user,
             hid: req.token.hid,
             finished: true
         })

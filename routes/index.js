@@ -602,8 +602,11 @@ const Advise = require('../db/controller/advise');
 router.route('/advises')
     .get(Advise.GetAll);
 
-router.route('/advises/user-history/:user/:doctor')
+router.route('/advises/doctor-view-user-history/:user/:doctor') // used by 药师端
     .get(Advise.GetUserAdviseHistory);
+
+router.route('/advises/user-history/:user') // used by 病患微信端
+    .get(Advise.GetAdviseHistoryByUser);
 
 router.route('/advises/doctor-pending/:doctor')
     .get(Advise.GetDoctorPendingAdvises);

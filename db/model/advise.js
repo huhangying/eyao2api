@@ -38,6 +38,11 @@ module.exports = mongoose.model(
         isPerformance: { type: Boolean, default: false }, // 是否绩效考核
         isOpen: { type: Boolean, default: true }, // 是否开放线下咨询历史记录给其他药师
         finished: { type: Boolean, default: false },
+
+        // user feedback
+        score: Number,
+        comment: String,
+        feedbackDone: Boolean,
     }, {
         timestamps: true
     })

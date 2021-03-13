@@ -619,20 +619,20 @@ router.route('/advise/:id')
     .delete(Advise.DeleteById)
     .patch(urlencodedParser, Advise.UpdateById);
 
-//---------------- 线下咨询 comment
-const AdviseComment = require('../db/controller/adviseComment');
+// //---------------- 线下咨询 comment
+// const AdviseComment = require('../db/controller/adviseComment');
 
-router.route('/advise-comment/:doctor')
-    .get(AdviseComment.GetAllByDoctorId);
-router.route('/advise-comment/advise/:aid') // get by advise id
-    .get(AdviseComment.GetById);
-router.route('/advise-comment/:doctor/:from/:size')
-    .get(AdviseComment.GetByDoctorIdAndFromSize);
+// router.route('/advise-comment/:doctor')
+//     .get(AdviseComment.GetAllByDoctorId);
+// router.route('/advise-comment/advise/:aid') // get by advise id
+//     .get(AdviseComment.GetById);
+// router.route('/advise-comment/:doctor/:from/:size')
+//     .get(AdviseComment.GetByDoctorIdAndFromSize);
 
-router.route('/advise-comment')
-    .post(urlencodedParser, AdviseComment.Add)
-router.route('/advise-comment/:id')
-    .delete(AdviseComment.DeleteById);
+// router.route('/advise-comment')
+//     .post(urlencodedParser, AdviseComment.Add)
+// router.route('/advise-comment/:id')
+//     .delete(AdviseComment.DeleteById);
     
 //---------------- 问卷调查集合
 // var SurveyGroup = require('../db/controller/surveyGroup');

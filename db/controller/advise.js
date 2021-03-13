@@ -31,7 +31,7 @@ module.exports = {
             hid: req.token.hid,
             finished: true
         })
-            .sort({ order: 1 })
+            .sort({ updatedAt: -1 })
             .select('-hid -__v')
             .lean()
             .then((result) => res.json(result))
@@ -48,14 +48,6 @@ module.exports = {
             hid: req.token.hid,
             finished: true
         })
-            .populate({
-                path: 'doctor',
-                select: 'name title department',
-                populate: {
-                    path: 'department',
-                    select: 'name -_id'
-                }
-            })
             .sort({ updatedAt: -1 })
             .select('-hid -__v')
             .lean()

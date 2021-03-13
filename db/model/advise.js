@@ -7,6 +7,9 @@ module.exports = mongoose.model(
         adviseTemplate: { type: mongoose.Schema.Types.ObjectId, ref: 'advise_template', required: true },
 
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },
+        doctorName: String,
+        doctorTitle: String,
+        doctorDepartment: String,
 
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         name: { type: String, required: true, trim: true }, // user name

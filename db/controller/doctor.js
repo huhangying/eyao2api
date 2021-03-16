@@ -29,12 +29,12 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // for CMS //never use?
+    // for CMS //用于药师管理获取所有药师
     GetAll: (req, res, next) => {
         let { number } = req.params;
         number = +number || 999; // set default return numbers
 
-        Doctor.find({ hid: req.token.hid })
+        Doctor.find({ role: { $lt: 3 }, hid: req.token.hid })
             .select('-hid -password -__v')
             .sort({ order: 1, updated: -1 })
             .limit(number)

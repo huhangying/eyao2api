@@ -54,7 +54,7 @@ router.route('/doctors/:number')
 router.route('/doctors/search/:name')
     .get(Doctor.SearchDoctorsByName);//
 router.route('/doctors/:number/all')
-    .get(Doctor.GetAll);//
+    .get(Doctor.GetAll);// CMS get all
 
 router.route('/doctors/notfocus/:did')
     .get(Doctor.GetAllNotFocus);//

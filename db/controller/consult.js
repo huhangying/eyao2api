@@ -159,16 +159,23 @@ module.exports = {
         if (!data.doctor) {
             return Status.returnStatus(res, Status.NO_DOCTOR);
         }
-        Consult.findOneAndUpdate({
-            doctor: data.doctor,
-            user: data.user,
-            type: data.type,
-            out_trade_no: data.out_trade_no,
-            finished: false,
-            hid: data.hid
-        }, data, { new: true, upsert: true }) // check if existed
-            .then((result) => res.json(result))
-            .catch(err => next(err));
+        // 如果userName为空，则为药师回复，正常创建新consult
+        if (!data.userName) {
+            Consult.create(data)
+                .then((result) => res.json(result))
+                .catch(err => next(err));
+        } else {
+            Consult.findOneAndUpdate({
+                doctor: data.doctor,
+                user: data.user,
+                type: data.type,
+                out_trade_no: data.out_trade_no,
+                finished: false,
+                hid: data.hid
+            }, data, { new: true, upsert: true }) // check if existed
+                .then((result) => res.json(result))
+                .catch(err => next(err));
+        }
     },
 
     UpdateById: function (req, res, next) {

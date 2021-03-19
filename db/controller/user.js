@@ -8,7 +8,7 @@ module.exports = {
 
     GetAll: (req, res, next) => {
         let { number } = req.params;
-        number = +number || 999; // set default return numbers
+        number = +number || 9999; // set default return numbers
         User.find({ hid: req.token.hid, apply: true })
             .select('-hid -password -__v')
             .sort({ updated: -1 })
@@ -43,7 +43,7 @@ module.exports = {
 
     GetAllCms: (req, res, next) => {
         let { number } = req.params;
-        number = +number || 999; // set default return numbers
+        number = +number || 9999; // set default return numbers
         User.find({ hid: req.token.hid })
             .select('-hid -password -__v')
             .sort({ updated: -1 })

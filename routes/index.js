@@ -611,6 +611,9 @@ router.route('/advises/user-history/:user') // used by 病患微信端
 router.route('/advises/doctor-pending/:doctor')
     .get(Advise.GetDoctorPendingAdvises);
 
+router.route('/advises/search')
+    .post(Advise.search);
+    
 router.route('/advise')
     .post(urlencodedParser, Advise.Add);
 

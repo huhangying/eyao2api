@@ -75,6 +75,37 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    search: (req, res, next) => {
+        const { doctor, start, end, hid } = req.body;
+        let searchCriteria = {
+            hid: hid,
+        };
+
+        if (start || end) {
+            if (start && end) {
+                searchCriteria.createdAt = { $gte: new Date(start), $lt: new Date(end) };
+            } else if (start) {
+                searchCriteria.createdAt = { $gte: new Date(start) };
+            } else if (end) {
+                searchCriteria.createdAt = { $lt: new Date(end) };
+            }
+        }
+        if (doctor) {
+            const doctors = doctor.split('|');
+            if (doctors.length === 1) {
+                searchCriteria.doctor = doctor;
+            } else {
+                searchCriteria.doctor = { $in: doctors };
+            }
+        }
+
+        Advise.find(searchCriteria)
+            .select('-hid -__v')
+            .lean()
+            .then((results) => res.json(results))
+            .catch(err => next(err));
+    },
+
     // 创建
     Add: (req, res, next) => {
         const advise = req.body;

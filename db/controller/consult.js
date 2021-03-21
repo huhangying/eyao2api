@@ -171,8 +171,8 @@ module.exports = {
         if (!data.doctor) {
             return Status.returnStatus(res, Status.NO_DOCTOR);
         }
-        // 如果userName为空，则为药师回复，正常创建新consult
-        if (!data.userName) {
+        // 如果disease_types为空，则为药师/病患回复，正常创建新consult
+        if (!data.disease_types) {
             Consult.create(data)
                 .then((result) => res.json(result))
                 .catch(err => next(err));

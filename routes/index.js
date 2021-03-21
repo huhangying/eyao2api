@@ -115,6 +115,8 @@ router.route('/consults/get-history/:did/:uid/:type')
     .get(Consult.GetConsultsByDoctorIdUserIdAndType);
 router.route('/consults/check-exists/:did/:uid')
     .get(Consult.CheckConsultExistedByDoctorIdAndUserId);
+router.route('/consults/get-group/:consult')
+    .get(Consult.GetConsultsByGroup);
 
 router.route('/consults/mark-done/:did/:uid/:type')
     .get(Consult.MarkDoneByDoctorUserAndType);
@@ -613,7 +615,7 @@ router.route('/advises/doctor-pending/:doctor')
 
 router.route('/advises/search')
     .post(Advise.search);
-    
+
 router.route('/advise')
     .post(urlencodedParser, Advise.Add);
 

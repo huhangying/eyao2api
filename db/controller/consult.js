@@ -97,6 +97,18 @@ module.exports = {
             .catch(err => next(err));
     },
 
+    // 根据 consult ID 获取 grouped consults
+    GetConsultsByGroup: (req, res, next) => {
+        const { consult } = req.params;
+        Consult.find({
+            $or: [{ _id: consult }, { parent: consult }],
+            hid: req.token.hid
+        })
+            .select('-hid -__v')
+            .then((result) => res.json(result))
+            .catch(err => next(err));
+    },
+
     // 根据 Doctor ID, Use ID 获取所有的 consults
     GetConsultsByDoctorIdAndUserId: (req, res, next) => {
         const { did, uid } = req.params;

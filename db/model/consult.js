@@ -4,6 +4,7 @@ module.exports = mongoose.model(
     'consult',
     mongoose.Schema({
         hid: Number,
+        parent: String, // used to group one Paid Consult.
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },      // from
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },  // to
         userName: String, // 标识 consult 消息的方向

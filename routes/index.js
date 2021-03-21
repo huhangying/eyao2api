@@ -115,7 +115,7 @@ router.route('/consults/get-history/:did/:uid/:type')
     .get(Consult.GetConsultsByDoctorIdUserIdAndType);
 router.route('/consults/check-exists/:did/:uid')
     .get(Consult.CheckConsultExistedByDoctorIdAndUserId);
-router.route('/consults/get-group/:consult')
+router.route('/consults/get-group/:consult') // for wechat (consult-reply)
     .get(Consult.GetConsultsByGroup);
 
 router.route('/consults/mark-done/:did/:uid/:type')

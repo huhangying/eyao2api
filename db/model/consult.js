@@ -6,11 +6,11 @@ module.exports = mongoose.model(
         hid: Number,
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },      // from
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },  // to
-        userName: String,
+        userName: String, // 标识 consult 消息的方向
 
         out_trade_no: { type: String }, // 商户订单号
         total_fee: { type: Number }, // fen
-        disease_types: [{ type: String }], // 咨询疾病类型
+        disease_types: [{ type: String }], // 咨询疾病类型 （！病患发起的消息时必选，如果没有此项，则为病患后续交互消息）
         content: { type: String }, // 问题描述
         cell: { type: String }, // 电话咨询时必选
         address: { type: String }, // 可选

@@ -78,7 +78,7 @@ module.exports = {
             doctor: did,
             finished: false,
             parent: null,
-            type: { $in: [0, 1] },
+            // type: { $in: [0, 1] },
             hid: req.token.hid
         })
             .select('-hid -__v')

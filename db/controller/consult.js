@@ -158,7 +158,7 @@ module.exports = {
             finished: false,
             type: type,
             hid: req.token.hid
-        }, { finished: true })
+        }, { finished: true, setCharged: false })
             .then((result) => res.json(result))
             .catch(err => next(err));
     },

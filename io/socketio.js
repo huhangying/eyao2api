@@ -107,7 +107,7 @@ module.exports = (io) => {
 
             // redirect to noti
             // 微信端不接收notification，所以只对药师发送
-            if (!consult.status || consult.status < 2) {
+            // if (!consult.status || consult.status < 2) {
                 socket.to(room).emit('notification', {
                     patientId: consult.user,
                     type: consult.type === 1 ? 6 : 5, // 付费咨询 (0: 图文；1：电话) => notiType (5: 图文；6：电话 )
@@ -116,7 +116,7 @@ module.exports = (io) => {
                     keyId: consult.parent || consult._id,
                     created: consult.createdAt
                 });
-            }
+            // }
         });
     });
 }

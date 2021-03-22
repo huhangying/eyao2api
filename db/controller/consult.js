@@ -70,13 +70,14 @@ module.exports = {
             .catch(err => next(err));
     },
 
-    // 根据 Doctor ID, Use ID, NO-type 获取
+    // 根据 Doctor ID, Use ID, NO-type 获取     ！收费标识(setCharged)
     GetPendingByDoctorIdAndUserId: (req, res, next) => {
         const { did, uid } = req.params;
         Consult.findOne({
             user: uid,
             doctor: did,
             finished: false,
+            parent: null,
             type: { $in: [0, 1] },
             hid: req.token.hid
         })

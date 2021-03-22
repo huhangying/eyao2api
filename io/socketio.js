@@ -113,7 +113,7 @@ module.exports = (io) => {
                     type: consult.type === 1 ? 6 : 5, // 付费咨询 (0: 图文；1：电话) => notiType (5: 图文；6：电话 )
                     name: consult.userName || '',
                     count: 1,
-                    keyId: consult._id,
+                    keyId: consult.parent || consult._id,
                     created: consult.createdAt
                 });
             }

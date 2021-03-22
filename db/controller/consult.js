@@ -59,7 +59,8 @@ module.exports = {
         Consult.find({
             doctor: did,
             finished: false,
-            parent: null,
+            // parent: null,
+            userName: {$ne: null},
             type: { $in: [0, 1] },
             hid: req.token.hid
         })

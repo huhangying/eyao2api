@@ -7,7 +7,7 @@ module.exports = mongoose.model(
         parent: String, // used to group one Paid Consult.
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },      // from
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor', required: true },  // to
-        userName: String, // 标识 consult 消息的方向
+        userName: String, // 标识 consult 消息的方向, 有值表示从病患到药师
 
         out_trade_no: { type: String }, // 商户订单号
         total_fee: { type: Number }, // fen

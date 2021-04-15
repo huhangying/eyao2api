@@ -16,7 +16,7 @@ module.exports = mongoose.model(
     mch_id: String, // weixin payment
     partnerKey: String,
     notify_url: String, // http://www.zhaoyaoshi885.cn/api/wechat/notify
-    server_ip: String,
+    server_ip: String, // use for distributed 
     // wxcert_path: String,
     csdoctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' }, // 
     apply: { type: Boolean, default: true }

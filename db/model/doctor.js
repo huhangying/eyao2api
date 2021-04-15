@@ -38,6 +38,7 @@ module.exports = mongoose.model(
     hospitalName: String, // only for doctor login response
     wechatUrl: String,     // only for doctor login response
     cs: Boolean, // check if 客服 // only for doctor login response
+    serverIp: String, // !!! 服务接入地址 // only for doctor login response
     prices: [
       {
         type: { type: Number, required: true },   // 0: 图文咨询； 1：电话咨询

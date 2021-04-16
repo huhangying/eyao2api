@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const util = require('../util/util');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
-const bigFileUrlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000000 });
+const bigFileUrlencodedParser = express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000000 });
 
 router.use(util.verifyToken);
 
@@ -1044,7 +1044,7 @@ router.route('/wechat/material-list/auth/:hid/:page') // 获取永久素材的�
 // 微信支付 （JSAPI）
 const WxPayment = require('../wechat/payment');
 router.route('/wechat/pay-notify') // 回调通知
-    .post([bodyParser.text({ type: '*/xml' })], WxPayment.notify);
+    .post([express.text({ type: '*/xml' })], WxPayment.notify);
 router.route('/wechat/pay-unified-order') // 统一下单
     .post(urlencodedParser, WxPayment.unifiedOrder);
 router.route('/wechat/pay-refund') // 申请退款 ?

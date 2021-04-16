@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const logger = require('morgan');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // mongoose.connect('mongodb://192.168.87.250/eyao', {
 mongoose.connect('mongodb://127.0.0.1/eyao', {
@@ -13,7 +13,7 @@ mongoose.connect('mongodb://127.0.0.1/eyao', {
 });
 
 global.Status = require('./util/status.js');
-global.urlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: false });
+global.urlencodedParser = express.urlencoded({ limit: '50mb', extended: false });
 
 const app = express();
 const server = require('http').Server(app);
@@ -41,7 +41,7 @@ app.set('view options', {
 app.disable('etag'); //avoid 304 error
 
 app.use(logger('dev'));
-app.use(bodyParser.json({limit: '50mb', parameterLimit: 50000000}));
+app.use(express.json({limit: '50mb', parameterLimit: 50000000}));
 
 app.use(express.static(path.join(path.resolve(), 'public')));
 

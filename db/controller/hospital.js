@@ -36,9 +36,9 @@ module.exports = {
       .then((results) => {
         const filteredList = results.filter(_ => _.ipList.indexOf(req.hostname));
         if (filteredList && filteredList.length > 0) {
-          res.json(filteredList.map(_ => { return { name: _._name, hid: _.hid }; }));
+          res.json(filteredList.map(_ => { return { name: _.name, hid: _.hid }; }));
         } else {
-          res.json(results.map(_ => { return { name: _._name, hid: _.hid }; }));
+          res.json(results.map(_ => { return { name: _.name, hid: _.hid }; }));
         }
       })
       .catch(err => next(err));

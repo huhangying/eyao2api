@@ -15,12 +15,32 @@ module.exports = {
       .catch(err => next(err));
   },
 
-  // 获取药师APP医院列表
+  // 获取药师APP医院列表 (app side)
+  // return: [{name, hid}]
   GetAppHospitals: (req, res, next) => {
     Hospital.find({ apply: true })
       .select('name hid')
       .lean()
       .then((result) => res.json(result))
+      .catch(err => next(err));
+  },
+
+  // 获取药师APP医院列表 (web side)
+  // 如果访问的domain在ipList中，返回单个；
+  // 如果访问的domain不在ipList中，返回所有；
+  // return: [{name, hid}]
+  GetWebHospitals: (req, res, next) => {
+    Hospital.find({ apply: true })
+      .select('name hid ipList')
+      .lean()
+      .then((results) => {
+        const filteredList = results.filter(_ => _.ipList.indexOf(req.hostname));
+        if (filteredList && filteredList.length > 0) {
+          res.json(filteredList.map(_ => { return { name: _._name, hid: _.hid }; }));
+        } else {
+          res.json(results.map(_ => { return { name: _._name, hid: _.hid }; }));
+        }
+      })
       .catch(err => next(err));
   },
 

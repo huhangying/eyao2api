@@ -226,6 +226,8 @@ router.route('/hospitals')
     .get(Hospital.GetAll);
 router.route('/hospitals/app/login')
     .get(Hospital.GetAppHospitals);
+router.route('/hospitals/web/login')
+    .get(Hospital.GetWebHospitals);
 
 router.route('/hospital/customer-service')
     .get(Hospital.GetCustomerService);

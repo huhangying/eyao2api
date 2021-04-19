@@ -34,7 +34,7 @@ module.exports = {
       .select('name hid ipList')
       .lean()
       .then((results) => {
-        const filteredList = results.filter(_ => _.ipList.indexOf(req.hostname));
+        const filteredList = results.filter(_ => _.ipList.indexOf(req.hostname) > -1);
         if (filteredList && filteredList.length > 0) {
           res.json(filteredList.map(_ => { return { name: _.name, hid: _.hid }; }));
         } else {

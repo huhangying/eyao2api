@@ -4,7 +4,7 @@ module.exports = {
 
     GetAll: (req, res, next) => {
         ArticleSearch.find({ hid: req.token.hid })
-            .sort({ updatedAt: -1 })
+            .sort({ createdAt: -1 })
             .lean()
             .then((results) => res.json(results))
             .catch(err => next(err));

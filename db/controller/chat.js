@@ -5,10 +5,12 @@ module.exports = {
 
     search: (req, res, next) => {
         const { doctor, start, end, hid, cs } = req.body;
-        let searchCriteria = {
-            hid: hid,
-            cs: cs === 'true'
-        };
+        let searchCriteria = { hid: hid };
+        if (cs === 'true' || cs === true) {
+            searchCriteria.cs = true;
+        } else {
+            searchCriteria.cs = {$in: [false, null]}
+        }
         if (start || end) {
             if (start && end) {
                 searchCriteria.created = { $gte: new Date(start), $lt: new Date(end) };
@@ -179,7 +181,7 @@ module.exports = {
                         if (!items || items.length < 1) {
                             res.json([]);
                         } else {
-                            res.json(items.map(_ => _._id).filter(_ =>  _));
+                            res.json(items.map(_ => _._id).filter(_ => _));
                         }
                     })
                     .catch(err => next(err));

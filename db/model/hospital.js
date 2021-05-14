@@ -17,6 +17,7 @@ module.exports = mongoose.model(
     partnerKey: String,
     notify_url: String, // http://www.zhaoyaoshi885.cn/api/wechat/notify
     server_ip: String, // use for distributed 
+    record: String, // 域名备案号
     // wxcert_path: String,
     csdoctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctor' }, // 
     apply: { type: Boolean, default: true }

@@ -141,16 +141,16 @@ module.exports = {
   // Functions belows
   getHidByHost(host) {
     return Hospital.findOne({ ipList: host, apply: true })
-      .select('hid name wxurl csdoctor server_ip');
+      .select('hid name wxurl csdoctor server_ip record');
   },
   getByHid(hid) {
     return Hospital.findOne({ hid: hid, apply: true })
-      .select('hid name wxurl csdoctor server_ip');
+      .select('hid name wxurl csdoctor server_ip record');
   },
 
   getHidByWxid(wxid) {
     return Hospital.findOne({ wxid: wxid, apply: true })
-      .select('hid name wxurl server_ip');
+      .select('hid name wxurl csdoctor server_ip record');
   },
 
   //======================= Seeding ==========================

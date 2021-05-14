@@ -328,6 +328,7 @@ module.exports = {
                 result.hospitalName = hosptial.name;
                 result.wechatUrl = hosptial.wxurl;
                 result.serverIp = hosptial.server_ip;
+                result.record = hosptial.record;
                 result.cs = result._id.equals(hosptial.csdoctor);
                 return res.json(result);
             })

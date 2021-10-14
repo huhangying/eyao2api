@@ -4,7 +4,7 @@ module.exports = {
 
     GetAll: (req, res, next) => {
         ArticleSearch.find({ hid: req.token.hid })
-            .sort({ createdAt: -1 })
+            .sort({ update_time: -1, createdAt: -1 })
             .lean()
             .then((results) => res.json(results))
             .catch(err => next(err));
@@ -28,7 +28,7 @@ module.exports = {
             hid: hid
         })
             .select('-hid -__v')
-            .sort({ updatedAt: -1 })
+            .sort({ update_time: -1, createdAt: -1 })
             .limit(20)
             .lean()
             .then((result) => res.json(result))
@@ -42,7 +42,7 @@ module.exports = {
             $or: [{ keywords: keywordRE }, { name: keywordRE }, { title: keywordRE }],
             hid: hid
         })
-        .sort({ updatedAt: -1 })
+        .sort({ update_time: -1, createdAt: -1 })
         .limit(20)
         .select('name')
         .lean()
